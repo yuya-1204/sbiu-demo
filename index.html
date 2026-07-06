@@ -168,6 +168,22 @@ button{font-family:inherit;cursor:pointer}
 /* chain animation */
 @keyframes mine{0%{opacity:.2}50%{opacity:1}100%{opacity:.2}}
 .mining{animation:mine 1s infinite;color:var(--chain);font-size:12px;font-weight:700}
+
+/* ===== Medmatch ===== */
+.badge-next{display:inline-block;background:var(--chain);color:#fff;font-size:10px;border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+@keyframes tabin{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}
+.tab-appear{animation:tabin .6s ease}
+.svc-header.mm{background:linear-gradient(120deg,#1b1b46,#4f46e5)}
+.pill-bank{background:#fdeef2;color:#b0325c}
+.match-badge{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:52px;border-radius:50%;font-weight:700;font-size:14px;flex-shrink:0}
+.match-hi{background:var(--green-l);color:var(--green);border:2px solid var(--green)}
+.match-mid{background:var(--teal-l);color:var(--teal);border:2px solid var(--teal)}
+.bank-strip{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(120deg,#fff,#fdf5f7);border:1px solid #f2d4dd;border-radius:12px;padding:18px}
+.bank-strip .bk{font-size:26px}
+.bank-strip b{color:#8f2b4d}
+.cost-bars .row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px}
+.cost-bars .lbl{width:180px;color:var(--sub);text-align:right;flex-shrink:0}
+.cost-bars .bar{height:16px;border-radius:4px}
 </style>
 </head>
 <body>
@@ -187,6 +203,7 @@ button{font-family:inherit;cursor:pointer}
       <button class="hp-tab" data-tab="about">事務所概要</button>
       <button class="hp-tab" data-tab="contact">お問い合わせ</button>
       <button class="hp-tab special" data-tab="sbiu">SBI-Uチャレンジ（仮）<span class="badge-new">NEW</span></button>
+      <button class="hp-tab special hidden" id="medmatchTab" data-tab="medmatch">その先へ（Medmatch）<span class="badge-next">NEXT</span></button>
     </nav>
   </div>
 </header>
@@ -303,6 +320,66 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </section>
 
+  <!-- ===== Medmatch tab (appears after unlock) ===== -->
+  <section id="tab-medmatch" class="hidden">
+
+    <div class="svc-header mm">
+      <span class="tag">DEMO ／ その先の構想</span>
+      <h2>MEDMATCH（メドマッチ）</h2>
+      <p>証明された研修キャリアを土台に、医師と医療機関の低コスト・高精度マッチングを実現するサービス。ブロックチェーン証明済みの経歴だから、書類のやり取りなしに「確かな情報」でつながれます。</p>
+    </div>
+
+    <!-- landing -->
+    <div id="mmLanding">
+      <h3 class="sec-title">ドクターバンク（医師会主導）とともに</h3>
+      <div class="bank-strip">
+        <div class="bk">🤝</div>
+        <div style="font-size:13px;line-height:1.8">
+          <b>第一段階は、ドクターバンクの「補助ツール」としての運用を想定しています。</b><br>
+          医師会が運営するドクターバンク（無料職業紹介）は、地域医療を支える大切な仕組みです。MEDMATCHはこれと競合するのではなく、<b>検証済みキャリア情報にもとづく候補のご提案・経歴確認の省力化</b>でドクターバンクの成約を後押しします。紹介・成約はドクターバンク経由のまま。MEDMATCHは裏方として、マッチング精度と事務負担の改善を担います。
+        </div>
+      </div>
+
+      <h3 class="sec-title">マッチングの流れ</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="num">1</div><h4>医師登録</h4><p>証明書ウォレットを連携。経歴は検証済みだから入力も審査も最小限</p></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step chainstep"><div class="num">🎯</div><h4>高精度マッチング</h4><p>検証済み経歴×希望条件で候補を抽出</p></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step"><div class="num">3</div><h4>ドクターバンク連携</h4><p>医師会の無料職業紹介を通じて紹介・調整</p></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step"><div class="num">4</div><h4>面談・成約</h4><p>低コストで確実な採用・就業へ</p></div>
+      </div>
+
+      <h3 class="sec-title">ログイン（デモ用・立場を選択）</h3>
+      <div class="guide">💡 <b>デモの見かた：</b>① 「医師」でログインし、気になる求人に紹介依頼 → ② 「医療機関」に切り替えると依頼が届いており、面談オファーを返せます → ③ 医師側に戻るとオファーが反映されています。</div>
+      <div class="login-grid">
+        <div class="login-col">
+          <h3>医師の方</h3>
+          <p>検証済みキャリアで、希望に合う職場を探す</p>
+          <button class="role-btn" onclick="mmLogin('doc')"><span class="ic">🧑‍⚕️</span><span><b>医師として登録・ログイン</b><small>証明書ウォレット連携／希望条件マッチング</small></span></button>
+        </div>
+        <div class="login-col">
+          <h3>医療機関の方</h3>
+          <p>検証済みの候補者情報で、確実な採用を</p>
+          <button class="role-btn" onclick="mmLogin('org')"><span class="ic">🏥</span><span><b>医療機関として登録・ログイン</b><small>求人掲載／候補者確認／面談オファー</small></span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- medmatch dashboard -->
+    <div id="mmDash" class="hidden">
+      <div class="dash-top">
+        <div class="dash-user"><div class="av" id="mmAv"></div><div><b id="mmName"></b><small id="mmRole"></small></div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="mmLogout()">← 選択に戻る</button>
+        </div>
+      </div>
+      <div id="mmBody"></div>
+    </div>
+
+  </section>
+
 </main>
 
 <footer class="hp-footer">© 2026 山岸産業医事務所 ｜ 本デモ画面はSBI-Uチャレンジ事業計画検討用の非公開資料です</footer>
@@ -330,7 +407,7 @@ document.querySelectorAll(".hp-tab").forEach(btn=>{
   btn.addEventListener("click",()=>{
     document.querySelectorAll(".hp-tab").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    ["home","services","about","contact","sbiu"].forEach(t=>{
+    ["home","services","about","contact","sbiu","medmatch"].forEach(t=>{
       document.getElementById("tab-"+t).classList.toggle("hidden", t!==btn.dataset.tab);
     });
     window.scrollTo({top:0});
@@ -345,6 +422,11 @@ function checkPw(){
     unlocked=true;
     document.getElementById("gate").classList.add("hidden");
     document.getElementById("portal").classList.remove("hidden");
+    const mt=document.getElementById("medmatchTab");
+    if(mt.classList.contains("hidden")){
+      mt.classList.remove("hidden");mt.classList.add("tab-appear");
+      setTimeout(()=>toast("🔓 新しいタブ「その先へ（Medmatch）」が開放されました"),600);
+    }
   }else{
     document.getElementById("pwErr").textContent="パスワードが違います";
   }
@@ -656,6 +738,124 @@ function approveBoardApp(){
     toast("⛓ 専門医認定証を発行しました。本人のウォレットに反映されます");
     render();openCertByHash(h);
   },1500);
+}
+
+/* ============================================================
+   MEDMATCH デモ（その先へ）
+   ============================================================ */
+const MM={
+  jobs:[
+    {id:1, org:"栃木県立○○病院",   title:"内科 医員（常勤・週4日勤務可）",     cond:"当直月2回まで／時短相談可／年収相場提示", match:94, bank:true,  status:"none"},
+    {id:2, org:"栃木県立○○病院",   title:"総合診療科（外来中心）",             cond:"土日休み／院内保育あり",                 match:88, bank:true,  status:"none"},
+    {id:3, org:"宇都宮△△クリニック", title:"内科（スポット・週1〜）",           cond:"外来のみ／曜日固定",                     match:86, bank:true,  status:"none"},
+    {id:4, org:"東京□□病院",       title:"循環器内科（当直なし）",             cond:"カテ経験者優遇",                         match:79, bank:false, status:"none"},
+  ],
+  candidates:[
+    {name:"Dr. A（匿名）", desc:"内科専門医・卒後8年／週4日希望",   match:91, verified:true},
+    {name:"Dr. B（匿名）", desc:"総合内科・卒後12年／時短希望",     match:84, verified:true},
+    {name:"Dr. C（匿名）", desc:"循環器・卒後6年／スポット希望",    match:78, verified:true},
+  ]
+};
+const MMROLES={
+  doc:{av:"🧑‍⚕️", name:"田中 太郎 先生", role:"医師会員｜内科専門医（ブロックチェーン証明 連携済 ✓）"},
+  org:{av:"🏥",   name:"栃木県立○○病院", role:"採用ご担当者様｜ドクターバンク登録医療機関"}
+};
+let mmCurrent=null;
+function mmLogin(r){mmCurrent=r;$("mmLanding").classList.add("hidden");$("mmDash").classList.remove("hidden");
+  $("mmAv").textContent=MMROLES[r].av;$("mmName").textContent=MMROLES[r].name;$("mmRole").textContent=MMROLES[r].role;
+  mmRender();window.scrollTo({top:0});}
+function mmLogout(){mmCurrent=null;$("mmDash").classList.add("hidden");$("mmLanding").classList.remove("hidden");}
+
+function mmStepper(stage){ // 1紹介依頼 2ドクターバンク受付 3面談調整 4成約
+  const steps=["紹介依頼","ドクターバンク受付","面談調整","成約"];
+  let h='<div class="stepper">';
+  steps.forEach((s,i)=>{const n=i+1;let cls=stage>n?"done":(stage===n?"now":"");
+    h+=`<span class="st ${cls}"><span class="dot"></span>${s}</span>`;
+    if(i<steps.length-1)h+='<span class="st-line"></span>';});
+  return h+"</div>";
+}
+
+function mmRender(){
+  if(!mmCurrent)return;
+  $("mmBody").innerHTML = mmCurrent==="doc"? mmViewDoc() : mmViewOrg();
+}
+
+/* ----- 医師ビュー ----- */
+function mmViewDoc(){
+  const active=MM.jobs.filter(j=>j.status!=="none").length;
+  const rows=MM.jobs.map(j=>{
+    const mcls=j.match>=90?"match-hi":"match-mid";
+    let pill,act="",stage=0;
+    if(j.status==="none"){pill=j.bank?'<span class="pill pill-bank">🤝 ドクターバンク連携求人</span>':'<span class="pill pill-blue">MEDMATCH直接</span>';
+      act=`<button class="btn btn-sm btn-primary" onclick="mmRequest(${j.id})">${j.bank?"ドクターバンク経由で紹介を依頼":"詳細を問い合わせる"}</button>`;}
+    else if(j.status==="requested"){pill='<span class="pill pill-amber">ドクターバンク受付中</span>';stage=2;}
+    else {pill='<span class="pill pill-green">📩 面談オファーあり</span>';stage=3;
+      act=`<button class="btn btn-sm btn-approve" onclick="toast('（デモ）日程調整画面が開く想定です')">面談日程を調整する</button>`;}
+    return `<div class="item"><div class="item-head" style="align-items:center">
+      <div style="display:flex;gap:12px;align-items:center"><span class="match-badge ${mcls}">${j.match}%</span>
+      <div><b>${j.title}</b><small>${j.org} ｜ ${j.cond}</small></div></div>
+      <div class="item-actions">${pill}${act}</div></div>
+      ${j.status!=="none"?mmStepper(stage):""}</div>`;
+  }).join("");
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v chaincol">8通</div><div class="l">連携済みブロックチェーン証明書</div></div>
+    <div class="kpi"><div class="v">${MM.jobs.length}</div><div class="l">マッチ度80%前後以上の求人</div></div>
+    <div class="kpi"><div class="v">${active}</div><div class="l">進行中の紹介・オファー</div></div>
+  </div>
+  <div class="card"><h3>👤 マイプロフィール（入力ほぼ不要）</h3>
+    <p style="font-size:13px;color:var(--sub)">SBI-Uチャレンジの証明書ウォレットと連携済みのため、<b style="color:var(--chain)">経歴・専門医資格は検証済み ✓</b> として扱われます。履歴書・証明書類の提出は不要です。</p>
+    <div style="margin-top:10px;font-size:12.5px">希望条件：<span class="pill pill-blue">勤務地 栃木県・東京都</span> <span class="pill pill-blue">週4日・時短相談</span> <span class="pill pill-blue">外来中心</span> <button class="btn btn-sm btn-ghost" onclick="toast('（デモ）希望条件の編集画面が開く想定です')">編集</button></div></div>
+  <div class="card"><h3>🎯 あなたへのマッチング求人</h3>${rows}
+    <p style="font-size:11.5px;color:var(--sub);margin-top:6px">🤝マークの求人は医師会ドクターバンクの取扱い案件です。紹介・成約はドクターバンク（無料職業紹介）を通じて行われ、MEDMATCHは候補抽出と経歴証明の連携でこれを補助します。</p></div>`;
+}
+
+/* ----- 医療機関ビュー ----- */
+function mmViewOrg(){
+  const reqs=MM.jobs.filter(j=>j.org==="栃木県立○○病院"&&j.status!=="none");
+  const reqRows=reqs.length?reqs.map(j=>{
+    let act="",stage=2,pill='<span class="pill pill-amber">紹介依頼 受信</span>';
+    if(j.status==="requested"){act=`<button class="btn btn-sm btn-approve" onclick="mmOffer(${j.id})">📩 面談オファーを送る</button>`;}
+    else {pill='<span class="pill pill-green">オファー送信済</span>';stage=3;}
+    return `<div class="item"><div class="item-head"><div><b>Dr. T（匿名）→「${j.title}」への紹介依頼</b>
+      <small>ドクターバンク経由 ｜ 内科専門医 <span class="verify-badge">✓ ブロックチェーン証明で経歴検証済（書類確認不要）</span></small></div>
+      <div class="item-actions">${pill}${act}</div></div>${mmStepper(stage)}</div>`;
+  }).join("")
+  :`<p style="font-size:13px;color:var(--sub)">現在、新しい紹介依頼はありません。（医師ロールで紹介依頼をすると、ここに届きます）</p>`;
+  const candRows=MM.candidates.map(c=>{
+    const mcls=c.match>=90?"match-hi":"match-mid";
+    return `<div class="item"><div class="item-head" style="align-items:center">
+      <div style="display:flex;gap:12px;align-items:center"><span class="match-badge ${mcls}">${c.match}%</span>
+      <div><b>${c.name}</b><small>${c.desc} ｜ <span class="verify-badge">✓ 経歴検証済</span></small></div></div>
+      <div class="item-actions"><button class="btn btn-sm btn-primary" onclick="toast('（デモ）ドクターバンクへの紹介打診が送られる想定です')">ドクターバンク経由で打診</button></div></div></div>`;
+  }).join("");
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">2件</div><div class="l">公開中の求人</div></div>
+    <div class="kpi"><div class="v">${MM.candidates.length}名</div><div class="l">マッチ候補（匿名表示）</div></div>
+    <div class="kpi"><div class="v">${reqs.length}</div><div class="l">紹介依頼・進行中</div></div>
+  </div>
+  <div class="card"><h3>📥 ドクターバンク経由の紹介依頼</h3>${reqRows}</div>
+  <div class="card"><h3>🔎 マッチ候補の医師（匿名）</h3>${candRows}
+    <p style="font-size:11.5px;color:var(--sub);margin-top:6px">候補者の経歴はブロックチェーン証明で検証済み。従来必要だった経歴照会・証明書類の突合が不要になり、採用リードタイムを短縮できます。</p></div>
+  <div class="card"><h3>💰 採用コストの比較（イメージ）</h3>
+    <div class="cost-bars">
+      <div class="row"><span class="lbl">民間紹介会社（相場 約20〜22%）</span><div class="bar" style="width:220px;background:#e5a0a0"></div><span>年収の約2割</span></div>
+      <div class="row"><span class="lbl">ドクターバンク＋MEDMATCH補助</span><div class="bar" style="width:30px;background:var(--teal)"></div><span>紹介無料＋低額システム利用料</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--sub)">医師会の無料職業紹介を活かしながら、MEDMATCHがマッチング精度と事務効率を補完する運用イメージです。</p></div>`;
+}
+
+/* ----- actions ----- */
+function mmRequest(id){
+  const j=MM.jobs.find(x=>x.id===id);j.status="requested";
+  toast(j.bank?"🤝 ドクターバンク経由で紹介依頼を送りました（受付中）":"📤 問い合わせを送信しました");
+  mmRender();
+}
+function mmOffer(id){
+  const j=MM.jobs.find(x=>x.id===id);j.status="offer";
+  toast("📩 面談オファーを送信しました。医師側の画面に反映されます");
+  mmRender();
 }
 </script>
 </body>
