@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>山岸産業医事務所</title>
+<style>
+:root{
+  --navy:#1a3a5c; --blue:#2563a8; --teal:#0e8a7d; --teal-l:#e6f5f3;
+  --gold:#c9a227; --bg:#f5f7fa; --card:#ffffff; --line:#dde4ec;
+  --txt:#243342; --sub:#64748b; --green:#15803d; --green-l:#e9f7ee;
+  --amber:#b45309; --amber-l:#fdf3e3; --red:#b91c1c; --red-l:#fdecec;
+  --chain:#4f46e5; --chain-l:#eef2ff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;background:var(--bg);color:var(--txt);line-height:1.65}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+
+/* ===== HP shell ===== */
+.hp-header{background:var(--card);border-bottom:1px solid var(--line)}
+.hp-header-inner{max-width:1080px;margin:0 auto;padding:18px 20px 0}
+.hp-brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.hp-brand h1{font-size:24px;color:var(--navy);letter-spacing:.06em}
+.hp-brand span{font-size:12px;color:var(--sub)}
+.hp-nav{display:flex;gap:4px;margin-top:14px;flex-wrap:wrap}
+.hp-tab{border:none;background:none;padding:10px 18px;font-size:14px;color:var(--sub);border-bottom:3px solid transparent}
+.hp-tab:hover{color:var(--navy)}
+.hp-tab.active{color:var(--navy);font-weight:700;border-bottom-color:var(--teal)}
+.hp-tab.special{color:var(--teal);font-weight:700}
+.badge-new{display:inline-block;background:var(--gold);color:#fff;font-size:10px;border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.hp-main{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+.hp-hero{background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;border-radius:14px;padding:44px 36px;margin-bottom:28px}
+.hp-hero h2{font-size:26px;margin-bottom:10px;letter-spacing:.04em}
+.hp-hero p{opacity:.92;font-size:14px;max-width:640px}
+.hp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.hp-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.hp-card h3{font-size:15px;color:var(--navy);margin-bottom:8px}
+.hp-card p{font-size:13px;color:var(--sub)}
+.hp-note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;font-size:14px;color:var(--sub)}
+.hp-footer{text-align:center;font-size:12px;color:var(--sub);padding:24px;border-top:1px solid var(--line)}
+
+/* ===== password gate ===== */
+.gate-wrap{max-width:440px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:40px 36px;text-align:center}
+.gate-wrap .lock{font-size:36px}
+.gate-wrap h2{font-size:18px;color:var(--navy);margin:12px 0 6px}
+.gate-wrap p{font-size:13px;color:var(--sub);margin-bottom:20px}
+.gate-wrap input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:15px;text-align:center;letter-spacing:.2em}
+.gate-wrap input:focus{outline:2px solid var(--teal)}
+.gate-err{color:var(--red);font-size:12px;min-height:18px;margin-top:8px}
+.btn{display:inline-block;border:none;border-radius:8px;padding:11px 26px;font-size:14px;font-weight:700}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:#0b7266}
+.btn-primary:disabled{background:#a7c9c4;cursor:not-allowed}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--sub)}
+.btn-sm{padding:7px 16px;font-size:12.5px;border-radius:7px}
+.btn-approve{background:var(--green);color:#fff}
+.btn-approve:hover{background:#116a33}
+.btn-back{background:var(--amber-l);color:var(--amber);border:1px solid #ecd9b0}
+.btn-chain{background:var(--chain);color:#fff}
+.btn-chain:hover{background:#4238ca}
+
+/* ===== demo portal ===== */
+.demo-band{background:var(--gold);color:#fff;font-size:12px;text-align:center;padding:6px;letter-spacing:.08em}
+.svc-header{background:linear-gradient(120deg,#0d2b45,var(--teal));color:#fff;border-radius:14px;padding:34px 32px;margin-bottom:26px;position:relative;overflow:hidden}
+.svc-header::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border:34px solid rgba(255,255,255,.07);border-radius:50%}
+.svc-header .tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);font-size:11px;border-radius:20px;padding:3px 12px;margin-bottom:10px;letter-spacing:.1em}
+.svc-header h2{font-size:24px;letter-spacing:.04em;margin-bottom:8px}
+.svc-header p{font-size:13.5px;opacity:.93;max-width:660px}
+.sec-title{font-size:16px;color:var(--navy);margin:30px 0 14px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:"";width:5px;height:20px;background:var(--teal);border-radius:3px}
+
+/* flow diagram */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 18px}
+.flow-step{flex:1;min-width:130px;text-align:center;position:relative;padding:0 8px}
+.flow-step .num{width:34px;height:34px;border-radius:50%;background:var(--teal-l);color:var(--teal);font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:14px}
+.flow-step.chainstep .num{background:var(--chain-l);color:var(--chain)}
+.flow-step h4{font-size:13.5px;color:var(--navy);margin-bottom:4px}
+.flow-step p{font-size:11.5px;color:var(--sub)}
+.flow-arrow{display:flex;align-items:center;color:#b6c2d0;font-size:20px;padding:0 2px}
+
+/* login cards */
+.login-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.login-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.login-col>h3{font-size:14px;color:var(--navy);margin-bottom:4px}
+.login-col>p{font-size:12px;color:var(--sub);margin-bottom:14px}
+.role-btn{display:flex;align-items:center;gap:12px;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px;text-align:left;transition:.15s}
+.role-btn:hover{border-color:var(--teal);background:var(--teal-l)}
+.role-btn .ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border:1px solid var(--line);flex-shrink:0}
+.role-btn b{font-size:13.5px;color:var(--navy);display:block}
+.role-btn small{font-size:11px;color:var(--sub)}
+@media(max-width:760px){.login-grid{grid-template-columns:1fr}}
+
+/* dashboard */
+.dash-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.dash-user{display:flex;align-items:center;gap:12px}
+.dash-user .av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--teal-l)}
+.dash-user b{font-size:15px;color:var(--navy)}
+.dash-user small{display:block;font-size:11.5px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h3{font-size:14.5px;color:var(--navy);margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi .v{font-size:22px;font-weight:700;color:var(--teal)}
+.kpi .v.chaincol{color:var(--chain)}
+.kpi .l{font-size:11.5px;color:var(--sub)}
+.item{border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:10px;background:#fcfdfe}
+.item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.item-head b{font-size:13.5px;color:var(--navy)}
+.item-head small{display:block;font-size:11.5px;color:var(--sub);margin-top:2px}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:3px 11px;white-space:nowrap}
+.pill-green{background:var(--green-l);color:var(--green)}
+.pill-amber{background:var(--amber-l);color:var(--amber)}
+.pill-gray{background:#eef1f5;color:var(--sub)}
+.pill-blue{background:#e3edf8;color:var(--blue)}
+.pill-chain{background:var(--chain-l);color:var(--chain)}
+.pill-red{background:var(--red-l);color:var(--red)}
+
+/* mini stepper */
+.stepper{display:flex;align-items:center;gap:4px;margin-top:10px;flex-wrap:wrap}
+.st{display:flex;align-items:center;gap:4px;font-size:10.5px;color:#9aa7b5}
+.st .dot{width:9px;height:9px;border-radius:50%;background:#d5dde6}
+.st.done{color:var(--green)}
+.st.done .dot{background:var(--green)}
+.st.now{color:var(--amber);font-weight:700}
+.st.now .dot{background:var(--amber);box-shadow:0 0 0 3px var(--amber-l)}
+.st-line{width:16px;height:2px;background:#e2e8f0}
+
+/* progress bar */
+.pbar{height:9px;background:#e9eef4;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.pbar>div{height:100%;background:linear-gradient(90deg,var(--teal),#26b3a3);border-radius:6px;transition:width .6s}
+.pbar-label{font-size:11px;color:var(--sub)}
+
+/* cert */
+.cert-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #dcd9f5;background:linear-gradient(120deg,#fbfbff,#f3f2fd);border-radius:10px;padding:12px 15px;margin-bottom:10px;flex-wrap:wrap}
+.cert-row b{font-size:13px;color:var(--navy)}
+.cert-row .hash{font-family:Consolas,monospace;font-size:10.5px;color:var(--chain)}
+.verify-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--green)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(15,30,50,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:#fff;border-radius:14px;max-width:480px;width:100%;padding:30px;position:relative;max-height:90vh;overflow:auto}
+.modal .close{position:absolute;top:12px;right:16px;border:none;background:none;font-size:22px;color:var(--sub)}
+.cert-doc{border:2px solid var(--chain);border-radius:12px;padding:24px;text-align:center;background:linear-gradient(160deg,#fdfdff,#f5f4ff)}
+.cert-doc .emblem{font-size:34px}
+.cert-doc h3{color:var(--navy);font-size:16px;margin:8px 0 2px}
+.cert-doc .to{font-size:14px;margin:10px 0;font-weight:700}
+.cert-doc table{width:100%;font-size:11.5px;margin:14px 0;border-collapse:collapse}
+.cert-doc td{padding:5px 6px;border-bottom:1px dashed #d8d5f0;text-align:left}
+.cert-doc td:first-child{color:var(--sub);white-space:nowrap;width:88px}
+.cert-doc .hashfull{font-family:Consolas,monospace;font-size:10px;word-break:break-all;color:var(--chain)}
+.qr{width:74px;height:74px;margin:8px auto;background:
+ repeating-linear-gradient(0deg,#1a1a2e 0 6px,transparent 6px 12px),
+ repeating-linear-gradient(90deg,#1a1a2e 0 6px,transparent 6px 12px);
+ border:6px solid #fff;outline:2px solid #1a1a2e;opacity:.85}
+.chain-note{font-size:10.5px;color:var(--sub);margin-top:8px}
+
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;font-size:13px;padding:12px 22px;border-radius:30px;opacity:0;transition:.3s;z-index:60;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* guide bar */
+.guide{background:#fff8e6;border:1px solid #eeddad;border-radius:10px;padding:12px 16px;font-size:12.5px;color:#7a5a12;margin-bottom:18px}
+.guide b{color:#5c440c}
+
+/* chain animation */
+@keyframes mine{0%{opacity:.2}50%{opacity:1}100%{opacity:.2}}
+.mining{animation:mine 1s infinite;color:var(--chain);font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="demo-band">⚠ 本ページはデモ・関係者限定資料です（一般公開前・構想段階のイメージ画面）</div>
+
+<!-- ===== HP header ===== -->
+<header class="hp-header">
+  <div class="hp-header-inner">
+    <div class="hp-brand">
+      <h1>山岸産業医事務所</h1>
+      <span>Yamagishi Occupational Physician Office</span>
+    </div>
+    <nav class="hp-nav" id="hpNav">
+      <button class="hp-tab active" data-tab="home">ホーム</button>
+      <button class="hp-tab" data-tab="services">産業医業務</button>
+      <button class="hp-tab" data-tab="about">事務所概要</button>
+      <button class="hp-tab" data-tab="contact">お問い合わせ</button>
+      <button class="hp-tab special" data-tab="sbiu">SBI-Uチャレンジ（仮）<span class="badge-new">NEW</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="hp-main">
+
+  <!-- ===== HOME ===== -->
+  <section id="tab-home">
+    <div class="hp-hero">
+      <h2>働く人と医師のキャリアに、伴走する。</h2>
+      <p>山岸産業医事務所は、企業の健康経営支援（産業医業務）に加え、医師のキャリア継続を支える新しい仕組みづくりに取り組んでいます。</p>
+    </div>
+    <div class="hp-cards">
+      <div class="hp-card"><h3>🏢 嘱託産業医</h3><p>職場巡視、衛生委員会、面接指導、休復職支援など、企業の産業保健活動を支援します。</p></div>
+      <div class="hp-card"><h3>🩺 健康経営支援</h3><p>ストレスチェック、長時間労働対策、両立支援などの体制構築をサポートします。</p></div>
+      <div class="hp-card"><h3>🚀 新規事業（構想中）</h3><p>医師の研修履歴・キャリア証明のデジタル基盤づくり。詳細は「SBI-Uチャレンジ（仮）」タブへ。</p></div>
+    </div>
+  </section>
+
+  <!-- ===== placeholder tabs ===== -->
+  <section id="tab-services" class="hidden">
+    <div class="hp-note"><h3 style="color:var(--navy);margin-bottom:8px">産業医業務</h3>嘱託産業医契約・スポット面談・衛生講話など。※本デモではダミーページです。</div>
+  </section>
+  <section id="tab-about" class="hidden">
+    <div class="hp-note"><h3 style="color:var(--navy);margin-bottom:8px">事務所概要</h3>代表：山岸 佑也（産業医／MBA）。※本デモではダミーページです。</div>
+  </section>
+  <section id="tab-contact" class="hidden">
+    <div class="hp-note"><h3 style="color:var(--navy);margin-bottom:8px">お問い合わせ</h3>メールにてご連絡ください。※本デモではダミーページです。</div>
+  </section>
+
+  <!-- ===== SBI-U tab : password gate ===== -->
+  <section id="tab-sbiu" class="hidden">
+    <div id="gate">
+      <div class="gate-wrap">
+        <div class="lock">🔒</div>
+        <h2>関係者限定ページ</h2>
+        <p>このページは事業構想の検討用デモです。<br>閲覧用パスワードを入力してください。</p>
+        <input type="password" id="pw" placeholder="パスワード" onkeydown="if(event.key==='Enter')checkPw()">
+        <div class="gate-err" id="pwErr"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="checkPw()">開く</button>
+      </div>
+    </div>
+
+    <!-- ===== demo portal ===== -->
+    <div id="portal" class="hidden">
+
+      <div class="svc-header">
+        <span class="tag">DEMO ／ 構想イメージ</span>
+        <h2>研修キャリア証明サービス（仮称）</h2>
+        <p>医師の研修履歴を、本人申請と指導医承認にもとづきブロックチェーン上に改ざん不可能な証明として記録。異動・中断・復帰をまたいでも、キャリアの積み上げが消えない基盤をつくります。</p>
+      </div>
+
+      <!-- landing -->
+      <div id="landing">
+        <h3 class="sec-title">証明が生まれるまでの流れ</h3>
+        <div class="flow">
+          <div class="flow-step"><div class="num">1</div><h4>本人申請</h4><p>研修医がレポート提出・ローテート修了を申請</p></div>
+          <div class="flow-arrow">›</div>
+          <div class="flow-step"><div class="num">2</div><h4>指導医チェック</h4><p>添削指導医・各科責任者が内容を確認</p></div>
+          <div class="flow-arrow">›</div>
+          <div class="flow-step"><div class="num">3</div><h4>承認</h4><p>責任者が修了を承認・電子署名</p></div>
+          <div class="flow-arrow">›</div>
+          <div class="flow-step chainstep"><div class="num">⛓</div><h4>ブロックチェーン記録</h4><p>改ざん不可能な証明書を発行</p></div>
+          <div class="flow-arrow">›</div>
+          <div class="flow-step"><div class="num">5</div><h4>反映・活用</h4><p>進捗に反映。専門医申請・異動先へ提示可能</p></div>
+        </div>
+
+        <h3 class="sec-title">事業構想資料</h3>
+        <div class="card" style="margin-bottom:0">
+          <div class="item-head">
+            <div><b>専門研修キャリア継続支援 インフォグラフィック（PDF）</b>
+            <small>本構想の背景・課題・仕組みをまとめた1枚資料です。</small></div>
+            <div class="item-actions">
+              <button class="btn btn-sm btn-primary" id="pdfToggleBtn" onclick="togglePdf()">資料を読む</button>
+              <a class="btn btn-sm btn-ghost" href="specialist_training_continuity_infographic_revised.pdf" target="_blank" style="text-decoration:none">別タブで開く</a>
+            </div>
+          </div>
+          <div id="pdfViewer" class="hidden" style="margin-top:14px">
+            <iframe src="specialist_training_continuity_infographic_revised.pdf" style="width:100%;height:75vh;border:1px solid var(--line);border-radius:10px;background:#fff" title="事業構想資料PDF"></iframe>
+            <p style="font-size:11.5px;color:var(--sub);margin-top:6px">表示されない場合は「別タブで開く」をご利用ください（PDFファイルを本HTMLと同じフォルダに置いてください）。</p>
+          </div>
+        </div>
+
+        <h3 class="sec-title">ログイン（デモ用・役割を選択）</h3>
+        <div class="guide">💡 <b>デモの見かた：</b>① まず「初期研修医」でログインし、循環器内科の修了申請とレポート提出 → ② 「添削指導医」「ローテート責任者」で承認 → ③ 再び「初期研修医」に戻ると証明書が反映されています。</div>
+        <div class="login-grid">
+          <div class="login-col">
+            <h3>研修医の方</h3>
+            <p>自分の研修履歴の申請・進捗確認・証明書の保管</p>
+            <button class="role-btn" onclick="login('jr')"><span class="ic">🧑‍⚕️</span><span><b>初期研修医としてログイン</b><small>卒後1〜2年次／必修ローテートの記録</small></span></button>
+            <button class="role-btn" onclick="login('sr')"><span class="ic">👩‍⚕️</span><span><b>後期研修医（専攻医）としてログイン</b><small>専門研修プログラム／症例登録・専門医申請</small></span></button>
+          </div>
+          <div class="login-col">
+            <h3>指導医・責任者の方</h3>
+            <p>申請内容の確認・承認・証明書発行</p>
+            <button class="role-btn" onclick="login('tutor')"><span class="ic">✍️</span><span><b>指導医（レポート添削）としてログイン</b><small>症例レポートの添削・承認</small></span></button>
+            <button class="role-btn" onclick="login('chief')"><span class="ic">🏥</span><span><b>各科ローテート責任者としてログイン</b><small>ローテート修了の証明・証明書発行</small></span></button>
+            <button class="role-btn" onclick="login('board')"><span class="ic">🏛️</span><span><b>専門医機構 認証責任者としてログイン</b><small>専門医認定の最終認証</small></span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- dashboards injected here -->
+      <div id="dash" class="hidden">
+        <div class="dash-top">
+          <div class="dash-user"><div class="av" id="dashAv"></div><div><b id="dashName"></b><small id="dashRole"></small></div></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="logout()">← ロール選択に戻る</button>
+          </div>
+        </div>
+        <div id="dashBody"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="hp-footer">© 2026 山岸産業医事務所 ｜ 本デモ画面はSBI-Uチャレンジ事業計画検討用の非公開資料です</footer>
+
+<!-- cert modal -->
+<div class="modal-bg hidden" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   研修キャリア証明サービス（仮称）デモ
+   ※プレゼン用モック。データはすべてブラウザ内のダミーです。
+   ============================================================ */
+
+const PASSWORD = "sbiu2026"; // デモ用（公開時は必ずサーバ側認証に置換）
+
+/* ---------- HP tabs ---------- */
+document.querySelectorAll(".hp-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".hp-tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    ["home","services","about","contact","sbiu"].forEach(t=>{
+      document.getElementById("tab-"+t).classList.toggle("hidden", t!==btn.dataset.tab);
+    });
+    window.scrollTo({top:0});
+  });
+});
+
+/* ---------- password gate ---------- */
+let unlocked=false;
+function checkPw(){
+  const v=document.getElementById("pw").value;
+  if(v===PASSWORD){
+    unlocked=true;
+    document.getElementById("gate").classList.add("hidden");
+    document.getElementById("portal").classList.remove("hidden");
+  }else{
+    document.getElementById("pwErr").textContent="パスワードが違います";
+  }
+}
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),3200);}
+function hash(){let s="0x";const c="0123456789abcdef";for(let i=0;i<40;i++)s+=c[Math.floor(Math.random()*16)];return s;}
+function short(h){return h? h.slice(0,10)+"…"+h.slice(-6):"";}
+function today(){return new Date().toLocaleDateString("ja-JP");}
+
+/* ---------- shared demo state ---------- */
+const S={
+  rotations:[
+    {id:"naika",  name:"内科",       weeks:24, status:"certified", hash:hash(), date:"2025/9/26"},
+    {id:"er",     name:"救急科",     weeks:12, status:"certified", hash:hash(), date:"2025/12/19"},
+    {id:"masui",  name:"麻酔科",     weeks:4,  status:"certified", hash:hash(), date:"2026/1/23"},
+    {id:"junkan", name:"循環器内科", weeks:8,  status:"awaiting_apply"},
+    {id:"shoni",  name:"小児科",     weeks:8,  status:"in_training"},
+    {id:"sanfu",  name:"産婦人科",   weeks:4,  status:"not_started"},
+    {id:"chiiki", name:"地域医療",   weeks:4,  status:"not_started"},
+  ],
+  reports:[
+    {id:1, title:"症例レポート：急性心筋梗塞（PCI施行例）", dept:"循環器内科", status:"approved", comment:"考察が的確です。承認します。"},
+    {id:2, title:"症例レポート：市中肺炎（高齢者）",        dept:"内科",       status:"submitted"},
+    {id:3, title:"CPCレポート：剖検症例",                  dept:"病理",       status:"draft"},
+  ],
+  sr:{
+    cases:142, required:160,
+    rotationsDone:5, rotationsTotal:6,
+    reportsDone:27, reportsRequired:29,
+    boardStatus:"ready"   // ready → applied → certified
+  },
+  certs:[]  // {title,holder,issuer,date,hash,type}
+};
+// 既発行の証明書を初期登録
+S.rotations.filter(r=>r.status==="certified").forEach(r=>{
+  S.certs.push({title:`初期研修 ${r.name}ローテート修了証明`, holder:"佐藤 花", issuer:`○○大学附属病院 ${r.name} 研修責任者`, date:r.date, hash:r.hash, type:"rotation"});
+});
+S.certs.push({title:"医師免許 取得証明（連携済）", holder:"佐藤 花", issuer:"厚生労働省（連携イメージ）", date:"2024/4/1", hash:hash(), type:"license"});
+
+/* ---------- roles ---------- */
+const ROLES={
+  jr:   {av:"🧑‍⚕️", name:"佐藤 花 先生",   role:"初期研修医（卒後2年次）｜○○大学附属病院 卒後臨床研修センター"},
+  sr:   {av:"👩‍⚕️", name:"田中 太郎 先生", role:"後期研修医／内科専門研修プログラム 3年次（J-OSLER登録中）"},
+  tutor:{av:"✍️",   name:"鈴木 一郎 先生", role:"指導医（レポート添削担当）｜内科"},
+  chief:{av:"🏥",   name:"高橋 誠 先生",   role:"循環器内科 ローテート責任者（研修修了認定者）"},
+  board:{av:"🏛️",  name:"渡辺 恵 先生",   role:"日本専門医機構（イメージ）内科領域 認証責任者"}
+};
+let current=null;
+
+function login(r){current=r;$("landing").classList.add("hidden");$("dash").classList.remove("hidden");
+  $("dashAv").textContent=ROLES[r].av;$("dashName").textContent=ROLES[r].name;$("dashRole").textContent=ROLES[r].role;
+  render();window.scrollTo({top:0});}
+function logout(){current=null;$("dash").classList.add("hidden");$("landing").classList.remove("hidden");}
+
+/* ---------- stepper ---------- */
+function stepper(stage){ // stage: 0申請前 1申請済 2確認中 3承認済 4チェーン記録 5反映
+  const steps=["本人申請","指導医確認","承認","チェーン記録","反映"];
+  let h='<div class="stepper">';
+  steps.forEach((s,i)=>{
+    const n=i+1;
+    let cls= stage>n ? "done" : (stage===n ? "now" : "");
+    if(stage>=5&&n===5)cls="done";
+    h+=`<span class="st ${cls}"><span class="dot"></span>${s}</span>`;
+    if(i<steps.length-1)h+='<span class="st-line"></span>';
+  });
+  return h+"</div>";
+}
+
+/* ---------- render ---------- */
+function render(){
+  if(!current)return;
+  const b=$("dashBody");
+  if(current==="jr")b.innerHTML=viewJr();
+  if(current==="sr")b.innerHTML=viewSr();
+  if(current==="tutor")b.innerHTML=viewTutor();
+  if(current==="chief")b.innerHTML=viewChief();
+  if(current==="board")b.innerHTML=viewBoard();
+}
+
+/* ===== 初期研修医 ===== */
+function viewJr(){
+  const done=S.rotations.filter(r=>r.status==="certified").length;
+  const pct=Math.round(done/S.rotations.length*100);
+  const rotRows=S.rotations.map(r=>{
+    let pill,act="",stage=0;
+    if(r.status==="certified"){pill='<span class="pill pill-chain">⛓ 証明済</span>';stage=5;
+      act=`<button class="btn btn-sm btn-ghost" onclick="openCertByHash('${r.hash}')">証明書を見る</button>`;}
+    else if(r.status==="applied"){pill='<span class="pill pill-amber">責任者 承認待ち</span>';stage=2;}
+    else if(r.status==="awaiting_apply"){pill='<span class="pill pill-blue">研修修了・申請可</span>';
+      act=`<button class="btn btn-sm btn-primary" onclick="applyRotation('${r.id}')">修了証明を申請する</button>`;}
+    else if(r.status==="in_training"){pill='<span class="pill pill-green">研修中</span>';}
+    else pill='<span class="pill pill-gray">未開始</span>';
+    return `<div class="item"><div class="item-head"><div><b>${r.name}（${r.weeks}週）</b>
+      ${r.date?`<small>証明日：${r.date}</small>`:""}</div>
+      <div class="item-actions">${pill}${act}</div></div>
+      ${(r.status==="applied"||r.status==="certified")?stepper(stage):""}</div>`;
+  }).join("");
+
+  const repRows=S.reports.map(rp=>{
+    let pill,act="",stage=0;
+    if(rp.status==="approved"){pill='<span class="pill pill-green">✓ 承認済</span>';stage=5;}
+    else if(rp.status==="submitted"){pill='<span class="pill pill-amber">指導医 添削中</span>';stage=2;}
+    else if(rp.status==="returned"){pill='<span class="pill pill-red">差戻し</span>';stage=1;
+      act=`<button class="btn btn-sm btn-primary" onclick="submitReport(${rp.id})">修正して再提出</button>`;}
+    else {pill='<span class="pill pill-gray">下書き</span>';
+      act=`<button class="btn btn-sm btn-primary" onclick="submitReport(${rp.id})">提出する</button>`;}
+    return `<div class="item"><div class="item-head"><div><b>${rp.title}</b><small>${rp.dept}${rp.comment?` ｜ 指導医コメント：「${rp.comment}」`:""}</small></div>
+      <div class="item-actions">${pill}${act}</div></div>${rp.status!=="draft"?stepper(stage):""}</div>`;
+  }).join("");
+
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">${done} / ${S.rotations.length}</div><div class="l">修了証明済みローテート</div></div>
+    <div class="kpi"><div class="v">${S.reports.filter(r=>r.status==="approved").length} / ${S.reports.length}</div><div class="l">承認済レポート</div></div>
+    <div class="kpi"><div class="v chaincol">${S.certs.length}</div><div class="l">保有ブロックチェーン証明書</div></div>
+  </div>
+  <div class="card"><h3>📋 初期研修 進捗（必修ローテート）</h3>
+    <div class="pbar"><div style="width:${pct}%"></div></div>
+    <div class="pbar-label">修了率 ${pct}%（証明書ベース・改ざん不可の実績として蓄積）</div>
+    <div style="margin-top:14px">${rotRows}</div></div>
+  <div class="card"><h3>📝 症例レポート</h3>${repRows}</div>
+  ${certList("佐藤 花")}`;
+}
+
+/* ===== 後期研修医（専攻医） ===== */
+function viewSr(){
+  const s=S.sr;
+  const casePct=Math.min(100,Math.round(s.cases/s.required*100));
+  let boardPill,boardAct="",stage=0,boardNote="";
+  if(s.boardStatus==="ready"){boardPill='<span class="pill pill-blue">申請要件 確認中</span>';
+    boardAct=`<button class="btn btn-sm btn-primary" onclick="applyBoard()">専門医認定を申請する</button>`;
+    boardNote="研修実績はすべてブロックチェーン証明として揃っています。ワンクリックで機構へ提出できます。";}
+  else if(s.boardStatus==="applied"){boardPill='<span class="pill pill-amber">機構 認証審査中</span>';stage=2;
+    boardNote="専門医機構の認証責任者による確認待ちです。";}
+  else {boardPill='<span class="pill pill-chain">⛓ 内科専門医 認定済</span>';stage=5;
+    const c=S.certs.find(c=>c.type==="board");
+    boardAct=c?`<button class="btn btn-sm btn-ghost" onclick="openCertByHash('${c.hash}')">認定証明書を見る</button>`:"";
+    boardNote="認定証明はブロックチェーン上に記録され、勤務先変更後もそのまま提示できます。";}
+
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">${s.cases} / ${s.required}</div><div class="l">登録症例数（J-OSLER連携イメージ）</div></div>
+    <div class="kpi"><div class="v">${s.rotationsDone} / ${s.rotationsTotal}</div><div class="l">連携施設ローテート修了</div></div>
+    <div class="kpi"><div class="v">${s.reportsDone} / ${s.reportsRequired}</div><div class="l">病歴要約 承認済</div></div>
+    <div class="kpi"><div class="v chaincol">${S.certs.filter(c=>c.holder==="田中 太郎").length}</div><div class="l">保有ブロックチェーン証明書</div></div>
+  </div>
+  <div class="card"><h3>📊 内科専門研修 進捗</h3>
+    <div class="pbar"><div style="width:${casePct}%"></div></div>
+    <div class="pbar-label">症例充足率 ${casePct}%</div>
+    <div style="margin-top:12px"><button class="btn btn-sm btn-primary" onclick="addCase()">＋ 症例を登録する（デモ）</button></div>
+    <p style="font-size:12px;color:var(--sub);margin-top:10px">💡 育児・介護等で研修を中断しても、承認済みの実績は証明書として保全され、復帰後にそのまま積み上げを再開できます（カリキュラム制の活用イメージ）。</p></div>
+  <div class="card"><h3>🎓 専門医認定申請</h3>
+    <div class="item"><div class="item-head"><div><b>内科専門医 認定申請</b><small>日本専門医機構（イメージ）内科領域</small></div>
+    <div class="item-actions">${boardPill}${boardAct}</div></div>
+    ${s.boardStatus!=="ready"?stepper(stage):""}
+    <p style="font-size:12px;color:var(--sub);margin-top:8px">${boardNote}</p></div></div>
+  ${certList("田中 太郎")}`;
+}
+
+/* ===== 指導医（添削） ===== */
+function viewTutor(){
+  const queue=S.reports.filter(r=>r.status==="submitted");
+  const rows=queue.length?queue.map(rp=>`
+    <div class="item"><div class="item-head"><div><b>${rp.title}</b><small>提出者：佐藤 花（初期研修医2年次）｜ ${rp.dept}</small></div>
+    <div class="item-actions">
+      <button class="btn btn-sm btn-approve" onclick="approveReport(${rp.id})">✓ 添削済・承認</button>
+      <button class="btn btn-sm btn-back" onclick="returnReport(${rp.id})">差戻し</button>
+    </div></div>${stepper(2)}</div>`).join("")
+    :`<p style="font-size:13px;color:var(--sub)">現在、添削待ちのレポートはありません。（初期研修医ロールでレポートを提出すると、ここに表示されます）</p>`;
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">${queue.length}</div><div class="l">添削待ちレポート</div></div>
+    <div class="kpi"><div class="v">${S.reports.filter(r=>r.status==="approved").length}</div><div class="l">承認済（今月）</div></div>
+  </div>
+  <div class="card"><h3>📥 添削・承認待ちレポート</h3>${rows}</div>
+  <div class="card"><h3>ℹ️ 指導医の役割</h3><p style="font-size:13px;color:var(--sub)">承認したレポートは研修医の実績として記録され、ローテート修了証明・専門医申請の裏付けになります。承認操作は電子署名として扱われ、後から改ざんできません。</p></div>`;
+}
+
+/* ===== ローテート責任者 ===== */
+function viewChief(){
+  const queue=S.rotations.filter(r=>r.status==="applied");
+  const rows=queue.length?queue.map(r=>`
+    <div class="item"><div class="item-head"><div><b>${r.name}ローテート 修了証明申請（${r.weeks}週）</b>
+      <small>申請者：佐藤 花（初期研修医2年次）｜ 出席・症例・レポート要件：充足 ✓</small></div>
+    <div class="item-actions" id="chiefAct-${r.id}">
+      <button class="btn btn-sm btn-chain" onclick="approveRotation('${r.id}')">⛓ 承認して証明書を発行</button>
+      <button class="btn btn-sm btn-back" onclick="toast('（デモ）差戻しコメント入力画面が開く想定です')">差戻し</button>
+    </div></div>${stepper(2)}</div>`).join("")
+    :`<p style="font-size:13px;color:var(--sub)">現在、承認待ちの修了申請はありません。（初期研修医ロールで「循環器内科」の修了証明を申請すると、ここに表示されます）</p>`;
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">${queue.length}</div><div class="l">承認待ち申請</div></div>
+    <div class="kpi"><div class="v chaincol">${S.certs.filter(c=>c.type==="rotation").length}</div><div class="l">発行済ローテート証明書</div></div>
+  </div>
+  <div class="card"><h3>📥 ローテート修了 承認待ち</h3>${rows}</div>
+  <div class="card"><h3>ℹ️ 責任者の役割</h3><p style="font-size:13px;color:var(--sub)">承認と同時にブロックチェーン証明書が自動発行されます（発行コストは1通あたり約100円のイメージ）。紙の修了証や再発行手続きが不要になり、研修医の異動先でも真正性を即時検証できます。</p></div>`;
+}
+
+/* ===== 専門医機構 認証責任者 ===== */
+function viewBoard(){
+  const pending=S.sr.boardStatus==="applied";
+  const rows=pending?`
+    <div class="item"><div class="item-head"><div><b>内科専門医 認定申請</b>
+      <small>申請者：田中 太郎（内科専門研修3年次）</small></div>
+    <div class="item-actions" id="boardAct">
+      <button class="btn btn-sm btn-chain" onclick="approveBoardApp()">⛓ 要件充足を認証・認定証発行</button>
+      <button class="btn btn-sm btn-back" onclick="toast('（デモ）追加資料要求画面が開く想定です')">追加資料を求める</button>
+    </div></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--sub)">
+      添付されたブロックチェーン証明書（自動検証済 ✓）：<br>
+      ・研修プログラム修了証明 ・症例登録 160/160 ・病歴要約 29/29 ・各施設ローテート修了証明 6通<br>
+      → <b style="color:var(--green)">全証明書のハッシュ検証 OK（改ざんなし）</b>。書類の突合作業は不要です。</div>
+    ${stepper(2)}</div>`
+    :`<p style="font-size:13px;color:var(--sub)">現在、認証待ちの申請はありません。（後期研修医ロールで専門医認定を申請すると、ここに表示されます）</p>`;
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">${pending?1:0}</div><div class="l">認証待ち申請</div></div>
+    <div class="kpi"><div class="v chaincol">${S.certs.filter(c=>c.type==="board").length}</div><div class="l">発行済 専門医認定証</div></div>
+  </div>
+  <div class="card"><h3>📥 専門医認定 認証待ち</h3>${rows}</div>
+  <div class="card"><h3>ℹ️ 機構側のメリット（構想）</h3><p style="font-size:13px;color:var(--sub)">申請書類はすべて発行時点で真正性が保証された証明書のため、突合・照会コストが大幅に削減されます。中断・再開を挟んだキャリアでも実績の連続性を機械的に確認できます。</p></div>`;
+}
+
+/* ===== certificate list & modal ===== */
+function certList(holder){
+  const list=S.certs.filter(c=>c.holder===holder);
+  if(!list.length)return "";
+  return `<div class="card"><h3>⛓ ブロックチェーン証明書ウォレット</h3>
+  ${list.map(c=>`<div class="cert-row"><div><b>${c.title}</b><br>
+    <span class="hash">${short(c.hash)}</span> <span class="verify-badge">✓ 検証済</span></div>
+    <button class="btn btn-sm btn-ghost" onclick="openCertByHash('${c.hash}')">表示</button></div>`).join("")}
+  <p style="font-size:11.5px;color:var(--sub);margin-top:6px">証明書は本人のウォレットに帰属し、病院・プログラムを移っても失われません。URL/QRで第三者が即時に真正性を検証できます（TuringCerts等の基盤を利用するイメージ）。</p></div>`;
+}
+function openCertByHash(h){
+  const c=S.certs.find(x=>x.hash===h);if(!c)return;
+  $("modalBody").innerHTML=`
+  <div class="cert-doc">
+    <div class="emblem">🎖️</div>
+    <h3>${c.title}</h3>
+    <div style="font-size:11px;color:var(--sub)">Blockchain Verified Certificate（デモ）</div>
+    <div class="to">${c.holder} 殿</div>
+    <table>
+      <tr><td>発行者</td><td>${c.issuer}</td></tr>
+      <tr><td>発行日</td><td>${c.date}</td></tr>
+      <tr><td>記録ハッシュ</td><td class="hashfull">${c.hash}</td></tr>
+      <tr><td>検証状態</td><td><span class="verify-badge">✓ チェーン上の記録と一致（改ざんなし）</span></td></tr>
+    </table>
+    <div class="qr"></div>
+    <div style="font-size:11px;color:var(--sub)">QRコードから第三者が真正性を検証（イメージ）</div>
+    <div class="chain-note">本証明書はブロックチェーン上に記録されており、発行後の書き換え・削除はできません。</div>
+  </div>`;
+  $("modalBg").classList.remove("hidden");
+}
+function closeModal(){$("modalBg").classList.add("hidden");}
+
+/* ===== PDF viewer ===== */
+function togglePdf(){
+  const v=$("pdfViewer"),b=$("pdfToggleBtn");
+  const open=v.classList.toggle("hidden");
+  b.textContent=open?"資料を読む":"閉じる";
+}
+
+/* ===== actions ===== */
+function submitReport(id){
+  const r=S.reports.find(x=>x.id===id);r.status="submitted";r.comment="";
+  toast("📤 レポートを提出しました。指導医（鈴木先生）の添削待ちです");render();
+}
+function approveReport(id){
+  const r=S.reports.find(x=>x.id===id);r.status="approved";r.comment="考察が的確です。承認します。";
+  toast("✓ レポートを承認しました。研修医の実績に反映されます");render();
+}
+function returnReport(id){
+  const r=S.reports.find(x=>x.id===id);r.status="returned";r.comment="鑑別診断の考察を追記してください。";
+  toast("↩ レポートを差戻しました。研修医に通知されます");render();
+}
+function applyRotation(id){
+  const r=S.rotations.find(x=>x.id===id);r.status="applied";
+  toast("📤 修了証明を申請しました。ローテート責任者（高橋先生）の承認待ちです");render();
+}
+function approveRotation(id){
+  const act=$("chiefAct-"+id);
+  if(act)act.innerHTML='<span class="mining">⛓ ブロックチェーンに記録中…</span>';
+  setTimeout(()=>{
+    const r=S.rotations.find(x=>x.id===id);
+    r.status="certified";r.hash=hash();r.date=today();
+    S.certs.push({title:`初期研修 ${r.name}ローテート修了証明`,holder:"佐藤 花",issuer:`○○大学附属病院 ${r.name} 研修責任者 高橋 誠`,date:r.date,hash:r.hash,type:"rotation"});
+    toast("⛓ 証明書を発行しました。研修医の進捗に即時反映されます");
+    render();openCertByHash(r.hash);
+  },1500);
+}
+function addCase(){
+  S.sr.cases=Math.min(S.sr.required,S.sr.cases+1);
+  toast(`症例を登録しました（${S.sr.cases}/${S.sr.required}）`);render();
+}
+function applyBoard(){
+  S.sr.boardStatus="applied";
+  toast("📤 専門医認定を申請しました。機構の認証責任者（渡辺先生）の審査待ちです");render();
+}
+function approveBoardApp(){
+  const act=$("boardAct");
+  if(act)act.innerHTML='<span class="mining">⛓ ブロックチェーンに記録中…</span>';
+  setTimeout(()=>{
+    S.sr.boardStatus="certified";
+    const h=hash();
+    S.certs.push({title:"内科専門医 認定証明",holder:"田中 太郎",issuer:"日本専門医機構（イメージ）内科領域",date:today(),hash:h,type:"board"});
+    toast("⛓ 専門医認定証を発行しました。本人のウォレットに反映されます");
+    render();openCertByHash(h);
+  },1500);
+}
+</script>
+</body>
+</html>
