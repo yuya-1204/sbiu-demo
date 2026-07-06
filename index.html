@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2: Medmatch tab added 2026-07-06 -->
+<!-- v3: 中断・再開・異動申請+受入判断 added 2026-07-06 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -301,7 +301,7 @@ button{font-family:inherit;cursor:pointer}
             <h3>指導医・責任者の方</h3>
             <p>申請内容の確認・承認・証明書発行</p>
             <button class="role-btn" onclick="login('tutor')"><span class="ic">✍️</span><span><b>指導医（レポート添削）としてログイン</b><small>症例レポートの添削・承認</small></span></button>
-            <button class="role-btn" onclick="login('chief')"><span class="ic">🏥</span><span><b>各科ローテート責任者としてログイン</b><small>ローテート修了の証明・証明書発行</small></span></button>
+            <button class="role-btn" onclick="login('chief')"><span class="ic">🏥</span><span><b>各科ローテート責任者（プログラム責任者）としてログイン</b><small>ローテート修了の証明・異動/中断/再開の受け入れ判断</small></span></button>
             <button class="role-btn" onclick="login('board')"><span class="ic">🏛️</span><span><b>専門医機構 認証責任者としてログイン</b><small>専門医認定の最終認証</small></span></button>
           </div>
         </div>
@@ -462,7 +462,8 @@ const S={
     reportsDone:27, reportsRequired:29,
     boardStatus:"ready"   // ready → applied → certified
   },
-  certs:[]  // {title,holder,issuer,date,hash,type}
+  certs:[],  // {title,holder,issuer,date,hash,type}
+  tr:{jr:null, sr:null}  // 中断・再開・異動 申請 {type,status:'applied'|'approved'}
 };
 // 既発行の証明書を初期登録
 S.rotations.filter(r=>r.status==="certified").forEach(r=>{
@@ -475,7 +476,7 @@ const ROLES={
   jr:   {av:"🧑‍⚕️", name:"佐藤 花 先生",   role:"初期研修医（卒後2年次）｜○○大学附属病院 卒後臨床研修センター"},
   sr:   {av:"👩‍⚕️", name:"田中 太郎 先生", role:"後期研修医／内科専門研修プログラム 3年次（J-OSLER登録中）"},
   tutor:{av:"✍️",   name:"鈴木 一郎 先生", role:"指導医（レポート添削担当）｜内科"},
-  chief:{av:"🏥",   name:"高橋 誠 先生",   role:"循環器内科 ローテート責任者（研修修了認定者）"},
+  chief:{av:"🏥",   name:"高橋 誠 先生",   role:"各科ローテート責任者（プログラム責任者）｜修了認定・異動/中断/再開の受け入れ判断"},
   board:{av:"🏛️",  name:"渡辺 恵 先生",   role:"日本専門医機構（イメージ）内科領域 認証責任者"}
 };
 let current=null;
@@ -552,6 +553,7 @@ function viewJr(){
     <div class="pbar-label">修了率 ${pct}%（証明書ベース・改ざん不可の実績として蓄積）</div>
     <div style="margin-top:14px">${rotRows}</div></div>
   <div class="card"><h3>📝 症例レポート</h3>${repRows}</div>
+  ${trCard("jr")}
   ${certList("佐藤 花")}`;
 }
 
@@ -587,6 +589,7 @@ function viewSr(){
     <div class="item-actions">${boardPill}${boardAct}</div></div>
     ${s.boardStatus!=="ready"?stepper(stage):""}
     <p style="font-size:12px;color:var(--sub);margin-top:8px">${boardNote}</p></div></div>
+  ${trCard("sr")}
   ${certList("田中 太郎")}`;
 }
 
@@ -620,12 +623,17 @@ function viewChief(){
       <button class="btn btn-sm btn-back" onclick="toast('（デモ）差戻しコメント入力画面が開く想定です')">差戻し</button>
     </div></div>${stepper(2)}</div>`).join("")
     :`<p style="font-size:13px;color:var(--sub)">現在、承認待ちの修了申請はありません。（初期研修医ロールで「循環器内科」の修了証明を申請すると、ここに表示されます）</p>`;
+  const trPending=["jr","sr"].filter(k=>S.tr[k]&&S.tr[k].status==="applied").length;
   return `
   <div class="kpis">
-    <div class="kpi"><div class="v">${queue.length}</div><div class="l">承認待ち申請</div></div>
+    <div class="kpi"><div class="v">${queue.length}</div><div class="l">修了承認待ち</div></div>
+    <div class="kpi"><div class="v">${trPending}</div><div class="l">異動・中断・再開の申請</div></div>
     <div class="kpi"><div class="v chaincol">${S.certs.filter(c=>c.type==="rotation").length}</div><div class="l">発行済ローテート証明書</div></div>
   </div>
   <div class="card"><h3>📥 ローテート修了 承認待ち</h3>${rows}</div>
+  <div class="card"><h3>🔁 異動・中断・再開の受け入れ判断（プログラム責任者）</h3>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:10px">受け入れ側（B大学病院）プログラム責任者の画面イメージ。申請者の研修実績はブロックチェーン証明で検証済みのため、<b>不足している単位・症例が申請と同時に自動で分かり</b>、受け入れ可否の判断が容易になります。</p>
+    ${trQueue()}</div>
   <div class="card"><h3>ℹ️ 責任者の役割</h3><p style="font-size:13px;color:var(--sub)">承認と同時にブロックチェーン証明書が自動発行されます（発行コストは1通あたり約100円のイメージ）。紙の修了証や再発行手続きが不要になり、研修医の異動先でも真正性を即時検証できます。</p></div>`;
 }
 
@@ -652,6 +660,103 @@ function viewBoard(){
   </div>
   <div class="card"><h3>📥 専門医認定 認証待ち</h3>${rows}</div>
   <div class="card"><h3>ℹ️ 機構側のメリット（構想）</h3><p style="font-size:13px;color:var(--sub)">申請書類はすべて発行時点で真正性が保証された証明書のため、突合・照会コストが大幅に削減されます。中断・再開を挟んだキャリアでも実績の連続性を機械的に確認できます。</p></div>`;
+}
+
+/* ===== 中断・再開・異動（キャリア継続） ===== */
+const TR_META={
+  jr:{who:"佐藤 花（初期研修2年次）", from:"A大学病院（現所属）", to:"B大学病院 初期研修プログラム"},
+  sr:{who:"田中 太郎（内科専門研修3年次）", from:"A大学病院 内科専門研修プログラム（現所属）", to:"B大学病院 内科専門研修プログラム"}
+};
+const TR_LABEL={"異動":"🏥 異動（研修施設間の移動）","中断":"⏸ 研修の中断（出産・育児等）","再開":"▶ 研修の再開"};
+
+// ブロックチェーン検証済み記録から不足単位・症例を自動算出
+function trShortage(who){
+  if(who==="jr"){
+    const done=S.rotations.filter(r=>r.status==="certified");
+    const rem=S.rotations.filter(r=>r.status!=="certified");
+    const weeks=rem.reduce((a,r)=>a+r.weeks,0);
+    return {
+      done:done.map(r=>`${r.name}（${r.weeks}週）`),
+      lack:rem.map(r=>`${r.name}（${r.weeks}週）${r.status==="in_training"?"・研修中":r.status==="applied"?"・修了承認待ち":r.status==="awaiting_apply"?"・修了申請可":"・未開始"}`),
+      summary:`受け入れ後に必要な残り研修：${rem.length}科目・計${weeks}週`
+    };
+  }
+  const s=S.sr, lack=[];
+  if(s.cases<s.required)lack.push(`症例登録 残り${s.required-s.cases}例（現在 ${s.cases}/${s.required}）`);
+  if(s.reportsDone<s.reportsRequired)lack.push(`病歴要約 残り${s.reportsRequired-s.reportsDone}件（現在 ${s.reportsDone}/${s.reportsRequired}）`);
+  if(s.rotationsDone<s.rotationsTotal)lack.push(`連携施設ローテート 残り${s.rotationsTotal-s.rotationsDone}施設`);
+  return {
+    done:[`症例登録 ${s.cases}例`,`病歴要約 承認済 ${s.reportsDone}件`,`連携施設ローテート ${s.rotationsDone}施設 修了`],
+    lack, summary: lack.length?`専門医申請までの残り要件：${lack.length}項目`:"全要件充足済み"
+  };
+}
+
+// 研修医側：申請カード
+function trCard(who){
+  const app=S.tr[who], m=TR_META[who];
+  let body="";
+  if(!app){
+    body=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn btn-sm btn-primary" onclick="trApply('${who}','異動')">🏥 異動を申請（${m.to} へ）</button>
+      <button class="btn btn-sm btn-ghost" onclick="trApply('${who}','中断')">⏸ 中断を申請（出産・育児等）</button>
+      <button class="btn btn-sm btn-ghost" onclick="trApply('${who}','再開')">▶ 再開を申請</button></div>
+    <p style="font-size:12px;color:var(--sub)">承認済みの実績はすべてブロックチェーン証明として保全されます。<b>中断・異動をしても実績は消えず</b>、受け入れ先には検証済みの記録がそのまま引き継がれます（書類の再発行・照会は不要）。</p>`;
+  }else{
+    const stage=app.status==="applied"?2:5;
+    const pill=app.status==="applied"?'<span class="pill pill-amber">プログラム責任者 確認中</span>':'<span class="pill pill-chain">⛓ 受け入れ承認済・引継ぎ記録発行</span>';
+    body=`<div class="item"><div class="item-head"><div><b>${TR_LABEL[app.type]}</b>
+      <small>${app.type==="異動"?`${m.from} → ${m.to}`:m.from}</small></div>
+      <div class="item-actions">${pill}</div></div>${stepper(stage)}
+      <p style="font-size:12px;color:var(--sub);margin-top:8px">${app.status==="applied"
+        ?"受け入れ先のプログラム責任者が、検証済みの研修記録をもとに確認しています。"
+        :"引継ぎ記録がチェーンに記録されました。実績は途切れることなく"+(app.type==="異動"?"異動先":"再開後")+"に引き継がれます（証明書ウォレットに反映済み）。"}</p></div>`;
+  }
+  return `<div class="card"><h3>🔁 中断・再開・異動の申請（キャリア継続支援）</h3>${body}</div>`;
+}
+
+// プログラム責任者側：受け入れ判断キュー
+function trQueue(){
+  const keys=["jr","sr"].filter(k=>S.tr[k]);
+  if(!keys.length)return `<p style="font-size:13px;color:var(--sub)">現在、異動・中断・再開の申請はありません。（初期研修医／後期研修医ロールで申請すると、ここに表示されます）</p>`;
+  return keys.map(k=>{
+    const app=S.tr[k], m=TR_META[k], sh=trShortage(k);
+    const doneList=sh.done.map(d=>`<div style="font-size:12px;color:var(--green)">✓ ${d}</div>`).join("");
+    const lackList=sh.lack.length?sh.lack.map(d=>`<div style="font-size:12px;color:var(--amber)">▲ ${d}</div>`).join(""):'<div style="font-size:12px;color:var(--green)">不足なし</div>';
+    let act="",pill="",stage=2;
+    if(app.status==="applied"){pill='<span class="pill pill-amber">受け入れ判断待ち</span>';
+      act=`<div class="item-actions" id="trAct-${k}">
+        <button class="btn btn-sm btn-chain" onclick="trApprove('${k}')">⛓ 受け入れを承認（引継ぎ記録を発行）</button>
+        <button class="btn btn-sm btn-back" onclick="toast('（デモ）条件付き回答・保留コメント画面が開く想定です')">保留・要相談</button></div>`;}
+    else {pill='<span class="pill pill-chain">⛓ 受け入れ承認済</span>';stage=5;}
+    return `<div class="item">
+      <div class="item-head"><div><b>${TR_LABEL[app.type]} の申請</b>
+        <small>申請者：${m.who} ｜ ${app.type==="異動"?`${m.from} → ${m.to}`:m.from}</small></div>${pill}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;padding:12px;background:#f7fafc;border-radius:8px">
+        <div><div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:4px">修了済み（チェーン検証済 ✓）</div>${doneList}</div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:4px">不足している単位・症例</div>${lackList}</div>
+      </div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--navy)">📋 ${sh.summary}</div>
+      <p style="font-size:11.5px;color:var(--sub);margin:6px 0">検証済みブロックチェーン記録から自動算出。前施設への照会・書類突合なしで受け入れ可否を判断できます。</p>
+      ${act}${stepper(stage)}</div>`;
+  }).join("");
+}
+
+function trApply(who,type){
+  S.tr[who]={type,status:"applied"};
+  toast(`📤 ${type}を申請しました。プログラム責任者の確認待ちです`);render();
+}
+function trApprove(who){
+  const act=$("trAct-"+who);
+  if(act)act.innerHTML='<span class="mining">⛓ 引継ぎ記録をブロックチェーンに記録中…</span>';
+  setTimeout(()=>{
+    const app=S.tr[who];app.status="approved";
+    const holder=who==="jr"?"佐藤 花":"田中 太郎";
+    const m=TR_META[who];
+    const h=hash();
+    S.certs.push({title:`研修${app.type} 引継ぎ証明${app.type==="異動"?`（${m.from.replace("（現所属）","")} → ${m.to}）`:""}`,holder,issuer:`${m.to.split(" ")[0]} プログラム責任者 高橋 誠`,date:today(),hash:h,type:"transfer"});
+    toast("⛓ 受け入れを承認し、引継ぎ記録を発行しました。本人の進捗・ウォレットに反映されます");
+    render();openCertByHash(h);
+  },1500);
 }
 
 /* ===== certificate list & modal ===== */
