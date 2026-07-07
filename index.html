@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v4: バンク画面/第三者検証/ストーリーモード/実データ比較/タイムライン/定着KPI/設計原則/提示範囲 added 2026-07-07 -->
+<!-- v4.1: 異動申請に提携先選択画面(B/C/D 3プログラム)を追加 2026-07-07 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -678,7 +678,7 @@ function viewChief(){
   </div>
   <div class="card"><h3>📥 ローテート修了 承認待ち</h3>${rows}</div>
   <div class="card"><h3>🔁 異動・中断・再開の受け入れ判断（プログラム責任者）</h3>
-    <p style="font-size:12px;color:var(--sub);margin-bottom:10px">受け入れ側（B大学病院）プログラム責任者の画面イメージ。申請者の研修実績はブロックチェーン証明で検証済みのため、<b>不足している単位・症例が申請と同時に自動で分かり</b>、受け入れ可否の判断が容易になります。</p>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:10px">受け入れ側（申請先の提携プログラム）責任者の画面イメージ。申請者の研修実績はブロックチェーン証明で検証済みのため、<b>不足している単位・症例が申請と同時に自動で分かり</b>、受け入れ可否の判断が容易になります。</p>
     ${trQueue()}</div>
   <div class="card"><h3>ℹ️ 責任者の役割</h3><p style="font-size:13px;color:var(--sub)">承認と同時にブロックチェーン証明書が自動発行されます（発行コストは1通あたり約100円のイメージ）。紙の修了証や再発行手続きが不要になり、研修医の異動先でも真正性を即時検証できます。</p></div>`;
 }
@@ -715,6 +715,21 @@ const TR_META={
 };
 const TR_LABEL={"異動":"🏥 異動（研修施設間の移動）","中断":"⏸ 研修の中断（出産・育児等）","再開":"▶ 研修の再開"};
 
+// 提携先ネットワーク（受け入れ実績・枠はデモ値）
+const TR_DEST={
+  jr:[
+    {name:"B大学病院 初期研修プログラム", area:"栃木県宇都宮市", note:"大学病院・全科ローテート可／院内保育あり", slot:"受入枠 ○（今期2名）", match:95},
+    {name:"C中央病院 初期研修プログラム", area:"東京都文京区",   note:"救急症例が豊富／時短勤務の実績多数",     slot:"受入枠 ○（今期1名）", match:88},
+    {name:"Dメディカルセンター 初期研修プログラム", area:"埼玉県さいたま市", note:"地域医療・総合診療に強み／住宅補助あり", slot:"受入枠 △（要相談）", match:82},
+  ],
+  sr:[
+    {name:"B大学病院 内科専門研修プログラム", area:"栃木県宇都宮市", note:"J-OSLER症例充足に強い／カリキュラム制の受入実績", slot:"受入枠 ○（今期2名）", match:93},
+    {name:"C中央病院 内科専門研修プログラム", area:"東京都文京区",   note:"サブスペ連動可／当直配慮あり",                 slot:"受入枠 ○（今期1名）", match:87},
+    {name:"Dメディカルセンター 内科専門研修プログラム", area:"埼玉県さいたま市", note:"地域枠・時短勤務の受入実績多数",       slot:"受入枠 △（要相談）", match:80},
+  ]
+};
+let trChoosing={jr:false,sr:false};
+
 // ブロックチェーン検証済み記録から不足単位・症例を自動算出
 function trShortage(who){
   if(who==="jr"){
@@ -741,17 +756,31 @@ function trShortage(who){
 function trCard(who){
   const app=S.tr[who], m=TR_META[who];
   let body="";
-  if(!app){
+  if(trChoosing[who]){
+    // 異動先の提携プログラム選択画面
+    const opts=TR_DEST[who].map((d,i)=>`
+      <div class="item"><div class="item-head" style="align-items:center">
+        <div style="display:flex;gap:12px;align-items:center"><span class="match-badge ${d.match>=90?"match-hi":"match-mid"}">${d.match}%</span>
+        <div><b>${d.name}</b><small>${d.area} ｜ ${d.note} ｜ <span class="pill ${d.slot.includes("○")?"pill-green":"pill-amber"}">${d.slot}</span></small></div></div>
+        <div class="item-actions"><button class="btn btn-sm btn-primary" onclick="trSelectDest('${who}',${i})">この提携先へ申請する</button></div>
+      </div></div>`).join("");
+    body=`<p style="font-size:12.5px;margin-bottom:10px"><b style="color:var(--chain)">異動先の提携プログラムを選択してください。</b> あなたの検証済み実績・希望条件とのマッチ度を表示しています。<b>提携ネットワークが広がるほど、選べるキャリアが増えます。</b></p>
+    ${opts}
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <p style="font-size:11.5px;color:var(--sub);margin:0">※ 提携プログラムは順次拡大予定（デモでは3件を表示）。マッチ度・受入枠はデモ値です。</p>
+      <button class="btn btn-sm btn-ghost" onclick="trCancelChoose('${who}')">← 戻る</button></div>`;
+  }else if(!app){
     body=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <button class="btn btn-sm btn-primary" onclick="trApply('${who}','異動')">🏥 異動を申請（${m.to} へ）</button>
+      <button class="btn btn-sm btn-primary" onclick="trApply('${who}','異動')">🏥 異動を申請（提携先から選択）</button>
       <button class="btn btn-sm btn-ghost" onclick="trApply('${who}','中断')">⏸ 中断を申請（出産・育児等）</button>
       <button class="btn btn-sm btn-ghost" onclick="trApply('${who}','再開')">▶ 再開を申請</button></div>
-    <p style="font-size:12px;color:var(--sub)">承認済みの実績はすべてブロックチェーン証明として保全されます。<b>中断・異動をしても実績は消えず</b>、受け入れ先には検証済みの記録がそのまま引き継がれます（書類の再発行・照会は不要）。</p>`;
+    <p style="font-size:12px;color:var(--sub)">承認済みの実績はすべてブロックチェーン証明として保全されます。<b>中断・異動をしても実績は消えず</b>、受け入れ先には検証済みの記録がそのまま引き継がれます（書類の再発行・照会は不要）。異動先は<b>提携ネットワーク（${TR_DEST[who].length}プログラム・拡大中）</b>から選べます。</p>`;
   }else{
     const stage=app.status==="applied"?2:5;
+    const dest=app.dest||m.to;
     const pill=app.status==="applied"?'<span class="pill pill-amber">プログラム責任者 確認中</span>':'<span class="pill pill-chain">⛓ 受け入れ承認済・引継ぎ記録発行</span>';
     body=`<div class="item"><div class="item-head"><div><b>${TR_LABEL[app.type]}</b>
-      <small>${app.type==="異動"?`${m.from} → ${m.to}`:m.from}</small></div>
+      <small>${app.type==="異動"?`${m.from} → ${dest}`:m.from}</small></div>
       <div class="item-actions">${pill}</div></div>${stepper(stage)}
       <p style="font-size:12px;color:var(--sub);margin-top:8px">${app.status==="applied"
         ?"受け入れ先のプログラム責任者が、検証済みの研修記録をもとに確認しています。"
@@ -776,7 +805,7 @@ function trQueue(){
     else {pill='<span class="pill pill-chain">⛓ 受け入れ承認済</span>';stage=5;}
     return `<div class="item">
       <div class="item-head"><div><b>${TR_LABEL[app.type]} の申請</b>
-        <small>申請者：${m.who} ｜ ${app.type==="異動"?`${m.from} → ${m.to}`:m.from}</small></div>${pill}</div>
+        <small>申請者：${m.who} ｜ ${app.type==="異動"?`${m.from} → ${app.dest||m.to}`:m.from}</small></div>${pill}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;padding:12px;background:#f7fafc;border-radius:8px">
         <div><div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:4px">修了済み（チェーン検証済 ✓）</div>${doneList}</div>
         <div><div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:4px">不足している単位・症例</div>${lackList}</div>
@@ -788,9 +817,17 @@ function trQueue(){
 }
 
 function trApply(who,type){
+  if(type==="異動"){trChoosing[who]=true;render();return;}
   S.tr[who]={type,status:"applied"};
   toast(`📤 ${type}を申請しました。プログラム責任者の確認待ちです`);render();
 }
+function trSelectDest(who,i){
+  const d=TR_DEST[who][i];
+  trChoosing[who]=false;
+  S.tr[who]={type:"異動",status:"applied",dest:d.name};
+  toast(`📤 ${d.name} へ異動を申請しました。受け入れ側プログラム責任者の確認待ちです`);render();
+}
+function trCancelChoose(who){trChoosing[who]=false;render();}
 function trApprove(who){
   const act=$("trAct-"+who);
   if(act)act.innerHTML='<span class="mining">⛓ 引継ぎ記録をブロックチェーンに記録中…</span>';
@@ -798,8 +835,9 @@ function trApprove(who){
     const app=S.tr[who];app.status="approved";
     const holder=who==="jr"?"佐藤 花":"田中 太郎";
     const m=TR_META[who];
+    const dest=app.dest||m.to;
     const h=hash();
-    S.certs.push({title:`研修${app.type} 引継ぎ証明${app.type==="異動"?`（${m.from.replace("（現所属）","")} → ${m.to}）`:""}`,holder,issuer:`${m.to.split(" ")[0]} プログラム責任者 高橋 誠`,date:today(),hash:h,type:"transfer"});
+    S.certs.push({title:`研修${app.type} 引継ぎ証明${app.type==="異動"?`（${m.from.replace("（現所属）","")} → ${dest}）`:""}`,holder,issuer:`${dest.split(" ")[0]} プログラム責任者 高橋 誠`,date:today(),hash:h,type:"transfer"});
     toast("⛓ 受け入れを承認し、引継ぎ記録を発行しました。本人の進捗・ウォレットに反映されます");
     render();openCertByHash(h);
   },1500);
@@ -1073,7 +1111,8 @@ const STORY=[
  {t:"⛓ 承認しました。約100円のコストでブロックチェーンに記録され、改ざん不可能な証明書に。（表示された証明書を確認したら×で閉じてください）", a:()=>{login('chief');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='applied')approveRotation('junkan');}},
  {t:"数ヶ月後——佐藤先生は出産のため研修の中断を申請します。従来なら「実績が消える不安」がキャリア断念の一因でした。", a:()=>{login('jr');if(!S.tr.jr)trApply('jr','中断');}},
  {t:"責任者は検証済み記録を確認して中断を承認。実績はチェーン上に保全され、1単位も失われません。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
- {t:"1年後、佐藤先生は復帰し、家庭の事情でB大学病院への異動を申請します。従来は施設間の照会・書類のやり直しが必要でした。", a:()=>{S.tr.jr=null;login('jr');trApply('jr','異動');}},
+ {t:"1年後、佐藤先生は復帰。提携ネットワークの3プログラムからマッチ度付きで異動先を選べます——提携が増えるほど、選べるキャリアが増えます。", a:()=>{S.tr.jr=null;trChoosing.jr=true;login('jr');}},
+ {t:"マッチ度95%のB大学病院を選択して申請。従来のような施設間の照会・書類のやり直しは不要です。", a:()=>{trChoosing.jr=false;if(!S.tr.jr)trSelectDest('jr',0);login('jr');}},
  {t:"B大学病院の責任者には「不足単位・症例の自動算出」付きで申請が届き、即日で受け入れを判断。引継ぎ証明が発行されます。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
  {t:"佐藤先生のウォレットには全実績が残っています。中断しても、移動しても、キャリアは途切れない——これがMEDMATCH構想の土台です。🎉", a:()=>login('jr')},
 ];
