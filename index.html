@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v4.1: 異動申請に提携先選択画面(B/C/D 3プログラム)を追加 2026-07-07 -->
+<!-- v4.2: ストーリー戻るボタン+ロール別ストーリー②〜⑤ 2026-07-07 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -303,7 +303,7 @@ button{font-family:inherit;cursor:pointer}
 
         <h3 class="sec-title">ログイン（デモ用・役割を選択）</h3>
         <div class="guide" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span>💡 <b>デモの見かた：</b>① まず「初期研修医」でログインし、循環器内科の修了申請とレポート提出 → ② 「添削指導医」「ローテート責任者」で承認 → ③ 再び「初期研修医」に戻ると証明書が反映されています。</span>
-        <button class="story-btn" onclick="storyStart()">▶ ストーリーモードで見る（3分）</button></div>
+        <button class="story-btn" onclick="storyMenu()">▶ ストーリーモードで見る（5本・各2〜3分）</button></div>
         <div class="login-grid">
           <div class="login-col">
             <h3>研修医の方</h3>
@@ -434,8 +434,9 @@ button{font-family:inherit;cursor:pointer}
 <!-- story mode bar -->
 <div id="storyBar" class="hidden">
   <div class="inner">
-    <span class="snum" id="storyNum">1/9</span>
+    <span class="snum" id="storyNum">1/10</span>
     <span class="stext" id="storyText"></span>
+    <button class="btn btn-sm btn-ghost" id="storyBackBtn" style="color:#cbd5e1;border-color:#4b6f9c" onclick="storyBack()">‹ 戻る</button>
     <button class="btn btn-sm" style="background:#fff;color:var(--navy);font-weight:700" onclick="storyNext()">次へ ›</button>
     <button class="btn btn-sm btn-ghost" style="color:#cbd5e1;border-color:#4b6f9c" onclick="storyEnd()">終了</button>
   </div>
@@ -1103,30 +1104,91 @@ function openVerify(h){
   },1400);
 }
 
-/* ----- ストーリーモード（佐藤花先生の3分） ----- */
-const STORY=[
- {t:"👩‍⚕️ 佐藤 花 先生（初期研修2年目）の物語です。これは彼女のダッシュボード。既に3科のローテートがブロックチェーン証明済みです。", a:()=>login('jr')},
- {t:"循環器内科のローテートを終えました。「修了証明を申請する」をワンクリック——紙の申請書も押印も不要です。", a:()=>{login('jr');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='awaiting_apply')applyRotation('junkan');}},
- {t:"プログラム責任者・高橋先生の画面に申請が届きました。要件充足はシステムが確認済み。承認と同時に証明書が発行されます。", a:()=>login('chief')},
- {t:"⛓ 承認しました。約100円のコストでブロックチェーンに記録され、改ざん不可能な証明書に。（表示された証明書を確認したら×で閉じてください）", a:()=>{login('chief');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='applied')approveRotation('junkan');}},
- {t:"数ヶ月後——佐藤先生は出産のため研修の中断を申請します。従来なら「実績が消える不安」がキャリア断念の一因でした。", a:()=>{login('jr');if(!S.tr.jr)trApply('jr','中断');}},
- {t:"責任者は検証済み記録を確認して中断を承認。実績はチェーン上に保全され、1単位も失われません。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
- {t:"1年後、佐藤先生は復帰。提携ネットワークの3プログラムからマッチ度付きで異動先を選べます——提携が増えるほど、選べるキャリアが増えます。", a:()=>{S.tr.jr=null;trChoosing.jr=true;login('jr');}},
- {t:"マッチ度95%のB大学病院を選択して申請。従来のような施設間の照会・書類のやり直しは不要です。", a:()=>{trChoosing.jr=false;if(!S.tr.jr)trSelectDest('jr',0);login('jr');}},
- {t:"B大学病院の責任者には「不足単位・症例の自動算出」付きで申請が届き、即日で受け入れを判断。引継ぎ証明が発行されます。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
- {t:"佐藤先生のウォレットには全実績が残っています。中断しても、移動しても、キャリアは途切れない——これがMEDMATCH構想の土台です。🎉", a:()=>login('jr')},
+/* ----- ストーリーモード（5本・戻る対応） ----- */
+function sbiuTab(){document.querySelector('[data-tab=sbiu]').click();}
+function mmTab(){document.getElementById('medmatchTab').click();}
+
+const STORIES=[
+ {icon:"👩‍⚕️", title:"① 佐藤花先生（初期研修医）", desc:"中断しても、キャリアは途切れない — 修了申請→出産で中断→復帰→提携先へ異動", steps:[
+  {t:"👩‍⚕️ 佐藤 花 先生（初期研修2年目）の物語です。これは彼女のダッシュボード。既に3科のローテートがブロックチェーン証明済みです。", a:()=>{sbiuTab();login('jr');}},
+  {t:"循環器内科のローテートを終えました。「修了証明を申請する」をワンクリック——紙の申請書も押印も不要です。", a:()=>{login('jr');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='awaiting_apply')applyRotation('junkan');}},
+  {t:"プログラム責任者・高橋先生の画面に申請が届きました。要件充足はシステムが確認済み。承認と同時に証明書が発行されます。", a:()=>login('chief')},
+  {t:"⛓ 承認しました。約100円のコストでブロックチェーンに記録され、改ざん不可能な証明書に。（表示された証明書を確認したら×で閉じてください）", a:()=>{login('chief');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='applied')approveRotation('junkan');}},
+  {t:"数ヶ月後——佐藤先生は出産のため研修の中断を申請します。従来なら「実績が消える不安」がキャリア断念の一因でした。", a:()=>{login('jr');if(!S.tr.jr)trApply('jr','中断');}},
+  {t:"責任者は検証済み記録を確認して中断を承認。実績はチェーン上に保全され、1単位も失われません。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
+  {t:"1年後、佐藤先生は復帰。提携ネットワークの3プログラムからマッチ度付きで異動先を選べます——提携が増えるほど、選べるキャリアが増えます。", a:()=>{S.tr.jr=null;trChoosing.jr=true;login('jr');}},
+  {t:"マッチ度95%のB大学病院を選択して申請。従来のような施設間の照会・書類のやり直しは不要です。", a:()=>{trChoosing.jr=false;if(!S.tr.jr)trSelectDest('jr',0);login('jr');}},
+  {t:"B大学病院の責任者には「不足単位・症例の自動算出」付きで申請が届き、即日で受け入れを判断。引継ぎ証明が発行されます。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
+  {t:"佐藤先生のウォレットには全実績が残っています。中断しても、移動しても、キャリアは途切れない——これがMEDMATCH構想の土台です。🎉", a:()=>login('jr')},
+ ]},
+ {icon:"🎓", title:"② 田中太郎先生（専攻医）", desc:"症例の積み上げから専門医認定まで — J-OSLER連携イメージ→要件充足→機構認証", steps:[
+  {t:"🎓 田中 太郎 先生（内科専門研修3年次）の物語です。症例登録・病歴要約・ローテートの進捗が一目で分かります（J-OSLER連携イメージ）。", a:()=>{sbiuTab();S.sr.cases=142;S.sr.reportsDone=27;S.sr.rotationsDone=5;S.sr.boardStatus='ready';login('sr');}},
+  {t:"日々の症例が承認されるたび、実績はチェーン上に積み上がります。最後の症例と病歴要約が承認され——全要件を充足しました。", a:()=>{S.sr.cases=S.sr.required;S.sr.reportsDone=S.sr.reportsRequired;S.sr.rotationsDone=S.sr.rotationsTotal;login('sr');toast('✅ 症例160/160・病歴要約29/29・ローテート6/6 — 全要件充足');}},
+  {t:"従来は大量の書類を揃えて申請していた専門医認定。MEDMATCHでは、検証済み証明が揃っているので「ワンクリック申請」です。", a:()=>{login('sr');if(S.sr.boardStatus==='ready')applyBoard();}},
+  {t:"専門医機構の認証責任者・渡辺先生の画面です。添付された証明書は全てハッシュ検証済み——書類の突合作業がありません。", a:()=>login('board')},
+  {t:"⛓ 要件充足を認証。専門医認定証がブロックチェーンに記録されます。（証明書を確認したら×で閉じてください）", a:()=>{login('board');if(S.sr.boardStatus==='applied')approveBoardApp();}},
+  {t:"田中先生は内科専門医になりました。認定証は本人のウォレットに帰属し、転職・開業・異動——どこへ行っても生涯持ち歩けます。🎉", a:()=>login('sr')},
+ ]},
+ {icon:"✍️", title:"③ 鈴木一郎先生（添削指導医）", desc:"指導の負担を減らし、指導実績を可視化 — レポート提出→添削→電子署名", steps:[
+  {t:"✍️ 鈴木 一郎 先生（添削指導医）の物語です。まず研修医側：佐藤先生がCPCレポートを提出します。紙の受け渡しはありません。", a:()=>{sbiuTab();login('jr');const rp=S.reports.find(r=>r.id===3);if(rp.status==='draft'||rp.status==='returned')submitReport(3);}},
+  {t:"鈴木先生の画面に添削待ちレポートが届きました。外来の合間・移動中でも、スキマ時間に確認できます。", a:()=>login('tutor')},
+  {t:"内容を確認して「添削済・承認」。この操作が電子署名として記録され、後から改ざんできません——紙のサイン・押印が消えます。", a:()=>{login('tutor');const rp=S.reports.find(r=>r.id===3);if(rp.status==='submitted')approveReport(3);}},
+  {t:"承認は即時に佐藤先生の実績へ反映。差戻しもワンクリックで、コメント付きで返せます（このデモでは差戻し→再提出も体験できます）。", a:()=>login('jr')},
+  {t:"そして重要なのは——指導医の側にも「いつ・誰を・何件指導したか」が実績として蓄積されること。指導実績の可視化は、指導医の評価・インセンティブ設計の基盤になります。🎉", a:()=>login('tutor')},
+ ]},
+ {icon:"🏥", title:"④ 高橋誠先生（プログラム責任者）", desc:"受け入れ判断が数週間→即日に — 異動申請の受信→不足単位の自動算出→承認", steps:[
+  {t:"🏥 高橋 誠 先生（プログラム責任者）の物語です。従来、他施設からの異動受け入れは、前施設への照会・書類突合で数週間かかっていました。", a:()=>{sbiuTab();S.tr.jr=null;trChoosing.jr=false;login('chief');}},
+  {t:"佐藤先生から異動申請が届きました。検証済みブロックチェーン記録から「修了済み」と「不足している単位・症例」が自動算出されています。", a:()=>{S.tr.jr={type:'異動',status:'applied',dest:'B大学病院 初期研修プログラム'};login('chief');}},
+  {t:"残り4科目・計24週——受け入れ後の研修計画がその場で立てられます。電話照会も、原本確認も、突合作業も不要です。", a:()=>login('chief')},
+  {t:"⛓ 受け入れを承認。引継ぎ記録がチェーンに発行され、本人と両施設に共有されます。（証明書を確認したら×で閉じてください）", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
+  {t:"判断にかかる時間は数週間→即日へ。責任者の事務負担が減るほど、施設は「受け入れに前向き」になれます——これが医師の流動性を高める鍵です。🎉", a:()=>login('chief')},
+ ]},
+ {icon:"🤝", title:"⑤ その先へ（MEDMATCH）", desc:"検証済みキャリアで、8%マッチング — 医師→ドクターバンク→医療機関→オファー", steps:[
+  {t:"🤝 最終章：専門医になった田中先生の転職の物語です。証明書ウォレット連携で入力はほぼ不要。マッチ度付きの求人が並びます。", a:()=>{mmTab();MM.jobs[0].status='none';mmLogin('doc');}},
+  {t:"マッチ度94%の求人に「ドクターバンク経由で紹介を依頼」。紹介・成約は医師会の無料職業紹介が担い、MEDMATCHは裏方に徹します。", a:()=>{mmLogin('doc');if(MM.jobs[0].status==='none')mmRequest(1);}},
+  {t:"ドクターバンクのコーディネーター画面です。候補は自動抽出済み・経歴は検証済み——照会作業ゼロで、成約まで42日→18日（デモ値）。", a:()=>mmLogin('bank')},
+  {t:"医療機関には検証済みの紹介依頼が届きます。書類確認不要で、そのまま面談オファーへ。", a:()=>mmLogin('org')},
+  {t:"オファーを送信。成立時の採用コストは120万円（8%）——従来の平均335.9万円と比べ約216万円の節約です。", a:()=>{mmLogin('org');const j=MM.jobs[0];if(j.status==='requested')mmOffer(1);}},
+  {t:"田中先生にオファーが届きました。証明インフラ（土台）×低コストマッチング（収益）×ドクターバンク共創（信頼）——これがMEDMATCHの全体像です。🎉", a:()=>mmLogin('doc')},
+ ]},
 ];
-let storyIdx=-1;
-function storyStart(){storyIdx=-1;$("storyBar").classList.remove("hidden");storyNext();}
-function storyNext(){
-  storyIdx++;
-  if(storyIdx>=STORY.length){storyEnd();toast("🎉 ストーリー終了。「その先へ（Medmatch）」タブもぜひご覧ください");return;}
-  $("storyNum").textContent=(storyIdx+1)+"/"+STORY.length;
-  $("storyText").textContent=STORY[storyIdx].t;
-  try{STORY[storyIdx].a();}catch(e){}
+
+let curStory=null, storyIdx=-1, storySnaps=[];
+function snapState(){return JSON.parse(JSON.stringify({S,MM,tc:trChoosing}));}
+function restoreState(sn){const c=JSON.parse(JSON.stringify(sn));Object.assign(S,c.S);Object.assign(MM,c.MM);Object.assign(trChoosing,c.tc);}
+function storyMenu(){
+  $("modalBody").innerHTML=`<h3 style="color:var(--navy);font-size:16px;margin-bottom:4px">▶ ストーリーモード</h3>
+  <p style="font-size:12px;color:var(--sub);margin-bottom:12px">見たい物語を選んでください（各2〜3分・「戻る」でいつでも前のステップへ戻れます）</p>`+
+  STORIES.map((s,i)=>`<div class="item" style="cursor:pointer" onclick="storyStart(${i})">
+    <b style="color:var(--navy)">${s.icon} ${s.title}</b><br><small style="color:var(--sub)">${s.desc}</small></div>`).join("");
+  $("modalBg").classList.remove("hidden");
+}
+function runStoryStep(){
+  const st=curStory.steps[storyIdx];
+  $("storyNum").textContent=(storyIdx+1)+"/"+curStory.steps.length;
+  $("storyText").textContent=st.t;
+  $("storyBackBtn").style.visibility=storyIdx>0?"visible":"hidden";
+  try{st.a();}catch(e){}
   window.scrollTo({top:0});
 }
-function storyEnd(){$("storyBar").classList.add("hidden");storyIdx=-1;}
+function storyStart(i){
+  curStory=STORIES[i];storyIdx=-1;storySnaps=[];closeModal();
+  $("storyBar").classList.remove("hidden");storyNext();
+}
+function storyNext(){
+  if(!curStory)return;
+  if(storyIdx>=curStory.steps.length-1){storyEnd();toast("🎉 ストーリー終了。他のストーリーもぜひご覧ください");return;}
+  storySnaps[storyIdx+1]=snapState();
+  storyIdx++;runStoryStep();
+}
+function storyBack(){
+  if(!curStory||storyIdx<=0)return;
+  closeModal();
+  storyIdx--;
+  restoreState(storySnaps[storyIdx]);
+  runStoryStep();
+}
+function storyEnd(){$("storyBar").classList.add("hidden");curStory=null;storyIdx=-1;storySnaps=[];}
 
 /* ----- actions ----- */
 function mmRequest(id){
