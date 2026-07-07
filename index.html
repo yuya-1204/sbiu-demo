@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v3: 中断・再開・異動申請+受入判断 added 2026-07-06 -->
+<!-- v4: バンク画面/第三者検証/ストーリーモード/実データ比較/タイムライン/定着KPI/設計原則/提示範囲 added 2026-07-07 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -185,6 +185,19 @@ button{font-family:inherit;cursor:pointer}
 .cost-bars .row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px}
 .cost-bars .lbl{width:180px;color:var(--sub);text-align:right;flex-shrink:0}
 .cost-bars .bar{height:16px;border-radius:4px}
+
+/* ===== v4 ===== */
+#storyBar{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;z-index:70;padding:14px 20px;box-shadow:0 -4px 16px rgba(0,0,0,.25)}
+#storyBar .inner{max-width:1080px;margin:0 auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#storyBar .stext{flex:1;min-width:260px;font-size:14px;line-height:1.6}
+#storyBar .snum{background:rgba(255,255,255,.15);border-radius:20px;padding:2px 12px;font-size:11px;flex-shrink:0}
+.story-btn{background:var(--gold);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700}
+.vrow{display:flex;justify-content:space-between;font-size:12px;padding:6px 4px;border-bottom:1px dashed #d8d5f0}
+.vok{color:var(--green);font-weight:700}
+.share-pill label{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:20px;padding:3px 10px;font-size:11.5px;margin:2px 4px 2px 0;cursor:pointer}
+.kpibar{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.kpibar .kl{width:150px;color:var(--sub);text-align:right;flex-shrink:0}
+.kpibar .kb{height:14px;border-radius:4px}
 </style>
 </head>
 <body>
@@ -289,7 +302,8 @@ button{font-family:inherit;cursor:pointer}
         </div>
 
         <h3 class="sec-title">ログイン（デモ用・役割を選択）</h3>
-        <div class="guide">💡 <b>デモの見かた：</b>① まず「初期研修医」でログインし、循環器内科の修了申請とレポート提出 → ② 「添削指導医」「ローテート責任者」で承認 → ③ 再び「初期研修医」に戻ると証明書が反映されています。</div>
+        <div class="guide" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span>💡 <b>デモの見かた：</b>① まず「初期研修医」でログインし、循環器内科の修了申請とレポート提出 → ② 「添削指導医」「ローテート責任者」で承認 → ③ 再び「初期研修医」に戻ると証明書が反映されています。</span>
+        <button class="story-btn" onclick="storyStart()">▶ ストーリーモードで見る（3分）</button></div>
         <div class="login-grid">
           <div class="login-col">
             <h3>研修医の方</h3>
@@ -352,9 +366,18 @@ button{font-family:inherit;cursor:pointer}
         <div class="flow-step"><div class="num">4</div><h4>面談・成約</h4><p>低コストで確実な採用・就業へ</p></div>
       </div>
 
+      <h3 class="sec-title">なぜ「今」なのか — 政策・市場のタイムライン</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="num">2024</div><h4>医師の働き方改革 施行</h4><p>時間外上限 960h／特例1,860h。人海戦術から適正配置へ</p></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step"><div class="num">2025</div><h4>透明化と公共インフラ</h4><p>4月 紹介手数料のWeb公開義務化／11月 日本医師会ドクターバンク発足（厚労省事業）</p></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step chainstep"><div class="num">2026</div><h4>医師偏在対策 施行</h4><p>4月 重点医師偏在対策支援区域（約100区域）。地域への医師還流を支える基盤が必要に</p></div>
+      </div>
+
       <h3 class="sec-title">ログイン（デモ用・立場を選択）</h3>
-      <div class="guide">💡 <b>デモの見かた：</b>① 「医師」でログインし、気になる求人に紹介依頼 → ② 「医療機関」に切り替えると依頼が届いており、面談オファーを返せます → ③ 医師側に戻るとオファーが反映されています。</div>
-      <div class="login-grid">
+      <div class="guide">💡 <b>デモの見かた：</b>① 「医師」でログインし、気になる求人に紹介依頼 → ② 「医療機関」に切り替えると依頼が届いており、面談オファーを返せます → ③ 「ドクターバンク」では候補の自動抽出とKPIを確認できます。</div>
+      <div class="login-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
         <div class="login-col">
           <h3>医師の方</h3>
           <p>検証済みキャリアで、希望に合う職場を探す</p>
@@ -363,8 +386,21 @@ button{font-family:inherit;cursor:pointer}
         <div class="login-col">
           <h3>医療機関の方</h3>
           <p>検証済みの候補者情報で、確実な採用を</p>
-          <button class="role-btn" onclick="mmLogin('org')"><span class="ic">🏥</span><span><b>医療機関として登録・ログイン</b><small>求人掲載／候補者確認／面談オファー</small></span></button>
+          <button class="role-btn" onclick="mmLogin('org')"><span class="ic">🏥</span><span><b>医療機関として登録・ログイン</b><small>求人掲載／候補者確認／面談オファー／定着KPI</small></span></button>
         </div>
+        <div class="login-col">
+          <h3>医師会・行政の方</h3>
+          <p>無料職業紹介の成約率を、補助ツールで高める</p>
+          <button class="role-btn" onclick="mmLogin('bank')"><span class="ic">🏛️</span><span><b>ドクターバンク コーディネーターとしてログイン</b><small>候補自動抽出／検証済み比較／成約KPI</small></span></button>
+        </div>
+      </div>
+
+      <h3 class="sec-title">設計原則（個人情報・セキュリティ）</h3>
+      <div class="login-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+        <div class="login-col"><h3>🚫 患者情報は扱わない</h3><p>扱うのは医師本人のキャリア情報のみ。診療情報・患者データには一切触れない設計。</p></div>
+        <div class="login-col"><h3>⛓ チェーンにはハッシュのみ</h3><p>ブロックチェーンに載るのは真正性確認用のハッシュ。原本データは安全なDBで管理し、公開されない。</p></div>
+        <div class="login-col"><h3>🔐 本人同意ベースの提示</h3><p>証明書は本人に帰属し、誰に・どの範囲を見せるかは本人がコントロールする。</p></div>
+        <div class="login-col"><h3>✅ 発行者は限定</h3><p>証明書を発行できるのは研修施設・学会・医師会等に限定し、発行権限を管理する。</p></div>
       </div>
     </div>
 
@@ -394,6 +430,16 @@ button{font-family:inherit;cursor:pointer}
 </div>
 
 <div id="toast"></div>
+
+<!-- story mode bar -->
+<div id="storyBar" class="hidden">
+  <div class="inner">
+    <span class="snum" id="storyNum">1/9</span>
+    <span class="stext" id="storyText"></span>
+    <button class="btn btn-sm" style="background:#fff;color:var(--navy);font-weight:700" onclick="storyNext()">次へ ›</button>
+    <button class="btn btn-sm btn-ghost" style="color:#cbd5e1;border-color:#4b6f9c" onclick="storyEnd()">終了</button>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -785,6 +831,7 @@ function openCertByHash(h){
     </table>
     <div class="qr"></div>
     <div style="font-size:11px;color:var(--sub)">QRコードから第三者が真正性を検証（イメージ）</div>
+    <div style="margin:10px 0"><button class="btn btn-sm btn-chain" onclick="openVerify('${c.hash}')">🔍 第三者検証ページを見る（受け入れ側の画面）</button></div>
     <div class="chain-note">本証明書はブロックチェーン上に記録されており、発行後の書き換え・削除はできません。</div>
   </div>`;
   $("modalBg").classList.remove("hidden");
@@ -864,7 +911,8 @@ const MM={
 };
 const MMROLES={
   doc:{av:"🧑‍⚕️", name:"田中 太郎 先生", role:"医師会員｜内科専門医（ブロックチェーン証明 連携済 ✓）"},
-  org:{av:"🏥",   name:"栃木県立○○病院", role:"採用ご担当者様｜ドクターバンク登録医療機関"}
+  org:{av:"🏥",   name:"栃木県立○○病院", role:"採用ご担当者様｜ドクターバンク登録医療機関"},
+  bank:{av:"🏛️", name:"栃木県医師会 ドクターバンク", role:"コーディネーター｜無料職業紹介（MEDMATCH補助ツール利用）"}
 };
 let mmCurrent=null;
 function mmLogin(r){mmCurrent=r;$("mmLanding").classList.add("hidden");$("mmDash").classList.remove("hidden");
@@ -883,7 +931,7 @@ function mmStepper(stage){ // 1紹介依頼 2ドクターバンク受付 3面談
 
 function mmRender(){
   if(!mmCurrent)return;
-  $("mmBody").innerHTML = mmCurrent==="doc"? mmViewDoc() : mmViewOrg();
+  $("mmBody").innerHTML = mmCurrent==="doc"? mmViewDoc() : mmCurrent==="org"? mmViewOrg() : mmViewBank();
 }
 
 /* ----- 医師ビュー ----- */
@@ -911,7 +959,12 @@ function mmViewDoc(){
   </div>
   <div class="card"><h3>👤 マイプロフィール（入力ほぼ不要）</h3>
     <p style="font-size:13px;color:var(--sub)">SBI-Uチャレンジの証明書ウォレットと連携済みのため、<b style="color:var(--chain)">経歴・専門医資格は検証済み ✓</b> として扱われます。履歴書・証明書類の提出は不要です。</p>
-    <div style="margin-top:10px;font-size:12.5px">希望条件：<span class="pill pill-blue">勤務地 栃木県・東京都</span> <span class="pill pill-blue">週4日・時短相談</span> <span class="pill pill-blue">外来中心</span> <button class="btn btn-sm btn-ghost" onclick="toast('（デモ）希望条件の編集画面が開く想定です')">編集</button></div></div>
+    <div style="margin-top:10px;font-size:12.5px">希望条件：<span class="pill pill-blue">勤務地 栃木県・東京都</span> <span class="pill pill-blue">週4日・時短相談</span> <span class="pill pill-blue">外来中心</span> <button class="btn btn-sm btn-ghost" onclick="toast('（デモ）希望条件の編集画面が開く想定です')">編集</button></div>
+    <div class="share-pill" style="margin-top:10px;font-size:12px"><b style="color:var(--chain)">🔐 提示範囲（本人がコントロール）：</b>
+      <label><input type="checkbox" checked onchange="toast('ドクターバンクへの提示を'+(this.checked?'ON':'OFF')+'にしました（本人同意ベース）')"> ドクターバンク</label>
+      <label><input type="checkbox" checked onchange="toast('応募先医療機関への提示を'+(this.checked?'ON':'OFF')+'にしました')"> 応募先の医療機関</label>
+      <label><input type="checkbox" onchange="toast('その他の紹介会社への提示を'+(this.checked?'ON':'OFF')+'にしました')"> その他の紹介会社</label>
+    </div></div>
   <div class="card"><h3>🎯 あなたへのマッチング求人</h3>${rows}
     <p style="font-size:11.5px;color:var(--sub);margin-top:6px">🤝マークの求人は医師会ドクターバンクの取扱い案件です。紹介・成約はドクターバンク（無料職業紹介）を通じて行われ、MEDMATCHは候補抽出と経歴証明の連携でこれを補助します。</p></div>`;
 }
@@ -923,9 +976,10 @@ function mmViewOrg(){
     let act="",stage=2,pill='<span class="pill pill-amber">紹介依頼 受信</span>';
     if(j.status==="requested"){act=`<button class="btn btn-sm btn-approve" onclick="mmOffer(${j.id})">📩 面談オファーを送る</button>`;}
     else {pill='<span class="pill pill-green">オファー送信済</span>';stage=3;}
+    const save=j.status==="offer"?`<div style="margin-top:8px;font-size:12.5px;font-weight:700;color:var(--green)">💰 成立時の採用コスト：約120万円（年収1,500万円×8%）— 従来の平均335.9万円と比べ <span style="font-size:15px">約216万円の節約</span></div>`:"";
     return `<div class="item"><div class="item-head"><div><b>Dr. T（匿名）→「${j.title}」への紹介依頼</b>
       <small>ドクターバンク経由 ｜ 内科専門医 <span class="verify-badge">✓ ブロックチェーン証明で経歴検証済（書類確認不要）</span></small></div>
-      <div class="item-actions">${pill}${act}</div></div>${mmStepper(stage)}</div>`;
+      <div class="item-actions">${pill}${act}</div></div>${save}${mmStepper(stage)}</div>`;
   }).join("")
   :`<p style="font-size:13px;color:var(--sub)">現在、新しい紹介依頼はありません。（医師ロールで紹介依頼をすると、ここに届きます）</p>`;
   const candRows=MM.candidates.map(c=>{
@@ -944,13 +998,96 @@ function mmViewOrg(){
   <div class="card"><h3>📥 ドクターバンク経由の紹介依頼</h3>${reqRows}</div>
   <div class="card"><h3>🔎 マッチ候補の医師（匿名）</h3>${candRows}
     <p style="font-size:11.5px;color:var(--sub);margin-top:6px">候補者の経歴はブロックチェーン証明で検証済み。従来必要だった経歴照会・証明書類の突合が不要になり、採用リードタイムを短縮できます。</p></div>
-  <div class="card"><h3>💰 採用コストの比較（イメージ）</h3>
+  <div class="card"><h3>💰 採用コストの比較（実データに基づく）</h3>
     <div class="cost-bars">
-      <div class="row"><span class="lbl">民間紹介会社（相場 約20〜22%）</span><div class="bar" style="width:220px;background:#e5a0a0"></div><span>年収の約2割</span></div>
-      <div class="row"><span class="lbl">ドクターバンク＋MEDMATCH補助</span><div class="bar" style="width:30px;background:var(--teal)"></div><span>紹介無料＋低額システム利用料</span></div>
+      <div class="row"><span class="lbl">民間紹介会社（平均 22.7%）</span><div class="bar" style="width:336px;background:#e5a0a0"></div><span><b>335.9万円/人</b>（東京病院協会調査）</span></div>
+      <div class="row"><span class="lbl">MEDMATCH（成功報酬 8%）</span><div class="bar" style="width:120px;background:var(--blue)"></div><span><b>120万円</b>（年収1,500万円想定）</span></div>
+      <div class="row"><span class="lbl">バンク経由＋MEDMATCH補助</span><div class="bar" style="width:20px;background:var(--teal)"></div><span>紹介無料＋低額システム利用料</span></div>
     </div>
-    <p style="font-size:11.5px;color:var(--sub)">医師会の無料職業紹介を活かしながら、MEDMATCHがマッチング精度と事務効率を補完する運用イメージです。</p></div>`;
+    <p style="font-size:11px;color:var(--sub)">出典: 日本医師会・四病院団体協議会資料（東京病院協会調査、2026年3月）med.or.jp/dl-med/teireikaiken/20260318_1.pdf ／ 医師会の無料職業紹介を活かしながら、MEDMATCHが精度と事務効率を補完します。</p></div>
+  <div class="card"><h3>📈 定着KPI — 採用して終わりにしない <span class="pill pill-gray">デモ用ダミー値</span></h3>
+    <div class="kpibar"><span class="kl">6か月定着率</span><div class="kb" style="width:276px;background:var(--green)"></div><b>92%</b></div>
+    <div class="kpibar"><span class="kl">12か月定着率</span><div class="kb" style="width:261px;background:#6aa84f"></div><b>87%</b></div>
+    <div class="kpibar"><span class="kl">（参考）従来紹介の定着</span><div class="kb" style="width:225px;background:#c9c9c9"></div><span style="color:var(--sub)">75%想定</span></div>
+    <p style="font-size:12px;color:var(--sub);margin-top:6px">ミスマッチ要因の上位（当直条件の齟齬／診療科ニーズの不一致／通勤・居住条件）を蓄積し、次回マッチング精度に反映。<b>成約数ではなく定着を成果指標</b>にします。</p></div>`;
 }
+
+/* ----- ドクターバンク・コーディネータービュー ----- */
+function mmViewBank(){
+  const cands=[
+    {n:"Dr. T（匿名）",d:"内科専門医・卒後10年／週4日希望・栃木県",m:94},
+    {n:"Dr. A（匿名）",d:"内科専門医・卒後8年／週4日希望",m:91},
+    {n:"Dr. B（匿名）",d:"総合内科・卒後12年／時短希望",m:84},
+  ];
+  const rows=cands.map(c=>`<div class="item"><div class="item-head" style="align-items:center">
+    <div style="display:flex;gap:12px;align-items:center"><span class="match-badge ${c.m>=90?"match-hi":"match-mid"}">${c.m}%</span>
+    <div><b>${c.n}</b><small>${c.d} ｜ <span class="verify-badge">✓ 経歴チェーン検証済（照会不要）</span></small></div></div>
+    <div class="item-actions"><button class="btn btn-sm btn-primary" onclick="toast('（デモ）候補として医療機関へ紹介状を作成します（無料職業紹介として実施）')">この候補を紹介する</button></div></div></div>`).join("");
+  return `
+  <div class="kpis">
+    <div class="kpi"><div class="v">128名</div><div class="l">検証済み登録医師（デモ値）</div></div>
+    <div class="kpi"><div class="v">34件</div><div class="l">受付中の求人</div></div>
+    <div class="kpi"><div class="v chaincol">6件</div><div class="l">今月の成約（照会作業ゼロ）</div></div>
+  </div>
+  <div class="card"><h3>🎯 求人「内科 医員（常勤・週4日可）／栃木県立○○病院」への候補自動抽出</h3>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:10px">MEDMATCHが検証済みキャリア×希望条件から候補を自動抽出。従来コーディネーターが手作業で行っていた突合・照会が不要になり、<b>紹介の質とスピード</b>が上がります。紹介・成約はこれまで通りドクターバンク（無料職業紹介）として行います。</p>
+    ${rows}</div>
+  <div class="card"><h3>📊 バンク運営KPI <span class="pill pill-gray">デモ用ダミー値</span></h3>
+    <div class="kpibar"><span class="kl">成約までの平均日数</span><div class="kb" style="width:90px;background:var(--teal)"></div><b>18日</b><span style="color:var(--sub)">（従来 42日）</span></div>
+    <div class="kpibar"><span class="kl">経歴確認の作業時間</span><div class="kb" style="width:15px;background:var(--teal)"></div><b>ほぼゼロ</b><span style="color:var(--sub)">（チェーン検証で自動化）</span></div>
+    <div class="kpibar"><span class="kl">紹介1件あたりの候補比較数</span><div class="kb" style="width:150px;background:var(--blue)"></div><b>5.2名</b><span style="color:var(--sub)">（従来 1〜2名）</span></div>
+    <p style="font-size:11.5px;color:var(--sub);margin-top:6px">MEDMATCHは医師会・自治体には低額のシステム利用料のみ。公共性（無料紹介）を保ったまま、DXの果実を提供します。</p></div>`;
+}
+
+/* ----- 第三者検証ページ（受け入れ側から見た画面） ----- */
+function openVerify(h){
+  const c=S.certs.find(x=>x.hash===h);if(!c)return;
+  $("modalBody").innerHTML=`
+    <div style="text-align:center;padding:8px 0">
+      <div style="font-size:12px;color:var(--sub)">🔍 第三者検証ページ（QRを読み取った受け入れ側に見える画面のイメージ）</div>
+      <div class="mining" style="margin:26px 0;font-size:14px">⛓ ブロックチェーン上の記録と照合中…</div>
+    </div>`;
+  setTimeout(()=>{
+    $("modalBody").innerHTML=`
+    <div style="padding:4px">
+      <div style="font-size:12px;color:var(--sub);text-align:center;margin-bottom:10px">🔍 第三者検証ページ（受け入れ側の画面イメージ）</div>
+      <div style="text-align:center;font-size:40px">✅</div>
+      <div style="text-align:center;font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px">検証成功 — 記録は改ざんされていません</div>
+      <div class="vrow"><span>証明書</span><b>${c.title}</b></div>
+      <div class="vrow"><span>被証明者</span><b>${c.holder}</b></div>
+      <div class="vrow"><span>発行者</span><span>${c.issuer}</span></div>
+      <div class="vrow"><span>発行日</span><span>${c.date}</span></div>
+      <div class="vrow"><span>ハッシュ照合</span><span class="vok">✓ チェーン上の記録と一致</span></div>
+      <div class="vrow"><span>発行元の権限</span><span class="vok">✓ 認定発行者（研修施設）</span></div>
+      <p style="font-size:11.5px;color:var(--sub);margin-top:12px">前施設への電話照会・原本郵送・書類突合は不要です。この検証は誰でも・数秒で・無料で行えます（TuringCerts等の基盤を利用するイメージ）。</p>
+      <div style="text-align:center;margin-top:10px"><button class="btn btn-sm btn-ghost" onclick="openCertByHash('${c.hash}')">← 証明書表示に戻る</button></div>
+    </div>`;
+  },1400);
+}
+
+/* ----- ストーリーモード（佐藤花先生の3分） ----- */
+const STORY=[
+ {t:"👩‍⚕️ 佐藤 花 先生（初期研修2年目）の物語です。これは彼女のダッシュボード。既に3科のローテートがブロックチェーン証明済みです。", a:()=>login('jr')},
+ {t:"循環器内科のローテートを終えました。「修了証明を申請する」をワンクリック——紙の申請書も押印も不要です。", a:()=>{login('jr');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='awaiting_apply')applyRotation('junkan');}},
+ {t:"プログラム責任者・高橋先生の画面に申請が届きました。要件充足はシステムが確認済み。承認と同時に証明書が発行されます。", a:()=>login('chief')},
+ {t:"⛓ 承認しました。約100円のコストでブロックチェーンに記録され、改ざん不可能な証明書に。（表示された証明書を確認したら×で閉じてください）", a:()=>{login('chief');const j=S.rotations.find(r=>r.id==='junkan');if(j.status==='applied')approveRotation('junkan');}},
+ {t:"数ヶ月後——佐藤先生は出産のため研修の中断を申請します。従来なら「実績が消える不安」がキャリア断念の一因でした。", a:()=>{login('jr');if(!S.tr.jr)trApply('jr','中断');}},
+ {t:"責任者は検証済み記録を確認して中断を承認。実績はチェーン上に保全され、1単位も失われません。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
+ {t:"1年後、佐藤先生は復帰し、家庭の事情でB大学病院への異動を申請します。従来は施設間の照会・書類のやり直しが必要でした。", a:()=>{S.tr.jr=null;login('jr');trApply('jr','異動');}},
+ {t:"B大学病院の責任者には「不足単位・症例の自動算出」付きで申請が届き、即日で受け入れを判断。引継ぎ証明が発行されます。", a:()=>{login('chief');if(S.tr.jr&&S.tr.jr.status==='applied')trApprove('jr');}},
+ {t:"佐藤先生のウォレットには全実績が残っています。中断しても、移動しても、キャリアは途切れない——これがMEDMATCH構想の土台です。🎉", a:()=>login('jr')},
+];
+let storyIdx=-1;
+function storyStart(){storyIdx=-1;$("storyBar").classList.remove("hidden");storyNext();}
+function storyNext(){
+  storyIdx++;
+  if(storyIdx>=STORY.length){storyEnd();toast("🎉 ストーリー終了。「その先へ（Medmatch）」タブもぜひご覧ください");return;}
+  $("storyNum").textContent=(storyIdx+1)+"/"+STORY.length;
+  $("storyText").textContent=STORY[storyIdx].t;
+  try{STORY[storyIdx].a();}catch(e){}
+  window.scrollTo({top:0});
+}
+function storyEnd(){$("storyBar").classList.add("hidden");storyIdx=-1;}
 
 /* ----- actions ----- */
 function mmRequest(id){
