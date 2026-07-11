@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="復職Ready AIの事業構想を体験するためのGPTWork改良版デモ。診断・治療・復職可否判定は行いません。">
+  <title>復職Ready AI｜デモ版（GPTWork）</title>
+  <style>
+    :root {
+      --navy: #173b68;
+      --navy-2: #0f2b4d;
+      --teal: #087f8c;
+      --teal-soft: #e8f6f7;
+      --orange: #d87916;
+      --orange-soft: #fff4e6;
+      --red: #c43d36;
+      --red-soft: #fff0ee;
+      --green: #2f7d5d;
+      --green-soft: #edf8f2;
+      --ink: #172334;
+      --muted: #607087;
+      --line: #d8e0e8;
+      --surface: #ffffff;
+      --bg: #f4f7fa;
+      --shadow: 0 12px 30px rgba(23, 59, 104, .10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      line-height: 1.7;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--navy); }
+    :focus-visible { outline: 3px solid #ffb34c; outline-offset: 3px; }
+
+    .skip-link {
+      position: fixed;
+      left: 12px;
+      top: -60px;
+      z-index: 1000;
+      padding: 10px 14px;
+      background: white;
+      border-radius: 8px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .notice {
+      background: var(--navy-2);
+      color: white;
+      padding: 10px 18px;
+      text-align: center;
+      font-size: .88rem;
+    }
+    .notice strong { color: #ffd18a; }
+
+    header {
+      color: white;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(36, 181, 194, .30), transparent 32%),
+        linear-gradient(135deg, var(--navy-2), var(--navy));
+      padding: 62px 20px 54px;
+    }
+    .hero {
+      width: min(1120px, 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 34px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+    .hero-copy {
+      margin: 18px 0 0;
+      max-width: 760px;
+      color: #e7f1fc;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      gap: 8px;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-weight: 750;
+      text-decoration: none;
+      transition: .18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: var(--navy-2); background: white; }
+    .btn-secondary { color: white; border-color: rgba(255,255,255,.45); background: transparent; }
+    .btn-navy { color: white; background: var(--navy); }
+    .btn-teal { color: white; background: var(--teal); }
+    .btn-outline { color: var(--navy); background: white; border-color: var(--line); }
+    .btn-danger { color: white; background: var(--red); }
+    .btn-small { min-height: 38px; padding: 7px 12px; font-size: .9rem; }
+
+    .hero-card {
+      padding: 24px;
+      color: var(--ink);
+      background: rgba(255,255,255,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-card h2 { margin: 0 0 12px; color: var(--navy); font-size: 1.05rem; }
+    .hero-card ul { margin: 0; padding-left: 1.3rem; }
+    .hero-card li + li { margin-top: 6px; }
+
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+    }
+    .sticky-nav-inner {
+      width: max-content;
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 14px;
+    }
+    .sticky-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 700;
+    }
+    .sticky-nav a:hover { background: #eef3f8; }
+
+    main { width: min(1120px, calc(100% - 32px)); margin: 34px auto 80px; }
+    section { scroll-margin-top: 76px; margin-top: 34px; }
+    .section-head { margin-bottom: 18px; }
+    .kicker { color: var(--teal); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    h2 { margin: 4px 0 8px; color: var(--navy); font-size: clamp(1.45rem, 3vw, 2rem); line-height: 1.35; }
+    h3 { margin: 0 0 10px; color: var(--navy); line-height: 1.4; }
+    .lead { margin: 0; color: var(--muted); }
+    .card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 6px 20px rgba(23,59,104,.05);
+    }
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .mini-card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+    .mini-card p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 10px;
+      border-radius: 50%;
+      color: white;
+      background: var(--navy);
+      font-weight: 800;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: #076672;
+      font-size: .77rem;
+      font-weight: 800;
+    }
+    .tag-orange { background: var(--orange-soft); color: #9a540c; }
+    .tag-green { background: var(--green-soft); color: #27694f; }
+    .tag-red { background: var(--red-soft); color: #a52f2a; }
+
+    .callout {
+      padding: 16px 18px;
+      border-left: 5px solid var(--teal);
+      border-radius: 10px;
+      background: var(--teal-soft);
+    }
+    .callout p { margin: 0; }
+    .callout-warning { border-left-color: var(--orange); background: var(--orange-soft); }
+    .callout-danger { border-left-color: var(--red); background: var(--red-soft); }
+
+    .video-shell { overflow: hidden; padding: 0; }
+    .video-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      color: white;
+      background: var(--navy-2);
+    }
+    .video-stage {
+      min-height: 330px;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+      text-align: center;
+      background: linear-gradient(145deg, #eef5fb, #fff);
+    }
+    .slide { display: none; max-width: 760px; }
+    .slide.active { display: block; animation: fade .25s ease; }
+    .slide-icon { font-size: 2.7rem; }
+    .slide h3 { margin-top: 10px; font-size: clamp(1.35rem, 3vw, 2rem); }
+    .slide p { color: var(--muted); }
+    .video-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+    }
+    .dots { display: flex; gap: 7px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #c8d3df; }
+    .dot.active { background: var(--teal); }
+
+    .consent-list { display: grid; gap: 12px; margin: 18px 0; }
+    .check-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcfd;
+    }
+    .check-row input { width: 20px; height: 20px; margin-top: 2px; }
+    .status-line { min-height: 1.7em; color: var(--muted); font-size: .9rem; }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0,1fr));
+      gap: 10px;
+    }
+    .day {
+      min-height: 112px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: white;
+      text-align: left;
+    }
+    .day:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(8,127,140,.12); }
+    .day.active { color: white; background: var(--navy); border-color: var(--navy); }
+    .day.weekend { background: #f4f3f0; }
+    .day.active.weekend { background: var(--navy); }
+    .day strong { display: block; margin-bottom: 5px; }
+    .day span { font-size: .78rem; line-height: 1.35; }
+    .day-detail { margin-top: 16px; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    label { color: var(--navy); font-weight: 700; }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #bdc9d6;
+      border-radius: 10px;
+      color: var(--ink);
+      background: white;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    .helper { color: var(--muted); font-size: .82rem; font-weight: 400; }
+    .output {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #b8dadd;
+      border-radius: 14px;
+      background: var(--teal-soft);
+    }
+    .output[hidden] { display: none; }
+    .output p { margin: 5px 0; }
+
+    .route-buttons { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .route {
+      min-height: 92px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      font-weight: 750;
+    }
+    .route:hover { border-color: var(--navy); }
+    .route-result { margin-top: 16px; }
+    .route-result[data-level="1"] { border-left-color: var(--green); background: var(--green-soft); }
+    .route-result[data-level="2"] { border-left-color: var(--orange); background: var(--orange-soft); }
+    .route-result[data-level="3"] { border-left-color: var(--red); background: var(--red-soft); }
+
+    .share-controls { display: grid; gap: 10px; margin: 14px 0; }
+    .share-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .switch { width: 46px; height: 26px; position: relative; }
+    .switch input { opacity: 0; width: 1px; height: 1px; }
+    .switch span {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #b9c4ce;
+      transition: .18s;
+    }
+    .switch span::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: white;
+      transition: .18s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .switch input:checked + span { background: var(--teal); }
+    .switch input:checked + span::after { transform: translateX(20px); }
+
+    .report {
+      padding: 26px;
+      border: 1px solid #c8d1db;
+      border-radius: 8px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .report-head { padding-bottom: 16px; border-bottom: 3px solid var(--navy); }
+    .report-head h3 { margin: 0; font-size: 1.4rem; }
+    .report-meta { color: var(--muted); font-size: .86rem; }
+    .report-section { padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .report-section:last-child { border-bottom: 0; }
+    .report-section h4 { margin: 0 0 7px; color: var(--navy); }
+    .data-label { display: inline-block; margin-right: 6px; padding: 2px 7px; border-radius: 5px; background: #edf1f5; font-size: .72rem; font-weight: 800; }
+    .report-limit { padding: 12px; background: #f6f7f9; color: var(--muted); font-size: .82rem; }
+
+    .privacy-diagram { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .privacy-col { padding: 18px; border-radius: 14px; }
+    .private { background: #f0f2f5; }
+    .occupational { background: var(--teal-soft); }
+    .company { background: var(--orange-soft); }
+    .privacy-col ul { margin: 10px 0 0; padding-left: 1.15rem; font-size: .88rem; }
+
+    .reset-bar { display: flex; justify-content: flex-end; margin-top: 18px; }
+    footer { padding: 34px 20px; color: #d8e6f3; background: var(--navy-2); text-align: center; font-size: .86rem; }
+    footer a { color: white; }
+
+    @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+      .calendar { grid-template-columns: repeat(4, 1fr); }
+      .privacy-diagram { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      header { padding-top: 44px; }
+      main { width: min(100% - 20px, 1120px); }
+      .card { padding: 18px; }
+      .grid-2, .grid-4, .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .calendar { grid-template-columns: repeat(2, 1fr); }
+      .day { min-height: 92px; }
+      .route-buttons { grid-template-columns: 1fr; }
+      .video-stage { min-height: 390px; padding: 24px 16px; }
+      .video-controls { flex-wrap: wrap; }
+      .report { padding: 18px; }
+    }
+    @media print {
+      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #work, #safety, #privacy { display: none !important; }
+      body, main { background: white; margin: 0; width: 100%; }
+      #report { margin: 0; }
+      #report .section-head, #report .share-controls, #report .callout { display: none; }
+      .report { box-shadow: none; border: 0; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="notice"><strong>事業構想デモ</strong>　架空データのみ使用／診断・治療・復職可否判定は行いません</div>
+
+  <header>
+    <div class="hero">
+      <div>
+        <div class="eyebrow">SBI-Uチャレンジ 2026｜GPTWork改良版</div>
+        <h1>復職Ready AI</h1>
+        <p class="hero-copy">空白の2週間を、復職準備の2週間に。記録して、試して、振り返る。判断するのはAIではなく、本人・主治医・産業医・会社です。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#video">安全説明から体験する</a>
+          <a class="btn btn-secondary" href="#report">レポートを見る</a>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="このデモで体験できること">
+        <h2>このデモで体験できること</h2>
+        <ul>
+          <li>利用開始時の安全説明と本人同意</li>
+          <li>14日間の標準プログラム</li>
+          <li>朝チェックインと模擬ワーク記録</li>
+          <li>体調変化時の安全ルーティング</li>
+          <li>本人が共有項目を選ぶ復職準備レポート</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="sticky-nav" aria-label="ページ内メニュー">
+    <div class="sticky-nav-inner">
+      <a href="#overview">概要</a>
+      <a href="#video">安全説明</a>
+      <a href="#program">14日プログラム</a>
+      <a href="#checkin">朝チェック</a>
+      <a href="#work">模擬ワーク</a>
+      <a href="#safety">安全導線</a>
+      <a href="#report">レポート</a>
+      <a href="#privacy">情報共有</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section id="overview">
+      <div class="section-head">
+        <div class="kicker">CONCEPT</div>
+        <h2>主治医の判断後、会社の最終判断前を支える</h2>
+        <p class="lead">復職Ready AIは、本人の準備状況を記録・整理し、産業医面談や職場の受け入れ準備に使う補助情報を作る構想です。</p>
+      </div>
+      <div class="grid grid-4">
+        <div class="mini-card"><div class="number">1</div><h3>主治医</h3><p>治療と医学的な職場復帰可能性について意見を示します。</p></div>
+        <div class="mini-card"><div class="number">2</div><h3>本人</h3><p>生活・活動・希望・相談したいことを、自分の言葉で整理します。</p></div>
+        <div class="mini-card"><div class="number">3</div><h3>産業医等</h3><p>業務内容との関係を確認し、会社に必要な意見を示します。</p></div>
+        <div class="mini-card"><div class="number">4</div><h3>会社</h3><p>就業上の配慮や復職支援プランを含め、最終判断を行います。</p></div>
+      </div>
+      <div class="callout" style="margin-top:18px"><p><strong>AIの役割：</strong>説明、記録補助、要約、質問リスト、レポート下書き。医学的判断や人事評価は行いません。</p></div>
+    </section>
+
+    <section id="video">
+      <div class="section-head">
+        <div class="kicker">V00｜ONBOARDING</div>
+        <h2>利用開始・安全説明動画（字幕スライド版）</h2>
+        <p class="lead">実際の動画制作前に、台本と画面遷移を体験するデモです。</p>
+      </div>
+      <div class="card video-shell">
+        <div class="video-top"><strong>約5分｜利用前に必ず確認</strong><span id="videoCount">1 / 5</span></div>
+        <div class="video-stage" aria-live="polite">
+          <article class="slide active"><div class="slide-icon">🌱</div><h3>復職を判定するサービスではありません</h3><p>復職前の生活や活動を記録し、主治医・産業医・会社と相談する材料を整理するためのデモです。</p></article>
+          <article class="slide"><div class="slide-icon">🧭</div><h3>できない日は、休む・短縮・中断を選べます</h3><p>課題の達成度だけで評価されることはありません。無理に続けることを勧めません。</p></article>
+          <article class="slide"><div class="slide-icon">🤖</div><h3>AIは記録を整理するだけ</h3><p>診断、治療、心理療法、服薬の助言、症状の確定、復職可否の判断は行いません。</p></article>
+          <article class="slide"><div class="slide-icon">🔐</div><h3>共有する内容は本人が選びます</h3><p>自由対話や私生活上の事情は標準共有しません。レポートは共有前に本人が修正・削除できます。</p></article>
+          <article class="slide"><div class="slide-icon">☎️</div><h3>体調が悪化したら、プログラムを止めて相談へ</h3><p>主治医や指定された相談先へ連絡してください。直ちに安全確保が必要な場合は、画面操作より安全を優先します。</p></article>
+        </div>
+        <div class="video-controls">
+          <button class="btn btn-outline btn-small" id="prevSlide" type="button">← 戻る</button>
+          <div class="dots" id="slideDots" aria-hidden="true"></div>
+          <button class="btn btn-navy btn-small" id="nextSlide" type="button">次へ →</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>利用前の確認</h3>
+        <p class="lead">これはデモ上の確認です。入力は送信・保存されません。</p>
+        <div class="consent-list">
+          <label class="check-row"><input class="consent" type="checkbox"><span>本サービスが診断・治療・復職可否判定を行わないことを理解しました。</span></label>
+          <label class="check-row"><input class="consent" type="checkbox"><span>課題は任意で、休む・短縮する・中断することができると理解しました。</span></label>
+          <label class="check-row"><input class="consent" type="checkbox"><span>共有する項目は本人が確認・選択することを理解しました。</span></label>
+        </div>
+        <button class="btn btn-teal" id="consentButton" type="button" disabled>同意してデモを開始</button>
+        <p class="status-line" id="consentStatus" role="status">3項目すべての確認が必要です。</p>
+      </div>
+    </section>
+
+    <section id="program">
+      <div class="section-head">
+        <div class="kicker">14-DAY PROGRAM</div>
+        <h2>標準2週間のモデルスケジュール</h2>
+        <p class="lead">Dayを選ぶと内容が変わります。土日は模擬業務を行わず、短い記録と休息を中心にします。</p>
+      </div>
+      <div class="card">
+        <div class="calendar" id="calendar"></div>
+        <div class="callout day-detail" id="dayDetail" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="checkin">
+      <div class="section-head">
+        <div class="kicker">W03｜CHECK-IN</div>
+        <h2>朝チェックイン</h2>
+        <p class="lead">医学的な症状評価ではなく、今日の活動予定を整理するための記録です。</p>
+      </div>
+      <div class="grid grid-2">
+        <form class="card" id="checkinForm">
+          <div class="form-grid">
+            <div class="field"><label for="wakeTime">起床時刻</label><input id="wakeTime" type="time" value="07:00" required></div>
+            <div class="field"><label for="sleepNote">睡眠の本人評価</label><select id="sleepNote"><option>よく眠れた</option><option selected>まずまず</option><option>あまり眠れなかった</option><option>記録しない</option></select></div>
+            <div class="field full"><label for="plan">今日試す活動 <span class="helper">例：読書30分、散歩、PC作業</span></label><input id="plan" value="午前にPCで文章要約を45分試す" required></div>
+            <div class="field full"><label for="pace">今日の進め方</label><select id="pace"><option>予定どおり試す</option><option>短縮して試す</option><option>今日は休む</option><option>主治医等へ相談してから決める</option></select></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-teal" type="submit">記録を整理する</button></div>
+          <p class="status-line">このデモではブラウザ外へ送信されません。</p>
+        </form>
+        <div class="card">
+          <h3>AI風の整理結果</h3>
+          <p class="lead">入力を短く言い換え、本人へ確認します。判定や評価は加えません。</p>
+          <div class="output" id="checkinOutput" hidden></div>
+          <div class="callout callout-warning" style="margin-top:18px"><p>「この状態なら復職できますか？」と聞かれても、AIは判断せず、産業医面談で確認する質問へ変換します。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="section-head">
+        <div class="kicker">W04 / W06｜MOCK WORK</div>
+        <h2>模擬ワークと疲労の記録</h2>
+        <p class="lead">課題の結果を能力検査として扱わず、実施時間・休憩・本人の感想を分けて記録します。</p>
+      </div>
+      <div class="grid grid-2">
+        <form class="card" id="workForm">
+          <div class="form-grid">
+            <div class="field"><label for="taskType">課題</label><select id="taskType"><option>文章要約</option><option>データ入力</option><option>読書とメモ</option><option>架空のメール整理</option></select></div>
+            <div class="field"><label for="duration">実施時間</label><select id="duration"><option>15分</option><option>30分</option><option selected>45分</option><option>60分</option><option>90分</option></select></div>
+            <div class="field"><label for="breaks">休憩</label><select id="breaks"><option>なし</option><option selected>1回</option><option>2回以上</option></select></div>
+            <div class="field"><label for="completion">実施状況</label><select id="completion"><option>予定した範囲まで実施</option><option>途中まで実施</option><option>中断</option><option>未実施</option></select></div>
+            <div class="field full"><label for="fatigue">終了時の疲労（本人評価）</label><select id="fatigue"><option>1：ほとんどない</option><option>2：軽い</option><option selected>3：中程度</option><option>4：強い</option><option>5：非常に強い</option><option>記録しない</option></select></div>
+            <div class="field full"><label for="workNote">気づいたこと</label><textarea id="workNote">30分を過ぎた頃から集中しづらくなったため、5分休憩した。</textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-teal" type="submit">実施記録を作る</button></div>
+        </form>
+        <div class="card">
+          <h3>記録と解釈を分ける</h3>
+          <div class="output" id="workOutput" hidden></div>
+          <div class="callout" style="margin-top:18px"><p><strong>翌朝に確認：</strong>疲労が残ったかを本人が記録します。AIが「回復した／していない」と医学的に確定しません。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="section-head">
+        <div class="kicker">SAFETY ROUTING</div>
+        <h2>体調変化時の安全導線デモ</h2>
+        <p class="lead">臨床的な危険度をAIが判定するのではなく、本人の明示的な申告を契機に定型画面へ切り替えます。</p>
+      </div>
+      <div class="card">
+        <div class="route-buttons">
+          <button class="route" type="button" data-route="1">少し疲れたので負荷を下げたい</button>
+          <button class="route" type="button" data-route="2">体調が悪化した・医療者に相談したい</button>
+          <button class="route" type="button" data-route="3">今すぐ自分の安全が心配</button>
+        </div>
+        <div class="callout route-result" id="routeResult" data-level="1" aria-live="assertive"><p>上の申告例を選ぶと、安全画面の内容が表示されます。</p></div>
+      </div>
+    </section>
+
+    <section id="report">
+      <div class="section-head">
+        <div class="kicker">DAY 14｜REPORT</div>
+        <h2>本人が共有項目を選ぶ復職準備レポート</h2>
+        <p class="lead">下のスイッチを切り替えると、レポートの表示内容が変わります。</p>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>共有範囲</h3>
+          <p class="lead">デモでは産業医共有用を想定しています。本人は共有前に修正・削除できます。</p>
+          <div class="share-controls">
+            <div class="share-row"><span><strong>生活リズムの本人申告</strong><br><small>起床・就寝・日中活動の要約</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-life" checked aria-label="生活リズムを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>通勤トライアル</strong><br><small>日時・所要時間・本人の感想</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-commute" checked aria-label="通勤トライアルを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>模擬作業の実施記録</strong><br><small>時間・休憩・実施状況</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-work" checked aria-label="模擬作業を共有"><span></span></label></div>
+            <div class="share-row"><span><strong>早期サインと相談行動</strong><br><small>本人が承認した部分のみ</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-signs" checked aria-label="早期サインを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>配慮の相談候補</strong><br><small>会社に必ず認められる要求ではありません</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-support" checked aria-label="配慮候補を共有"><span></span></label></div>
+          </div>
+          <div class="callout callout-warning"><p>病名、自由対話全文、私生活上の事情、日次気分スコアは標準共有しません。</p></div>
+          <div style="margin-top:16px"><button class="btn btn-outline" type="button" onclick="window.print()">レポートを印刷プレビュー</button></div>
+        </div>
+
+        <article class="report" aria-label="復職準備レポートのサンプル">
+          <div class="report-head">
+            <h3>復職準備レポート</h3>
+            <div class="report-meta">本人確認済み（サンプル）｜記録期間 Day 1–14｜共有先：産業医</div>
+          </div>
+          <div class="report-section"><h4>1. 本人が面談で相談したいこと</h4><p><span class="data-label">本人記載</span>復帰直後の業務量と、定期面談の頻度について相談したい。</p></div>
+          <div class="report-section" id="r-life"><h4>2. 生活リズム</h4><p><span class="data-label">本人申告</span>Week 2は勤務日に近い時刻で起床した日が多かった。睡眠には日ごとのばらつきがあった。</p></div>
+          <div class="report-section" id="r-commute"><h4>3. 通勤トライアル</h4><p><span class="data-label">課題実施記録</span>2回実施。所要時間48分・51分。本人コメント：「2回目は混雑時間帯を試し、帰宅後に休憩した」。</p></div>
+          <div class="report-section" id="r-work"><h4>4. 模擬作業</h4><p><span class="data-label">課題実施記録</span>文章要約・データ入力を30～90分で実施。休憩を入れると続けやすいとの本人申告あり。</p></div>
+          <div class="report-section" id="r-signs"><h4>5. 早期サインと相談行動</h4><p><span class="data-label">本人承認</span>睡眠不足が続く、メール返信を後回しにする。変化が続いた場合は、上司または産業医へ早めに相談する。</p></div>
+          <div class="report-section" id="r-support"><h4>6. 配慮の相談候補</h4><p><span class="data-label">本人承認</span>当面の残業制限、業務量の段階調整、週1回の短いフォロー面談。</p></div>
+          <div class="report-limit"><strong>本資料の限界：</strong>本人の自己申告とデモ上の課題実施記録をまとめた補助情報です。医学的所見、就労能力の証明、復職可否判定、再休職リスク予測ではありません。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="section-head">
+        <div class="kicker">PRIVACY BY DESIGN</div>
+        <h2>健康情報を一括共有しない</h2>
+        <p class="lead">本人専用、産業医等へ共有可能、会社へ共有可能の3層に分けます。</p>
+      </div>
+      <div class="privacy-diagram">
+        <div class="privacy-col private"><span class="tag">本人専用</span><h3>原則共有しない</h3><ul><li>自由対話全文</li><li>私生活上の事情</li><li>病名・症状の詳細</li><li>主治医への質問下書き</li></ul></div>
+        <div class="privacy-col occupational"><span class="tag tag-green">本人が選択</span><h3>産業医等へ</h3><ul><li>生活・活動の要約</li><li>通勤・模擬作業記録</li><li>相談したい事項</li><li>本人承認済み計画</li></ul></div>
+        <div class="privacy-col company"><span class="tag tag-orange">最小限</span><h3>会社へ</h3><ul><li>配慮の相談候補</li><li>フォロー面談の希望</li><li>本人が選んだ要約</li><li>共有同意の記録</li></ul></div>
+      </div>
+      <div class="reset-bar"><button class="btn btn-outline btn-small" id="resetDemo" type="button">デモ入力を初期化</button></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>復職Ready AI デモ版（GPTWork）｜山岸産業医事務所／合同会社ヤマユウ</p>
+    <p>本ページは事業計画検討用のプロトタイプです。実利用者を対象とした効果検証済みサービスではありません。</p>
+    <p><a href="https://yamayu-sangyoui-oyama.localinfo.jp/">山岸産業医事務所へ戻る</a>　｜　<a href="https://kokoro.mhlw.go.jp/agency/" target="_blank" rel="noopener">公的な相談窓口案内</a></p>
+  </footer>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const dots = document.getElementById('slideDots');
+      const count = document.getElementById('videoCount');
+      let slideIndex = 0;
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dots.appendChild(dot);
+      });
+      const renderSlide = () => {
+        slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
+        [...dots.children].forEach((d, i) => d.classList.toggle('active', i === slideIndex));
+        count.textContent = `${slideIndex + 1} / ${slides.length}`;
+        document.getElementById('prevSlide').disabled = slideIndex === 0;
+        document.getElementById('nextSlide').textContent = slideIndex === slides.length - 1 ? '最初に戻る' : '次へ →';
+      };
+      document.getElementById('prevSlide').addEventListener('click', () => { slideIndex = Math.max(0, slideIndex - 1); renderSlide(); });
+      document.getElementById('nextSlide').addEventListener('click', () => { slideIndex = slideIndex === slides.length - 1 ? 0 : slideIndex + 1; renderSlide(); });
+      renderSlide();
+
+      const consents = [...document.querySelectorAll('.consent')];
+      const consentButton = document.getElementById('consentButton');
+      const consentStatus = document.getElementById('consentStatus');
+      const updateConsent = () => {
+        const ready = consents.every(c => c.checked);
+        consentButton.disabled = !ready;
+        consentStatus.textContent = ready ? '確認が完了しました。デモを開始できます。' : '3項目すべての確認が必要です。';
+      };
+      consents.forEach(c => c.addEventListener('change', updateConsent));
+      consentButton.addEventListener('click', () => {
+        consentStatus.textContent = 'デモを開始しました。次に14日プログラムをご覧ください。';
+        document.getElementById('program').scrollIntoView({behavior:'smooth'});
+      });
+
+      const days = [
+        ['Day 1','説明と目標','安全説明、役割の理解、2週間で確認したいことを整理します。'],
+        ['Day 2','生活リズム','起床・就寝・日中活動を記録し、短い模擬作業を試します。'],
+        ['Day 3','作業と休憩','作業時間、休憩、終了時の疲労を分けて記録します。'],
+        ['Day 4','疾病理解①','うつ病に関する一般教育。診断や治療の助言は行いません。'],
+        ['Day 5','通勤①','混雑を避けた時間帯で経路を確認する例です。無理な実施はしません。'],
+        ['Day 6','週末・休息','朝夕の短い記録のみ。模擬業務は行いません。'],
+        ['Day 7','週末振り返り','Week 1のAI要約を本人が確認・修正します。'],
+        ['Day 8','疾病理解②','ストレス反応と不安の一般教育、60～90分の模擬作業例。'],
+        ['Day 9','勤務時間帯','午前・午後に分けて活動を試し、休憩と疲労を記録します。'],
+        ['Day 10','早期サイン','身体・気分・考え・行動の変化を本人の言葉で整理します。'],
+        ['Day 11','通勤②','想定出勤時間帯の通勤例。安全と主治医等の方針を優先します。'],
+        ['Day 12','配慮と相談','配慮候補、相談相手、面談で聞きたいことを整理します。'],
+        ['Day 13','週末・休息','朝夕の短い記録と相談先の再確認。'],
+        ['Day 14','本人確認','レポートを修正し、共有する項目を本人が選びます。']
+      ];
+      const calendar = document.getElementById('calendar');
+      const detail = document.getElementById('dayDetail');
+      const selectDay = (i) => {
+        [...calendar.children].forEach((b, j) => b.classList.toggle('active', i === j));
+        detail.innerHTML = `<p><strong>${days[i][0]}｜${days[i][1]}</strong><br>${days[i][2]}</p>`;
+      };
+      days.forEach((d, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'day' + ([5,6,12].includes(i) ? ' weekend' : '');
+        b.innerHTML = `<strong>${d[0]}</strong><span>${d[1]}</span>`;
+        b.addEventListener('click', () => selectDay(i));
+        calendar.appendChild(b);
+      });
+      selectDay(0);
+
+      document.getElementById('checkinForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const out = document.getElementById('checkinOutput');
+        out.hidden = false;
+        out.innerHTML = `<p><strong>記録案</strong></p><p>起床：${document.getElementById('wakeTime').value}／睡眠の本人評価：${document.getElementById('sleepNote').value}</p><p>今日の予定：${escapeHtml(document.getElementById('plan').value)}</p><p>進め方：${document.getElementById('pace').value}</p><p><strong>確認：</strong>この要約でよいですか。後から修正できます。</p>`;
+      });
+
+      document.getElementById('workForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const out = document.getElementById('workOutput');
+        out.hidden = false;
+        out.innerHTML = `<p><strong>課題実施記録</strong></p><p>${document.getElementById('taskType').value}を${document.getElementById('duration').value}、休憩${document.getElementById('breaks').value}で実施。</p><p>実施状況：${document.getElementById('completion').value}／終了時の疲労：${document.getElementById('fatigue').value}</p><p><span class="data-label">本人記載</span>${escapeHtml(document.getElementById('workNote').value)}</p><p><strong>AIは、この記録から就労能力や復職可否を判断しません。</strong></p>`;
+      });
+
+      document.querySelectorAll('[data-route]').forEach(button => {
+        button.addEventListener('click', () => {
+          const level = button.dataset.route;
+          const result = document.getElementById('routeResult');
+          result.dataset.level = level;
+          if (level === '1') result.innerHTML = '<p><strong>課題を調整できます。</strong><br>短縮・延期・今日は休む、から選べます。未実施を失敗扱いしません。</p>';
+          if (level === '2') result.innerHTML = '<p><strong>通常プログラムを一時停止します。</strong><br>主治医、産業医、または会社から指定された相談窓口へ連絡してください。AIとの自由対話は続けず、安全案内画面へ切り替えます。</p>';
+          if (level === '3') result.innerHTML = '<p><strong>画面操作より、今の安全確保を優先してください。</strong><br>一人にならず、身近な人や緊急機関へ助けを求めてください。日本国内で直ちに救急対応が必要な場合は119へ。AIは危険度の診断や説得を続けません。</p>';
+        });
+      });
+
+      document.querySelectorAll('.share-toggle').forEach(toggle => {
+        toggle.addEventListener('change', () => {
+          const target = document.getElementById(toggle.dataset.target);
+          target.hidden = !toggle.checked;
+        });
+      });
+
+      document.getElementById('resetDemo').addEventListener('click', () => {
+        document.querySelectorAll('form').forEach(f => f.reset());
+        consents.forEach(c => c.checked = false);
+        document.querySelectorAll('.share-toggle').forEach(t => { t.checked = true; document.getElementById(t.dataset.target).hidden = false; });
+        document.getElementById('checkinOutput').hidden = true;
+        document.getElementById('workOutput').hidden = true;
+        document.getElementById('routeResult').dataset.level = '1';
+        document.getElementById('routeResult').innerHTML = '<p>上の申告例を選ぶと、安全画面の内容が表示されます。</p>';
+        updateConsent();
+        slideIndex = 0;
+        renderSlide();
+        selectDay(0);
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+      }
+    })();
+  </script>
+</body>
+</html>
