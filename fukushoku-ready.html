@@ -121,6 +121,20 @@
   .backlink{display:inline-block;margin:0 0 14px;font-size:13px;color:var(--primary);text-decoration:none;}
   .disclaimer-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;color:var(--sub);margin-top:18px;}
   .disclaimer-box b{color:var(--ink);}
+  /* video placeholder */
+  .video-ph{position:relative;background:linear-gradient(135deg,#123c4e,#0e6e8c);border-radius:12px;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:8px;margin:10px 0;}
+  .video-ph .play{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .video-ph .vp-label{font-size:12px;opacity:.9;}
+  .video-ph .vp-badge{position:absolute;top:10px;left:10px;background:var(--accent);font-size:10px;border-radius:4px;padding:2px 8px;}
+  /* form mock */
+  .form-mock label{display:block;font-size:12px;font-weight:700;color:var(--primary-dark);margin:12px 0 4px;}
+  .form-mock textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);min-height:60px;resize:vertical;line-height:1.6;}
+  .form-mock .hint{font-size:11px;color:var(--sub);margin-top:2px;}
+  .step-flow{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;}
+  .step-flow .st{flex:1;min-width:150px;background:var(--primary-light);border-radius:10px;padding:10px;font-size:12px;}
+  .step-flow .st b{display:block;color:var(--primary-dark);font-size:12.5px;margin-bottom:2px;}
+  .case-box{background:#fffdf7;border:1px dashed var(--accent);border-radius:10px;padding:12px;font-size:13px;margin:10px 0;}
+  .goal-band{background:var(--accent-light);border:1px solid #f0c9a4;border-radius:10px;padding:10px 12px;font-size:12.5px;margin:10px 0;}
 </style>
 </head>
 <body>
@@ -139,7 +153,8 @@
 <nav class="tabs" id="tabs">
   <button class="active" data-tab="t1">サービス概要</button>
   <button data-tab="t2">2週間スケジュール</button>
-  <button data-tab="t3">9つのプログラム</button>
+  <button data-tab="t3">プログラム一覧</button>
+  <button data-tab="t5">学習・ワーク</button>
   <button data-tab="t4">レポートプレビュー</button>
 </nav>
 
@@ -148,6 +163,23 @@
 <!-- ================= TAB 1 ================= -->
 <section class="panel active" id="t1">
   <a class="backlink" href="./index.html">← 山岸産業医事務所デモTOPへ</a>
+
+  <div class="card">
+    <h3>🎬 はじめに：使い方・注意事項の説明動画（約5分）</h3>
+    <div class="video-ph">
+      <span class="vp-badge">動画準備中</span>
+      <div class="play">▶</div>
+      <div class="vp-label">本サービスの使い方・注意事項（プレースホルダー）</div>
+    </div>
+    <p class="muted">ご利用開始前（Day 1）に必ず視聴いただく動画です。以下の内容を説明します。</p>
+    <ul style="font-size:13px;padding-left:20px;margin-top:6px;">
+      <li>本サービスは<b>医療サービスではありません</b>（診断・治療・症状評価は行いません）。復職準備のための記録・学習・整理を支援します。</li>
+      <li><b>体調が悪化したと感じたら、いつでも中断してかまいません。</b>その際は主治医にご連絡ください。休むことも大切な復職準備です。</li>
+      <li>各プログラムは「できる範囲で」が原則です。達成度がそのまま評価になるものではありません。</li>
+      <li>記録の共有は、ご本人が内容を確認・承認したものだけが対象です。</li>
+    </ul>
+  </div>
+
   <h2 class="sec"><span class="chip">CONCEPT</span>「支援の谷間」の2週間とは</h2>
 
   <div class="card">
@@ -236,11 +268,84 @@
 
 <!-- ================= TAB 3 ================= -->
 <section class="panel" id="t3">
-  <h2 class="sec"><span class="chip">PROGRAM</span>9つのプログラム候補</h2>
-  <p class="muted" style="margin-bottom:12px;">一般的なリワークプログラム（医療リワーク・職リハリワーク等）の要素を参考に、「2週間・AI＋オンライン」に最適化した構成です。タップで詳細が開きます。</p>
+  <h2 class="sec"><span class="chip">PROGRAM</span>11のプログラム候補</h2>
+  <p class="muted" style="margin-bottom:12px;">一般的なリワークプログラム（医療リワーク・職リハリワーク等）の要素を参考に、「2週間・AI＋オンライン」に最適化した構成です。タップで詳細が開きます。座学・演習の画面イメージは「学習・ワーク」タブでご覧いただけます。</p>
   <div id="prog-list"></div>
   <div class="callout warn">
     <b>⚠ 医療行為ではありません：</b>各プログラムは「治療」ではなく、復職準備のための<b>記録・練習・整理</b>です。心理療法・診断・症状評価は行いません。記録の共有は必ずご本人の確認・承認を経て行います。
+  </div>
+</section>
+
+<!-- ================= TAB 5 ================= -->
+<section class="panel" id="t5">
+  <h2 class="sec"><span class="chip">STUDY</span>座学①：メンタルヘルス不調の理解（動画視聴）</h2>
+  <div class="card">
+    <div class="video-ph">
+      <span class="vp-badge">動画準備中</span>
+      <div class="play">▶</div>
+      <div class="vp-label">メンタルヘルス不調の主な疾病を知る（各5〜10分）</div>
+    </div>
+    <p style="font-size:13px;">うつ病・適応障害・不安症など、メンタルヘルス不調の主な疾病について短い動画で学ぶモジュールです。自分の状態を客観的に理解する土台をつくり、再発予防にもつなげます。</p>
+    <ul style="font-size:13px;padding-left:20px;margin-top:8px;">
+      <li><b>うつ病</b>：症状の現れ方、回復の経過、再発予防で大切なこと</li>
+      <li><b>適応障害</b>：ストレス因との関係、環境調整という考え方</li>
+      <li><b>不安症</b>：不安のしくみ、回避と付き合い方の基本</li>
+      <li><b>共通</b>：睡眠と生活リズムの役割、「調子のサイン」への気づき方</li>
+    </ul>
+    <p class="note-small">視聴後はAIが理解度クイズと学習メモづくりをサポート。疑問点は「主治医に聞くことリスト」に整理します。※疾病理解のための学習であり、診断・治療ではありません。</p>
+  </div>
+
+  <h2 class="sec"><span class="chip">STUDY</span>座学②：認知行動療法（CBT）の基礎＋事例演習ワーク</h2>
+  <div class="card">
+    <div class="video-ph">
+      <span class="vp-badge">動画準備中</span>
+      <div class="play">▶</div>
+      <div class="vp-label">CBTの基礎：出来事・考え・気分・行動のつながり（約10分）</div>
+    </div>
+    <p style="font-size:13px;">リワークプログラムの中核要素であるCBTの考え方を、<b>座学 → 事例演習 → 振り返り報告書</b>の3ステップでセルフワーク化しています。</p>
+    <div class="step-flow">
+      <div class="st"><b>STEP 1｜座学（動画）</b>出来事のとらえ方（認知）が気分や行動に影響するしくみを学ぶ</div>
+      <div class="st"><b>STEP 2｜事例演習ワーク</b>架空事例をAIと一緒に整理（コラム法形式）</div>
+      <div class="st"><b>STEP 3｜振り返り報告書</b>演習で気づいたことを報告書にまとめる</div>
+    </div>
+    <h3 style="margin-top:14px;">事例演習ワークのデモ画面</h3>
+    <div class="case-box">
+      <b>架空事例：</b>復職1週目のAさん。上司から「この資料、明日まででお願いできる？」と声をかけられ、「また迷惑をかけている。自分は戦力になっていない」と考え、気分が沈み、その日は同僚との昼食を断ってしまった。
+    </div>
+    <div class="form-mock">
+      <label>① 出来事（事実だけを書く）</label>
+      <textarea readonly>上司から資料作成を「明日まで」と依頼された。</textarea>
+      <label>② そのとき浮かんだ考え（自動思考）</label>
+      <textarea readonly>また迷惑をかけている。自分は戦力になっていない。</textarea>
+      <label>③ 気分（0〜100%）</label>
+      <textarea readonly style="min-height:40px;">落ち込み 80％、焦り 60％</textarea>
+      <label>④ 別の見方はないか？（AIと一緒に考える）</label>
+      <textarea readonly>依頼されたのは、任せられると思われている証拠かもしれない。期限が難しければ相談すればよい。</textarea>
+      <p class="hint">※ デモ用のサンプル入力です。実際はAIが対話形式で1つずつ一緒に整理します。</p>
+    </div>
+    <h3 style="margin-top:14px;">振り返り報告書（サンプル）</h3>
+    <div class="case-box" style="border-style:solid;border-color:var(--line);background:#fbfdfe;">
+      「私は頼まれごとを『迷惑をかけているサイン』と受け取りやすいクセがあると気づいた。復職後は、期限が厳しいときに『相談する』という行動を選択肢に入れたい。」
+    </div>
+    <p class="note-small">※ 本モジュールは治療としてのCBTではなく、考え方を学び練習する「学習・演習」です。演習でつらさを感じた場合は中断し、主治医にご相談ください。</p>
+  </div>
+
+  <h2 class="sec"><span class="chip">WORK</span>振り返りシート（不調の契機と再燃予防の工夫）</h2>
+  <div class="card">
+    <div class="goal-band">🎯 <b>このシートは、会社・産業医に提出することが目標の一つです。</b>2週間かけてAIとの対話で少しずつ埋めていき、最終日に本人が内容を確認・承認したうえで提出版が完成します。</div>
+    <div class="form-mock">
+      <label>1. 不調のきっかけと思い当たること（プライベート）</label>
+      <textarea placeholder="例：引っ越しと親の介護が重なり、睡眠時間が削られていた…"></textarea>
+      <label>2. 不調のきっかけと思い当たること（業務関係）</label>
+      <textarea placeholder="例：担当プロジェクトの佳境と人員減が重なり、残業が続いた。相談できる相手がいなかった…"></textarea>
+      <label>3. 当時、心や身体に出ていたサイン</label>
+      <textarea placeholder="例：寝つきが悪くなる、朝食を抜くようになる、ミスが増える…"></textarea>
+      <label>4. 再燃を防ぐために自分で工夫すること</label>
+      <textarea placeholder="例：睡眠6時間を切る週が続いたら上司に業務量を相談する。週1回は定時退社する…"></textarea>
+      <label>5. 会社・職場に伝えたいこと（配慮のお願いなど）</label>
+      <textarea placeholder="例：復帰後1か月は残業を控えたい。週1回、上司と15分の面談をお願いしたい…"></textarea>
+      <p class="hint">※ デモ画面のため入力内容は保存・送信されません。実際の画面では、AIとの振り返り対話の内容から下書きが自動で入り、本人が自分の言葉に整えます。</p>
+    </div>
   </div>
 </section>
 
@@ -298,17 +403,35 @@
     </div>
 
     <div class="report-sec">
-      <h4>⑥ 再発予防プラン（要約・本人承認分）</h4>
+      <h4>⑥ 学習・ワーク実施状況 <span class="pill ok">完了</span></h4>
       <table class="rep-table">
-        <tr><th>サイン</th><th>本人の対処</th></tr>
+        <tr><th>モジュール</th><th>実施状況</th></tr>
+        <tr><td>説明動画（使い方・注意事項）</td><td>Day 1 視聴済み</td></tr>
+        <tr><td>座学①：メンタルヘルス不調の理解</td><td>Day 2 視聴済み・学習メモあり</td></tr>
+        <tr><td>座学②：CBTの基礎</td><td>Day 6 視聴済み</td></tr>
+        <tr><td>CBT事例演習ワーク＋振り返り報告書</td><td>演習2回（Day 8・11）・報告書1枚作成</td></tr>
+      </table>
+      <p class="note-small">報告書より（抜粋）：「頼まれごとを『迷惑をかけているサイン』と受け取りやすいクセに気づいた。期限が厳しいときは『相談する』を選択肢に入れたい。」</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>⑦ 振り返りシート・再発予防プラン（要約・本人承認分） <span class="pill ok">提出版 作成済み</span></h4>
+      <table class="rep-table">
+        <tr><th>項目</th><th>本人の記載（要約）</th></tr>
+        <tr><td>不調の契機（業務）</td><td>プロジェクト佳境と人員減が重なり残業が継続。相談相手がいなかった</td></tr>
+        <tr><td>不調の契機（私生活）</td><td>引っ越しが重なり、睡眠時間が慢性的に不足</td></tr>
+        <tr><td>再燃予防の工夫</td><td>睡眠6時間未満が続いたら業務量を上司に相談／週1回は定時退社</td></tr>
+      </table>
+      <table class="rep-table" style="margin-top:8px;">
+        <tr><th>再発サイン</th><th>本人の対処</th></tr>
         <tr><td>早期：寝つきが悪くなる／メール返信を後回しにする</td><td>業務量を上司に相談・睡眠記録を再開</td></tr>
         <tr><td>注意：週末に横になって過ごす時間が増える</td><td>産業医面談を前倒しで依頼</td></tr>
       </table>
-      <p class="note-small">職場に相談したい配慮事項の候補：当面の残業制限／週1回の上司との15分面談（面談時のたたき台）。</p>
+      <p class="note-small">振り返りシートは本人承認済みの提出版を面談時に持参。職場に相談したい配慮事項の候補：当面の残業制限／週1回の上司との15分面談（面談時のたたき台）。</p>
     </div>
 
     <div class="report-sec" style="border-bottom:none;">
-      <h4>⑦ 本人コメント・相談希望</h4>
+      <h4>⑧ 本人コメント・相談希望</h4>
       <p style="font-size:13px;">「通勤は思ったより大丈夫でした。復帰直後の業務量の調整について、面談でご相談したいです。」</p>
     </div>
   </div>
@@ -342,19 +465,19 @@ tabs.forEach(b=>b.addEventListener('click',()=>{
 
 /* ---------- schedule ---------- */
 const days=[
- {d:1,ic:'🎯',t:'オリエンテーション',b:'AIとの対話で2週間の目標を設定し、生活記録（睡眠・食事・外出など）をスタート。所要約20分。'},
- {d:2,ic:'🧠',t:'集中力チェック（ベースライン）',b:'ゲーム形式の短い課題で、現在の集中力を測定。今後の変化の基準点になります。※医学的検査ではありません。'},
- {d:3,ic:'💻',t:'模擬ワーク30分＋振り返り対話①',b:'軽めのPC課題（文書要約など）30分。夜に休職経緯の整理をAIと少しずつ開始。'},
+ {d:1,ic:'🎬',t:'説明動画＋オリエンテーション',b:'「使い方・注意事項の説明動画」（約5分）を視聴してからスタート。AIとの対話で2週間の目標を設定し、生活記録（睡眠・食事・外出など）を開始します。所要約25分。'},
+ {d:2,ic:'🧠',t:'集中力チェック＋座学①',b:'ゲーム形式の課題で集中力のベースラインを測定（※医学的検査ではありません）。夜は座学動画「メンタルヘルス不調の理解」（うつ病・適応障害・不安症）を視聴します。'},
+ {d:3,ic:'💻',t:'模擬ワーク30分＋振り返り対話①',b:'軽めのPC課題（文書要約など）30分。夜に不調の契機（プライベート／業務）の整理をAIと少しずつ開始。振り返りシートの材料になります。'},
  {d:4,ic:'🗺',t:'通勤トライアル計画づくり',b:'AIと一緒に通勤経路・時間帯・無理をしない中止基準を決めます。'},
  {d:5,ic:'🚶',t:'通勤トライアル①（時間帯自由）',b:'実際の経路で職場近くまで移動（職場には入りません）。帰宅後、所要時間・体調・疲労をAIに報告。',off:true},
- {d:6,ic:'💻',t:'模擬ワーク45分＋集中力チェック②',b:'作業時間を少し延長。課題後の疲労が翌日に残るかも確認します。'},
+ {d:6,ic:'📚',t:'模擬ワーク45分＋座学②（CBT）',b:'作業時間を少し延長し、疲労の翌日への残り方も確認。夜は座学動画「認知行動療法（CBT）の基礎」を視聴します。'},
  {d:7,ic:'🌿',t:'週次振り返り・休息日',b:'AIがWeek 1のサマリーを提示。頑張りすぎていないかもチェック。しっかり休む日です。'},
- {d:8,ic:'💻',t:'模擬ワーク60分×2コマ開始',b:'午前・午後の2コマ制へ。勤務日の時間感覚に近づけます。'},
+ {d:8,ic:'💻',t:'模擬ワーク60分×2＋CBT事例演習①',b:'午前・午後の2コマ制へ。架空事例をコラム法形式で整理するCBT事例演習ワークにも取り組みます。'},
  {d:9,ic:'🚶',t:'通勤トライアル②（出勤時間帯）',b:'実際の出勤時間帯（ラッシュ）で実施。混雑度・身体症状の有無も記録します。',off:true},
- {d:10,ic:'🛡',t:'集中力チェック③＋再発予防プラン作成①',b:'休職経緯の整理をもとに、自分の再発サインと対処をAIと文書化していきます。'},
- {d:11,ic:'🎭',t:'模擬ワーク90分＋面談練習',b:'AIが上司役になり、復職挨拶や業務相談のロールプレイ。伝え方を一緒に整理します。'},
+ {d:10,ic:'📝',t:'集中力チェック③＋振り返りシート作成①',b:'座学と振り返り対話をもとに、不調の契機と再燃予防の工夫を「振り返りシート」に自分の言葉で記載していきます（会社・産業医への提出が目標の一つ）。'},
+ {d:11,ic:'🎭',t:'模擬ワーク90分＋面談練習＋CBT報告書',b:'AIが上司役になり復職挨拶や業務相談のロールプレイ。CBT事例演習の振り返り報告書もまとめます。'},
  {d:12,ic:'🚶',t:'通勤トライアル③（仕上げ）',b:'出勤時間帯での最終確認。3回の記録がレポートの「通勤」セクションになります。',off:true},
- {d:13,ic:'📝',t:'再発予防プラン完成＋レポート下書き確認',b:'2週間の記録から自動生成されたレポートのドラフトを本人が確認・修正。'},
+ {d:13,ic:'🛡',t:'振り返りシート・再発予防プラン完成',b:'提出目標の振り返りシートと再発予防プランを仕上げ、自動生成されたレポートのドラフトを本人が確認・修正。'},
  {d:14,ic:'✅',t:'レポート承認・面談リハーサル',b:'共有する項目を本人が承認。産業医面談の想定問答をAIと練習して仕上げます。'}
 ];
 const g1=document.getElementById('grid-w1'),g2=document.getElementById('grid-w2');
@@ -413,24 +536,32 @@ const progs=[
   n:'実際の通勤経路・時間帯で自宅→職場近くまで移動（職場には入りません）。Week 1に1回→Week 2に2回と段階化。',
   a:'事前の計画づくり（経路・時間帯・中止基準）を支援。実施後は所要時間・混雑度・身体症状の有無・疲労/不安度をチャット報告で構造化記録。',
   o:'通勤トライアル実施記録（3回分の推移）。判定観点①に直結する、本サービスの特長的アウトプット。'},
- {ic:'📖',t:'5. 休職の振り返り・再発サイン整理',c:['認知行動療法系','再発予防'],
-  n:'休職に至った経緯・きっかけ・当時のサインを、AIとの対話で時系列に整理（治療的介入ではなく「事実の整理」）。',
-  a:'構造化インタビュー形式で質問し、本人の言葉を要約。解釈の押し付けはせず、つらくなったら中断・主治医相談を案内。',
-  o:'「休職経緯サマリー」1枚（本人承認分のみ）。産業医の経緯把握の時間を短縮。'},
- {ic:'🛡',t:'6. マイ再発予防プラン作成',c:['再発予防'],
-  n:'振り返りをもとに、自分の再発サイン（早期→注意→危険）と各段階の対処、職場に相談したい配慮事項の候補を1枚のプランに。',
+ {ic:'📚',t:'5. 座学①：メンタルヘルス不調の理解（動画視聴）',c:['座学','再発予防'],
+  n:'うつ病・適応障害・不安症など、メンタルヘルス不調の主な疾病を短い動画（各5〜10分）で学ぶモジュール。自分の状態を客観的に理解する土台をつくります。→ 画面イメージは「学習・ワーク」タブへ。',
+  a:'視聴後にAIが理解度クイズと学習メモづくりをサポート。疑問点は「主治医に聞くことリスト」に整理。',
+  o:'視聴履歴・学習メモ。※疾病理解のための学習であり、診断・治療ではありません。'},
+ {ic:'🧩',t:'6. 座学②：CBTの基礎＋事例演習ワーク＋振り返り報告書',c:['認知行動療法系','座学'],
+  n:'リワークの中核であるCBT（認知行動療法）の考え方を「座学動画→架空事例の演習→振り返り報告書」の3ステップでセルフワーク化。→ デモ画面は「学習・ワーク」タブへ。',
+  a:'AIが架空事例を提示し、コラム法形式の整理を対話でガイド。報告書のドラフトを自動生成し、本人が加筆・確定。',
+  o:'CBT事例演習の振り返り報告書。※治療としてのCBTではなく、学習・演習です。'},
+ {ic:'📖',t:'7. 休職の振り返り・振り返りシート作成',c:['認知行動療法系','再発予防'],
+  n:'不調の契機（プライベート／業務関係など）と当時のサインをAIとの対話で時系列に整理し、再燃予防の工夫とあわせて「振り返りシート」に自分の言葉で記載。会社・産業医への提出が目標の一つです。→ シートのデモは「学習・ワーク」タブへ。',
+  a:'構造化インタビュー形式で質問し、本人の言葉を要約してシートの下書きを生成。解釈の押し付けはせず、つらくなったら中断・主治医相談を案内。',
+  o:'振り返りシート（本人承認のうえ、産業医面談で提出可能な形式）。'},
+ {ic:'🛡',t:'8. マイ再発予防プラン作成',c:['再発予防'],
+  n:'振り返りシートをもとに、自分の再発サイン（早期→注意→危険）と各段階の対処、職場に相談したい配慮事項の候補を1枚のプランに。',
   a:'テンプレートに沿って対話で引き出し、文書化。配慮事項の候補は面談用の「たたき台」として生成。',
   o:'再発予防プラン1枚。産業医の就業上の措置検討の材料に。'},
- {ic:'🎭',t:'7. 復職後シミュレーション面談練習',c:['認知行動療法系','集団プログラム代替'],
+ {ic:'🎭',t:'9. 復職後シミュレーション面談練習',c:['認知行動療法系','集団プログラム代替'],
   n:'上司への復職挨拶・業務相談・断り方などをAIとロールプレイ。産業医面談の想定問答練習も可能。',
   a:'上司役・産業医役をAIが演じ、練習後に「伝わりやすかった点・整理するとよい点」をフィードバック（性格評価はしません）。',
   o:'実施回数と本人メモ（主に本人向け。レポートには実施記録のみ）。'},
- {ic:'📈',t:'8. セルフコンディション日次チェック',c:['生活リズム','再発予防'],
+ {ic:'📈',t:'10. セルフコンディション日次チェック',c:['生活リズム','再発予防'],
   n:'毎日1分、気分・意欲・不安・体調を5段階でセルフ評価（医学的評価尺度は使用しません）。',
   a:'毎日決まった時間にリマインドし、トレンドを可視化。連続低下時は「主治医に相談を」と案内（AIは評価・診断しません）。',
   o:'コンディション推移グラフ（14日間）。体調の安定性の確認材料。'},
- {ic:'📋',t:'9. 復職準備レポート自動生成（統合）',c:['統合アウトプット'],
-  n:'プログラム1〜8の記録を統合し、産業医面談用の「復職準備レポート」を自動生成。本人が確認・承認した内容のみ共有します。',
+ {ic:'📋',t:'11. 復職準備レポート自動生成（統合）',c:['統合アウトプット'],
+  n:'プログラム1〜10の記録（学習・演習の実施状況、振り返りシートを含む）を統合し、産業医面談用の「復職準備レポート」を自動生成。本人が確認・承認した内容のみ共有します。',
   a:'全データを産業医の復職判定6観点に対応する形で構成・要約。',
   o:'レポート本体（→「レポートプレビュー」タブでサンプルをご覧いただけます）。'}
 ];
