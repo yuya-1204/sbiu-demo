@@ -135,6 +135,15 @@
   .step-flow .st b{display:block;color:var(--primary-dark);font-size:12.5px;margin-bottom:2px;}
   .case-box{background:#fffdf7;border:1px dashed var(--accent);border-radius:10px;padding:12px;font-size:13px;margin:10px 0;}
   .goal-band{background:var(--accent-light);border:1px solid #f0c9a4;border-radius:10px;padding:10px 12px;font-size:12.5px;margin:10px 0;}
+  /* certificate demo */
+  .lvl-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;}
+  @media(max-width:560px){.lvl-grid{grid-template-columns:1fr;}}
+  .lvl-opt{border:1px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;background:#fff;font-size:12px;transition:.15s;}
+  .lvl-opt b{display:block;font-size:12.5px;color:var(--primary-dark);margin-bottom:2px;}
+  .lvl-opt:hover{border-color:var(--primary);}
+  .lvl-opt.on{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light);background:var(--primary-light);}
+  .cert-qr{width:84px;height:84px;border:1px solid var(--line);border-radius:8px;background:repeating-conic-gradient(#243342 0% 25%,#fff 0% 50%) 0 0/12px 12px;flex-shrink:0;}
+  .cert-verify{margin-top:10px;font-size:13px;font-weight:700;color:var(--green);min-height:20px;}
   /* ===== password gate ===== */
   body.locked>*:not(#gate){display:none;}
   .gate-wrap{max-width:440px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:40px 36px;text-align:center;}
@@ -178,6 +187,7 @@
   <button data-tab="t3">プログラム一覧</button>
   <button data-tab="t5">学習・ワーク</button>
   <button data-tab="t4">レポートプレビュー</button>
+  <button data-tab="t6">受講証明</button>
 </nav>
 
 <main>
@@ -473,6 +483,66 @@
   <p class="note-small" style="margin-top:10px;">※ 本レポートはサンプルです。実際の運用では、共有前に必ずご本人が内容を確認し、承認した項目のみが共有されます。</p>
 </section>
 
+<!-- ================= TAB 6 ================= -->
+<section class="panel" id="t6">
+  <h2 class="sec"><span class="chip">CERT</span>受講証明の発行（TuringCerts連携・構想）</h2>
+  <p class="muted" style="margin-bottom:12px;">プログラム修了後、ブロックチェーン証明サービス「TuringCerts」と連携し、改ざんできないデジタル受講証明を発行する構想です。証明書は<b>従業員本人が保有</b>し、会社などに提示する際に<b>どこまで開示するかを本人が選択</b>できます。</p>
+
+  <div class="card">
+    <h3>この証明ができること</h3>
+    <div class="points">
+      <div>🎓 <b>受講の事実を本人が証明</b><br>復職準備に主体的に取り組んだことを、客観的な形で示せます</div>
+      <div>🔐 <b>改ざん・詐称を防止</b><br>発行者（山岸産業医事務所）の署名付きでブロックチェーンに記録</div>
+      <div>👤 <b>証明書は本人のもの</b><br>会社ではなく本人のウォレットに保管。転職・異動後も残ります</div>
+      <div>🎚 <b>開示範囲は本人が選ぶ</b><br>「受講した事実だけ」から「実施記録・評価まで」の3段階から選択</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>開示レベルを選んでみる（デモ）</h3>
+    <p class="muted">提示する相手や目的に応じて、本人が開示範囲を選択します。レベルを選ぶと、下の証明書プレビューの記載内容が変わります。</p>
+    <div class="lvl-grid">
+      <div class="lvl-opt on" onclick="setCertLevel(1,this)"><b>レベル1｜受講の事実のみ</b>「復職Ready AIを受講・修了した」ことだけを証明します</div>
+      <div class="lvl-opt" onclick="setCertLevel(2,this)"><b>レベル2｜プラン・期間まで</b>受講したコース（例：ノーマル2週間）と受講期間も開示します</div>
+      <div class="lvl-opt" onclick="setCertLevel(3,this)"><b>レベル3｜実施記録・評価まで</b>出席率・課題完遂率・通勤トライアル等の実施記録も開示します</div>
+    </div>
+
+    <div class="report" style="margin-top:12px;">
+      <div class="report-head">
+        <div class="rh-sub">TuringCerts ｜ デジタル受講証明書（デモ・構想イメージ）</div>
+        <div class="rh-title">復職Ready AI 受講証明</div>
+      </div>
+      <div class="report-sec" style="display:flex;gap:14px;align-items:flex-start;">
+        <div class="cert-qr"></div>
+        <div style="font-size:12.5px;">検証用QRコード（イメージ）<br><span class="muted">証明書を受け取った企業・人事は、QRを読み取るだけで真正性（発行者・改ざんの有無）を確認できます。</span></div>
+      </div>
+      <div class="report-sec" style="border-bottom:none;">
+        <h4>証明内容 <span class="pill ok">本人承認済み</span></h4>
+        <table class="rep-table">
+          <tr><th>項目</th><th>内容</th></tr>
+          <tr><td>証明事項</td><td>復職Ready AI プログラムを受講し、修了したこと</td></tr>
+          <tr><td>受講者</td><td>サンプル 太郎</td></tr>
+          <tr><td>発行者</td><td>山岸産業医事務所（YAMAGISHI INDUSTRIAL MEDICAL OFFICE）</td></tr>
+          <tr><td>発行日</td><td>2026年7月11日</td></tr>
+          <tr><td>有効期限</td><td>2029年7月10日（発行から3年間）</td></tr>
+          <tr class="cert-l2" style="display:none;"><td>受講コース</td><td>ノーマル（2週間）</td></tr>
+          <tr class="cert-l2" style="display:none;"><td>受講期間</td><td>2026年6月22日 〜 2026年7月5日</td></tr>
+          <tr class="cert-l3" style="display:none;"><td>実施記録</td><td>実施日出席 10/10日（100%）／課題完遂率 100%（12/12課題）／通勤トライアル 3回完了／集中力チェック 初回比 +33%</td></tr>
+          <tr class="cert-l3" style="display:none;"><td>提出物</td><td>振り返りシート・再発予防プラン 提出済み（内容そのものは証明書に含まれません）</td></tr>
+          <tr><td>開示範囲</td><td id="cert-scope">レベル1：受講した事実のみ</td></tr>
+          <tr><td>証明ID</td><td style="font-family:monospace;font-size:11px;">0x7f3a…c92e（ブロックチェーン記録・イメージ）</td></tr>
+        </table>
+        <button class="gate-btn" style="margin-top:12px;" onclick="verifyCert()">🔍 検証してみる（企業・人事側の操作イメージ）</button>
+        <div class="cert-verify" id="cert-verify-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>⚠ 開示は本人の意思に基づきます：</b>証明書の発行・提示・開示範囲の選択は、すべて従業員本人の承認によって行われます。レベル3の実施記録は取り組み状況の客観記録であり、医学的な評価・診断ではありません。本タブは構想段階のデモで、TuringCertsとの連携は今後の検討事項です。
+  </div>
+</section>
+
 <div class="disclaimer-box">
   <b>免責事項・本デモについて</b><br>
   ・本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。<br>
@@ -499,6 +569,19 @@ function checkPw(){
   }else{
     document.getElementById('pwErr').textContent='閲覧コードが違います';
   }
+}
+
+/* ---------- certificate demo ---------- */
+function setCertLevel(n,el){
+  document.querySelectorAll('.lvl-opt').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.cert-l2').forEach(e=>e.style.display=(n>=2)?'':'none');
+  document.querySelectorAll('.cert-l3').forEach(e=>e.style.display=(n>=3)?'':'none');
+  document.getElementById('cert-scope').textContent=['レベル1：受講した事実のみ','レベル2：受講プラン（コース・期間）まで','レベル3：実施記録・評価まで'][n-1];
+  document.getElementById('cert-verify-result').textContent='';
+}
+function verifyCert(){
+  document.getElementById('cert-verify-result').textContent='✓ 検証成功：発行者（山岸産業医事務所）の署名と、記録が改ざんされていないことを確認しました（デモ）。';
 }
 
 /* ---------- tabs ---------- */
