@@ -230,7 +230,7 @@ button{font-family:inherit;cursor:pointer}
 </head>
 <body>
 
-<div class="demo-band">⚠ 本ページはデモ・関係者限定資料です（一般公開前・構想段階のイメージ画面）</div>
+<div class="demo-band">本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。</div>
 
 <!-- ===== HP header ===== -->
 <header class="hp-header">
@@ -281,9 +281,9 @@ button{font-family:inherit;cursor:pointer}
     <div id="gate">
       <div class="gate-wrap">
         <div class="lock">🔒</div>
-        <h2>関係者限定ページ</h2>
-        <p>このページは事業構想の検討用デモです。<br>閲覧用パスワードを入力してください。</p>
-        <input type="password" id="pw" placeholder="パスワード" onkeydown="if(event.key==='Enter')checkPw()">
+        <h2>デモ体験ページ</h2>
+        <p>本ページは事業構想を体験いただくためのデモページです。実データ・個人情報は含まれません。<br>閲覧コードを入力して開始してください。</p>
+        <input type="password" id="pw" placeholder="閲覧コード" onkeydown="if(event.key==='Enter')checkPw()">
         <div class="gate-err" id="pwErr"></div>
         <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="checkPw()">開く</button>
       </div>
@@ -448,7 +448,7 @@ button{font-family:inherit;cursor:pointer}
 
 </main>
 
-<footer class="hp-footer">© 2026 山岸産業医事務所 ｜ 本デモ画面はSBI-Uチャレンジ事業計画検討用の非公開資料です</footer>
+<footer class="hp-footer">© 2026 山岸産業医事務所 ｜ 本ページはSBI-Uチャレンジ事業構想のデモです（構想段階のため、画面・機能は今後変更されます）</footer>
 
 <!-- cert modal -->
 <div class="modal-bg hidden" id="modalBg" onclick="if(event.target===this)closeModal()">
@@ -505,7 +505,7 @@ function checkPw(){
       setTimeout(()=>toast("🔓 新しいタブ「その先へ（Medmatch）」が開放されました"),600);
     }
   }else{
-    document.getElementById("pwErr").textContent="パスワードが違います";
+    document.getElementById("pwErr").textContent="閲覧コードが違います";
   }
 }
 
