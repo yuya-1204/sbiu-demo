@@ -310,6 +310,37 @@
     .output[hidden] { display: none; }
     .output p { margin: 5px 0; }
 
+    .lecture-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+    .episode-card { display: grid; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+    .episode-card h3 { margin: 0; font-size: .98rem; }
+    .episode-card p { margin: 0; color: var(--muted); font-size: .82rem; }
+    .episode-button { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid var(--navy); border-radius: 9px; color: var(--navy); background: white; font-weight: 750; }
+    .episode-button:hover:not(:disabled), .episode-button.active { color: white; background: var(--navy); }
+    .episode-button:disabled { cursor: not-allowed; opacity: .58; }
+    .lecture-player { margin-top: 18px; }
+    .lecture-player video { width: 100%; max-height: 520px; border-radius: 12px; background: #09192c; }
+
+    .work-tabs, .level-buttons { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
+    .work-tab, .level-button { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .work-tab.active, .level-button.active { border-color: var(--navy); color: white; background: var(--navy); }
+    .work-demo { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcfd; }
+    .work-demo[hidden] { display: none; }
+    .task-source { padding: 15px; border-left: 4px solid var(--teal); border-radius: 9px; background: white; }
+    .task-source p { margin: 4px 0; }
+    .mini-table, .cert-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .mini-table th, .mini-table td, .cert-table th, .cert-table td { padding: 9px 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .mini-table th, .cert-table th { background: #eef3f7; color: var(--navy); }
+    .email-list { display: grid; gap: 10px; }
+    .email-item { display: grid; grid-template-columns: 1fr 170px; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .assertion-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .assertion-grid .field:last-child { grid-column: 1 / -1; }
+
+    .certificate-shell { display: grid; grid-template-columns: .75fr 1.25fr; gap: 18px; }
+    .cert-qr { width: 86px; height: 86px; border: 6px solid white; border-radius: 8px; background: repeating-conic-gradient(#18324f 0 25%,#fff 0 50%) 0 0/12px 12px; box-shadow: 0 0 0 1px var(--line); }
+    .cert-extra[hidden] { display: none; }
+    .cert-verify { min-height: 1.7em; margin-top: 10px; color: var(--green); font-weight: 800; }
+    .disclosure-options { display: grid; gap: 10px; margin-top: 14px; }
+
     .route-buttons { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
     .route {
       min-height: 92px;
@@ -392,6 +423,8 @@
       .hero { grid-template-columns: 1fr; }
       .grid-4 { grid-template-columns: repeat(2, 1fr); }
       .grid-3 { grid-template-columns: 1fr; }
+      .lecture-grid { grid-template-columns: repeat(2, 1fr); }
+      .certificate-shell { grid-template-columns: 1fr; }
       .calendar { grid-template-columns: repeat(4, 1fr); }
       .privacy-diagram { grid-template-columns: 1fr; }
     }
@@ -404,12 +437,15 @@
       .calendar { grid-template-columns: repeat(2, 1fr); }
       .day { min-height: 92px; }
       .route-buttons { grid-template-columns: 1fr; }
+      .lecture-grid, .assertion-grid { grid-template-columns: 1fr; }
+      .assertion-grid .field:last-child { grid-column: auto; }
+      .email-item { grid-template-columns: 1fr; }
       .video-stage { min-height: 390px; padding: 24px 16px; }
       .video-controls { flex-wrap: wrap; }
       .report { padding: 18px; }
     }
     @media print {
-      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #work, #safety, #privacy { display: none !important; }
+      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #lecture, #work, #safety, #certificate, #disclosure { display: none !important; }
       body, main { background: white; margin: 0; width: 100%; }
       #report { margin: 0; }
       #report .section-head, #report .share-controls, #report .callout { display: none; }
@@ -451,10 +487,12 @@
       <a href="#video">安全説明</a>
       <a href="#program">14日プログラム</a>
       <a href="#checkin">朝チェック</a>
+      <a href="#lecture">座学（疾病理解と認知行動療法）</a>
       <a href="#work">模擬ワーク</a>
       <a href="#safety">安全導線</a>
       <a href="#report">レポート</a>
-      <a href="#privacy">情報共有</a>
+      <a href="#certificate">受講証明（TuringCerts）</a>
+      <a href="#disclosure">情報開示範囲指定</a>
     </div>
   </nav>
 
@@ -547,16 +585,109 @@
       </div>
     </section>
 
+    <section id="lecture">
+      <div class="section-head">
+        <div class="kicker">8-VIDEO LEARNING</div>
+        <h2>座学（疾病理解と認知行動療法）</h2>
+        <p class="lead">Dr.やまねことゆきちゃんによる8本の教育動画を、完成した回から視聴できるライブラリーです。一般教育であり、個別の診断・治療・心理療法ではありません。</p>
+      </div>
+      <div class="lecture-grid">
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V00｜利用開始・安全説明</h3><p>安心して使うために最初に知ってほしいこと</p><button class="episode-button" type="button" data-video="videos/V00_利用開始・安全説明_Drやまねことゆきちゃん.mp4" data-title="V00｜利用開始・安全説明">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V01｜職場復帰までの流れ</h3><p>本人・主治医・産業医・会社の役割</p><button class="episode-button" type="button" data-video="videos/V01_職場復帰までの流れ_Drやまねことゆきちゃん.mp4" data-title="V01｜職場復帰までの流れ">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V02｜うつ病を正しく知る</h3><p>こころ・からだ・考え方に現れる変化</p><button class="episode-button" type="button" data-video="videos/V02_うつ病を正しく知る_Drやまねことゆきちゃん.mp4" data-title="V02｜うつ病を正しく知る">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V03｜適応反応と不安を理解する</h3><p>ストレスに対する反応を整理する</p><button class="episode-button" type="button" data-video="videos/V03_適応反応と不安を理解する_Drやまねことゆきちゃん.mp4" data-title="V03｜適応反応と不安を理解する">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V04｜睡眠・活動・疲労の記録方法</h3><p>採点ではなく変化を振り返る記録</p><button class="episode-button" type="button" data-video="videos/V04_睡眠・活動・疲労の記録方法_Drやまねことゆきちゃん.mp4" data-title="V04｜睡眠・活動・疲労の記録方法">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V05｜不調の早期サインと相談行動</h3><p>普段との違いに気づき、早めに相談する</p><button class="episode-button" type="button" data-video="videos/V05_不調の早期サインと相談行動_Drやまねことゆきちゃん.mp4" data-title="V05｜不調の早期サインと相談行動">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V06｜復職後の配慮を言葉にする</h3><p>面談で相談したい働き方を具体化する</p><button class="episode-button" type="button" data-video="videos/V06_復職後の配慮を言葉にする_Drやまねことゆきちゃん.mp4" data-title="V06｜復職後の配慮を言葉にする">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V07｜レポート確認と情報共有</h3><p>本人が内容と共有範囲を最終確認する</p><button class="episode-button" type="button" data-video="videos/V07_レポート確認と情報共有_Drやまねことゆきちゃん.mp4" data-title="V07｜レポート確認と情報共有">この動画を見る</button></article>
+      </div>
+      <div class="card lecture-player">
+        <h3 id="lectureTitle">動画を選択してください</h3>
+        <video id="lectureVideo" controls preload="metadata" playsinline aria-describedby="lectureStatus"></video>
+        <p class="status-line" id="lectureStatus">V00～V07の8本を選択できます。再生ボタンを押すまで自動再生しません。</p>
+      </div>
+      <div class="callout callout-warning" style="margin-top:18px"><p><strong>アサーション内容の確認：</strong>現行8本の台本には、アサーション／DESC法／Iメッセージの体系的な説明はありません。V06に「困る場面・影響・希望・見直し時期を伝える」関連内容がありますが、独立した練習が必要なため、下の模擬ワークに追加しています。</p></div>
+    </section>
+
     <section id="work">
       <div class="section-head">
-        <div class="kicker">W04 / W06｜MOCK WORK</div>
-        <h2>模擬ワークと疲労の記録</h2>
-        <p class="lead">課題の結果を能力検査として扱わず、実施時間・休憩・本人の感想を分けて記録します。</p>
+        <div class="kicker">5 INTERACTIVE WORKS</div>
+        <h2>模擬ワークの実演デモ</h2>
+        <p class="lead">5種類の画面を実際に操作できます。結果を能力検査や復職判定に使わず、実施時間・休憩・本人の感想を記録します。</p>
       </div>
+      <div class="card">
+        <div class="work-tabs" role="tablist" aria-label="模擬ワークを選択">
+          <button class="work-tab active" type="button" data-work="summary" role="tab" aria-selected="true">文章要約</button>
+          <button class="work-tab" type="button" data-work="data" role="tab" aria-selected="false">データ入力</button>
+          <button class="work-tab" type="button" data-work="memo" role="tab" aria-selected="false">読書とメモ</button>
+          <button class="work-tab" type="button" data-work="email" role="tab" aria-selected="false">架空のメール整理</button>
+          <button class="work-tab" type="button" data-work="assertion" role="tab" aria-selected="false">アサーションスキルの練習</button>
+        </div>
+
+        <div class="work-demo" id="demo-summary" data-work-panel="summary">
+          <h3>文章要約デモ</h3>
+          <div class="task-source"><p>復職後の働き方は、本人の希望だけでなく、主治医や産業医の意見、職場の業務内容、安全面、会社の制度を踏まえて検討します。最初から通常勤務に戻すとは限らず、勤務時間や業務量を段階的に調整し、定期的に見直す方法があります。</p></div>
+          <div class="field" style="margin-top:12px"><label for="summaryText">80字以内を目安に要約</label><textarea id="summaryText" placeholder="要点を自分の言葉で入力"></textarea></div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="summary">要約を記録する</button>
+          <div class="output demo-output" id="summaryResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-data" data-work-panel="data" hidden>
+          <h3>データ入力デモ</h3>
+          <div class="task-source"><p><strong>入力元伝票：</strong>日付 7月10日／社員コード A-104／区分 交通費／金額 1,280円</p></div>
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label for="entryDate">日付</label><input id="entryDate" placeholder="例：7/10"></div>
+            <div class="field"><label for="entryCode">社員コード</label><input id="entryCode" placeholder="例：A-104"></div>
+            <div class="field"><label for="entryType">区分</label><select id="entryType"><option>選択してください</option><option>交通費</option><option>書籍費</option><option>郵送費</option></select></div>
+            <div class="field"><label for="entryAmount">金額</label><input id="entryAmount" inputmode="numeric" placeholder="数字のみ"></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="data">入力内容を照合する</button>
+          <div class="output demo-output" id="dataResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-memo" data-work-panel="memo" hidden>
+          <h3>読書とメモのデモ</h3>
+          <div class="task-source"><p>疲労の感じ方は、その日の睡眠や活動、休憩の取り方によって変わります。1日の結果だけで結論を出さず、何日かの記録を本人の感覚とあわせて振り返ることが大切です。</p></div>
+          <div class="assertion-grid" style="margin-top:12px">
+            <div class="field"><label for="memoPoint">要点</label><textarea id="memoPoint" placeholder="大切だと思った点"></textarea></div>
+            <div class="field"><label for="memoAction">次に試すこと</label><textarea id="memoAction" placeholder="自分で試したいこと"></textarea></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="memo">メモを整理する</button>
+          <div class="output demo-output" id="memoResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-email" data-work-panel="email" hidden>
+          <h3>架空のメール整理デモ</h3>
+          <p class="lead" style="margin-bottom:12px">3通を「今日対応」「今週対応」「参考」に分類してください。正解を競う課題ではありません。</p>
+          <div class="email-list">
+            <div class="email-item"><span><strong>件名：明日10時の面談確認</strong><br><small>出席可否を本日17時までに返信してください。</small></span><select class="email-category" aria-label="明日10時の面談確認の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+            <div class="email-item"><span><strong>件名：来月の社内研修案内</strong><br><small>申込期限は今週金曜日です。</small></span><select class="email-category" aria-label="来月の社内研修案内の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+            <div class="email-item"><span><strong>件名：社内報7月号</strong><br><small>新しい制度の紹介を掲載しています。</small></span><select class="email-category" aria-label="社内報7月号の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="email">分類結果を記録する</button>
+          <div class="output demo-output" id="emailResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-assertion" data-work-panel="assertion" hidden>
+          <h3>アサーションスキルの練習</h3>
+          <p class="lead">自分と相手の双方を尊重し、「状況 → 自分への影響 → 希望 → 調整案」の順に相談文を作る練習です。相手に要求を必ず受け入れさせる方法ではありません。</p>
+          <div class="field" style="margin:12px 0"><label for="assertScenario">練習する場面</label><select id="assertScenario"><option>復職直後に急な残業を頼まれた</option><option>複数の締切が同時に重なった</option><option>休憩を取りたいが言い出しにくい</option></select></div>
+          <div class="assertion-grid">
+            <div class="field"><label for="assertFact">1. 状況を事実で伝える</label><input id="assertFact" value="今日は予定外の残業の依頼がありました"></div>
+            <div class="field"><label for="assertImpact">2. 自分への影響を伝える</label><input id="assertImpact" value="復職直後で、疲労が翌日に残ることが心配です"></div>
+            <div class="field"><label for="assertWish">3. 希望を具体的に伝える</label><input id="assertWish" value="今日は定時で退勤させていただきたいです"></div>
+            <div class="field"><label for="assertOption">4. 調整案を添える</label><input id="assertOption" value="必要な作業は明日の午前に優先して対応します"></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="assertion">相談文を作る</button>
+          <div class="output demo-output" id="assertionResult" hidden></div>
+        </div>
+      </div>
+
       <div class="grid grid-2">
         <form class="card" id="workForm">
+          <input id="taskType" type="hidden" value="文章要約">
+          <h3>実施後の共通記録</h3>
           <div class="form-grid">
-            <div class="field"><label for="taskType">課題</label><select id="taskType"><option>文章要約</option><option>データ入力</option><option>読書とメモ</option><option>架空のメール整理</option></select></div>
             <div class="field"><label for="duration">実施時間</label><select id="duration"><option>15分</option><option>30分</option><option selected>45分</option><option>60分</option><option>90分</option></select></div>
             <div class="field"><label for="breaks">休憩</label><select id="breaks"><option>なし</option><option selected>1回</option><option>2回以上</option></select></div>
             <div class="field"><label for="completion">実施状況</label><select id="completion"><option>予定した範囲まで実施</option><option>途中まで実施</option><option>中断</option><option>未実施</option></select></div>
@@ -626,17 +757,68 @@
       </div>
     </section>
 
-    <section id="privacy">
+    <section id="certificate">
+      <div class="section-head">
+        <div class="kicker">DIGITAL CERTIFICATE｜CONCEPT DEMO</div>
+        <h2>受講証明（TuringCerts）</h2>
+        <p class="lead">プログラム修了後、本人保有のデジタル受講証明を発行し、提示先ごとに開示範囲を選ぶ構想デモです。TuringCertsとの実連携は未実装です。</p>
+      </div>
+      <div class="certificate-shell">
+        <div class="card">
+          <h3>開示レベルを選択</h3>
+          <div class="level-buttons">
+            <button class="level-button active" type="button" data-cert-level="1">レベル1｜受講事実</button>
+            <button class="level-button" type="button" data-cert-level="2">レベル2｜コース・期間</button>
+            <button class="level-button" type="button" data-cert-level="3">レベル3｜実施記録</button>
+          </div>
+          <div class="callout"><p><strong>本人が選択：</strong>会社や支援者が一方的に開示範囲を広げる設計ではありません。</p></div>
+        </div>
+        <article class="report" aria-label="TuringCerts受講証明の構想サンプル">
+          <div class="report-head"><h3>復職Ready AI 受講証明</h3><div class="report-meta">TuringCerts連携・デモ構想｜本人保有</div></div>
+          <div class="report-section" style="display:flex;gap:16px;align-items:center"><div class="cert-qr" aria-label="検証用QRコードのイメージ"></div><p>検証用QRコード（イメージ）<br><span class="helper">提示先は発行者と改ざんの有無を確認する想定です。</span></p></div>
+          <div class="report-section">
+            <table class="cert-table">
+              <tr><th>項目</th><th>内容</th></tr>
+              <tr><td>証明事項</td><td>復職Ready AIプログラムを受講し、本人確認を終えたこと</td></tr>
+              <tr><td>受講者</td><td>サンプル利用者</td></tr>
+              <tr><td>発行者</td><td>山岸産業医事務所（構想）</td></tr>
+              <tr class="cert-extra cert-l2" hidden><td>受講コース</td><td>標準14日プログラム</td></tr>
+              <tr class="cert-extra cert-l2" hidden><td>受講期間</td><td>2026年7月1日～7月14日（サンプル）</td></tr>
+              <tr class="cert-extra cert-l3" hidden><td>実施記録</td><td>座学視聴、模擬ワーク、通勤トライアルの実施有無（合否・医学評価ではありません）</td></tr>
+              <tr><td>開示範囲</td><td id="certScope">レベル1：受講した事実のみ</td></tr>
+            </table>
+            <button class="btn btn-outline btn-small" id="verifyCert" type="button" style="margin-top:12px">証明の検証デモ</button>
+            <div class="cert-verify" id="certVerifyResult" role="status"></div>
+          </div>
+          <div class="report-limit">受講証明は医学的な回復、就労能力、復職可否、再休職リスクを証明するものではありません。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="disclosure">
       <div class="section-head">
         <div class="kicker">PRIVACY BY DESIGN</div>
-        <h2>健康情報を一括共有しない</h2>
-        <p class="lead">本人専用、産業医等へ共有可能、会社へ共有可能の3層に分けます。</p>
+        <h2>情報開示範囲指定</h2>
+        <p class="lead">健康情報を一括共有せず、本人専用、産業医等へ共有可能、会社へ共有可能の3層に分けます。</p>
       </div>
       <div class="privacy-diagram">
         <div class="privacy-col private"><span class="tag">本人専用</span><h3>原則共有しない</h3><ul><li>自由対話全文</li><li>私生活上の事情</li><li>病名・症状の詳細</li><li>主治医への質問下書き</li></ul></div>
         <div class="privacy-col occupational"><span class="tag tag-green">本人が選択</span><h3>産業医等へ</h3><ul><li>生活・活動の要約</li><li>通勤・模擬作業記録</li><li>相談したい事項</li><li>本人承認済み計画</li></ul></div>
         <div class="privacy-col company"><span class="tag tag-orange">最小限</span><h3>会社へ</h3><ul><li>配慮の相談候補</li><li>フォロー面談の希望</li><li>本人が選んだ要約</li><li>共有同意の記録</li></ul></div>
       </div>
+      <form class="card" id="disclosureForm" style="margin-top:18px">
+        <h3>開示プレビューを作る</h3>
+        <div class="field"><label for="disclosureRecipient">提示先</label><select id="disclosureRecipient"><option>産業医等</option><option>会社の人事・上司</option><option>主治医</option></select></div>
+        <div class="disclosure-options">
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="生活・活動の要約" checked><span>生活・活動の要約</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="通勤・模擬ワークの実施記録" checked><span>通勤・模擬ワークの実施記録</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="配慮の相談候補" checked><span>配慮の相談候補</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="病名・症状の詳細"><span>病名・症状の詳細（標準では選択しない）</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="自由対話全文"><span>AIとの自由対話全文（標準では選択しない）</span></label>
+        </div>
+        <button class="btn btn-teal btn-small" type="submit" style="margin-top:14px">開示プレビューを更新</button>
+        <div class="output" id="disclosureOutput" hidden></div>
+      </form>
       <div class="reset-bar"><button class="btn btn-outline btn-small" id="resetDemo" type="button">デモ入力を初期化</button></div>
     </section>
   </main>
@@ -723,6 +905,79 @@
         out.innerHTML = `<p><strong>記録案</strong></p><p>起床：${document.getElementById('wakeTime').value}／睡眠の本人評価：${document.getElementById('sleepNote').value}</p><p>今日の予定：${escapeHtml(document.getElementById('plan').value)}</p><p>進め方：${document.getElementById('pace').value}</p><p><strong>確認：</strong>この要約でよいですか。後から修正できます。</p>`;
       });
 
+      const lectureButtons = [...document.querySelectorAll('.episode-button[data-video]')];
+      const lectureVideo = document.getElementById('lectureVideo');
+      const lectureTitle = document.getElementById('lectureTitle');
+      const lectureStatus = document.getElementById('lectureStatus');
+      lectureButtons.forEach(button => button.addEventListener('click', () => {
+        lectureButtons.forEach(b => b.classList.toggle('active', b === button));
+        lectureTitle.textContent = button.dataset.title;
+        lectureStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
+        lectureVideo.src = button.dataset.video;
+        lectureVideo.load();
+        document.querySelector('.lecture-player').scrollIntoView({behavior:'smooth', block:'center'});
+      }));
+
+      const workLabels = {
+        summary:'文章要約', data:'データ入力', memo:'読書とメモ', email:'架空のメール整理', assertion:'アサーションスキルの練習'
+      };
+      const workTabs = [...document.querySelectorAll('.work-tab')];
+      const workPanels = [...document.querySelectorAll('[data-work-panel]')];
+      const selectWork = name => {
+        workTabs.forEach(button => {
+          const active = button.dataset.work === name;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-selected', String(active));
+        });
+        workPanels.forEach(panel => panel.hidden = panel.dataset.workPanel !== name);
+        document.getElementById('taskType').value = workLabels[name];
+      };
+      workTabs.forEach(button => button.addEventListener('click', () => selectWork(button.dataset.work)));
+
+      document.querySelectorAll('.demo-action').forEach(button => button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        if (action === 'summary') {
+          const text = document.getElementById('summaryText').value.trim();
+          const out = document.getElementById('summaryResult');
+          out.hidden = false;
+          out.innerHTML = text ? `<p><strong>本人の要約（${[...text].length}字）</strong></p><p>${escapeHtml(text)}</p><p>元の文章と照らし、意味が変わっていないか本人が確認します。AIは能力評価をしません。</p>` : '<p>要約を入力してください。未実施・中断を選んでも不合格にはなりません。</p>';
+        }
+        if (action === 'data') {
+          const values = {
+            date:document.getElementById('entryDate').value.trim(),
+            code:document.getElementById('entryCode').value.trim().toUpperCase(),
+            type:document.getElementById('entryType').value,
+            amount:document.getElementById('entryAmount').value.replace(/[,，\s]/g,'')
+          };
+          const matched = [values.date === '7/10' || values.date === '07/10', values.code === 'A-104', values.type === '交通費', values.amount === '1280'];
+          const out = document.getElementById('dataResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>照合結果：</strong>4項目中${matched.filter(Boolean).length}項目が入力元と一致しました。</p><p>これは操作デモの一致確認であり、就労能力の検査ではありません。必要なら休憩して再確認できます。</p>`;
+        }
+        if (action === 'memo') {
+          const point = document.getElementById('memoPoint').value.trim();
+          const next = document.getElementById('memoAction').value.trim();
+          const out = document.getElementById('memoResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>要点：</strong>${escapeHtml(point || '未記入')}</p><p><strong>次に試すこと：</strong>${escapeHtml(next || '未記入')}</p><p>本人のメモとして保存する想定です。内容の良し悪しを採点しません。</p>`;
+        }
+        if (action === 'email') {
+          const categories = [...document.querySelectorAll('.email-category')].map((s,i) => `${i+1}通目：${s.value}`);
+          const out = document.getElementById('emailResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>本人が選んだ分類</strong></p><p>${categories.join('／')}</p><p>分類方法は一例です。速度や正解数から復職可否を判断しません。</p>`;
+        }
+        if (action === 'assertion') {
+          const fact = document.getElementById('assertFact').value.trim();
+          const impact = document.getElementById('assertImpact').value.trim();
+          const wish = document.getElementById('assertWish').value.trim();
+          const option = document.getElementById('assertOption').value.trim();
+          const out = document.getElementById('assertionResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>相談文の練習案</strong></p><p>${escapeHtml(fact)}。${escapeHtml(impact)}。${escapeHtml(wish)}。${escapeHtml(option)}。</p><p><strong>確認：</strong>相手を責める表現になっていないか、自分の希望が具体的か、相手と調整できる余地があるかを振り返ります。</p>`;
+        }
+      }));
+
       document.getElementById('workForm').addEventListener('submit', e => {
         e.preventDefault();
         const out = document.getElementById('workOutput');
@@ -748,18 +1003,54 @@
         });
       });
 
+      const certButtons = [...document.querySelectorAll('.level-button')];
+      const setCertLevel = level => {
+        certButtons.forEach(button => button.classList.toggle('active', Number(button.dataset.certLevel) === level));
+        document.querySelectorAll('.cert-l2').forEach(row => row.hidden = level < 2);
+        document.querySelectorAll('.cert-l3').forEach(row => row.hidden = level < 3);
+        document.getElementById('certScope').textContent = [
+          'レベル1：受講した事実のみ',
+          'レベル2：受講コースと期間まで',
+          'レベル3：本人が選んだ実施記録まで'
+        ][level - 1];
+        document.getElementById('certVerifyResult').textContent = '';
+      };
+      certButtons.forEach(button => button.addEventListener('click', () => setCertLevel(Number(button.dataset.certLevel))));
+      document.getElementById('verifyCert').addEventListener('click', () => {
+        document.getElementById('certVerifyResult').textContent = '✓ 検証成功（デモ）：発行者情報と改ざんがないことを確認した想定です。';
+      });
+
+      document.getElementById('disclosureForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const recipient = document.getElementById('disclosureRecipient').value;
+        const selected = [...document.querySelectorAll('.disclosure-field:checked')].map(x => x.dataset.label);
+        const out = document.getElementById('disclosureOutput');
+        out.hidden = false;
+        out.innerHTML = `<p><strong>提示先：</strong>${escapeHtml(recipient)}</p><p><strong>開示する項目：</strong>${selected.length ? selected.map(escapeHtml).join('／') : 'なし'}</p><p>共有前に本人が最終確認し、送信操作を行う想定です。このデモから外部へは送信されません。</p>`;
+      });
+
       document.getElementById('resetDemo').addEventListener('click', () => {
         document.querySelectorAll('form').forEach(f => f.reset());
         consents.forEach(c => c.checked = false);
         document.querySelectorAll('.share-toggle').forEach(t => { t.checked = true; document.getElementById(t.dataset.target).hidden = false; });
         document.getElementById('checkinOutput').hidden = true;
         document.getElementById('workOutput').hidden = true;
+        document.querySelectorAll('.demo-output').forEach(out => out.hidden = true);
+        document.getElementById('disclosureOutput').hidden = true;
         document.getElementById('routeResult').dataset.level = '1';
         document.getElementById('routeResult').innerHTML = '<p>上の申告例を選ぶと、安全画面の内容が表示されます。</p>';
         updateConsent();
         slideIndex = 0;
         renderSlide();
         selectDay(0);
+        selectWork('summary');
+        setCertLevel(1);
+        lectureButtons.forEach(button => button.classList.remove('active'));
+        lectureVideo.pause();
+        lectureVideo.removeAttribute('src');
+        lectureVideo.load();
+        lectureTitle.textContent = '動画を選択してください';
+        lectureStatus.textContent = 'V00～V07の8本を選択できます。再生ボタンを押すまで自動再生しません。';
         window.scrollTo({top:0, behavior:'smooth'});
       });
 
