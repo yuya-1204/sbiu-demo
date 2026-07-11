@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>復職Ready AI｜山岸産業医事務所（デモ）</title>
+<style>
+  :root{
+    --primary:#0e6e8c; --primary-dark:#0a5068; --primary-light:#e6f3f7;
+    --accent:#e8833a; --accent-light:#fdf1e7;
+    --green:#2e8b6e; --green-light:#e8f5f0;
+    --ink:#243342; --sub:#5b6b7a; --line:#dde5ea; --bg:#f5f8fa; --card:#ffffff;
+    --danger:#b3452f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  .demo-banner{background:#fff6dc;border-bottom:1px solid #eadfa8;color:#7a5c00;font-size:12px;padding:8px 14px;text-align:center;}
+  header.site{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:26px 18px 30px;text-align:center;}
+  header.site .office{font-size:12px;opacity:.85;letter-spacing:.12em;}
+  header.site h1{font-size:26px;margin:6px 0 2px;letter-spacing:.04em;}
+  header.site .tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:11px;padding:3px 12px;margin-top:8px;}
+  header.site .lead{font-size:14px;margin-top:12px;opacity:.95;}
+  .countdown{background:#fff;max-width:680px;margin:-18px auto 0;border-radius:12px;box-shadow:0 3px 14px rgba(10,60,80,.12);display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;font-size:14px;position:relative;z-index:2;}
+  .countdown b{color:var(--accent);font-size:22px;}
+  nav.tabs{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+  nav.tabs button{flex:1 0 auto;min-width:96px;background:none;border:none;border-bottom:3px solid transparent;padding:12px 10px;font-size:13px;color:var(--sub);cursor:pointer;font-family:inherit;white-space:nowrap;}
+  nav.tabs button.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700;}
+  main{max-width:820px;margin:0 auto;padding:22px 14px 40px;}
+  section.panel{display:none;}
+  section.panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  h2.sec{font-size:19px;color:var(--primary-dark);margin:6px 0 14px;display:flex;align-items:center;gap:8px;}
+  h2.sec .chip{font-size:10px;background:var(--accent);color:#fff;border-radius:4px;padding:2px 7px;letter-spacing:.08em;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;}
+  .card h3{font-size:15px;color:var(--primary-dark);margin-bottom:8px;}
+  .muted{color:var(--sub);font-size:13px;}
+  /* gap timeline */
+  .gap-flow{display:flex;flex-direction:column;gap:0;margin:14px 0;}
+  .gap-step{display:flex;gap:12px;}
+  .gap-node{display:flex;flex-direction:column;align-items:center;width:34px;flex-shrink:0;}
+  .gap-dot{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+  .gap-line{width:2px;flex:1;background:var(--line);min-height:14px;}
+  .gap-body{padding-bottom:16px;font-size:13.5px;}
+  .gap-body b{font-size:14.5px;}
+  .gap-step.hl .gap-dot{background:var(--accent);}
+  .gap-step.hl .gap-body{background:var(--accent-light);border:1px dashed var(--accent);border-radius:10px;padding:10px 12px;margin-bottom:14px;flex:1;}
+  .points{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .points div{background:var(--primary-light);border-radius:8px;padding:8px 10px;font-size:12.5px;}
+  @media(max-width:480px){.points{grid-template-columns:1fr;}}
+  .callout{border-left:4px solid var(--green);background:var(--green-light);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px;margin:12px 0;}
+  .callout.warn{border-left-color:var(--danger);background:#faeeea;}
+  /* schedule */
+  .week-label{font-size:13px;font-weight:700;color:#fff;background:var(--primary);display:inline-block;border-radius:6px;padding:3px 10px;margin:14px 0 8px;}
+  .week-label.w2{background:var(--accent);}
+  .daily-note{background:var(--primary-light);border-radius:10px;padding:10px 12px;font-size:12.5px;margin-bottom:6px;}
+  .day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  @media(max-width:560px){.day-grid{grid-template-columns:repeat(4,1fr);}}
+  .day-cell{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;transition:.15s;}
+  .day-cell:hover{border-color:var(--primary);}
+  .day-cell.selected{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light);}
+  .day-cell .d{font-size:10px;color:var(--sub);}
+  .day-cell .n{font-size:17px;font-weight:700;color:var(--primary-dark);}
+  .day-cell .ic{font-size:14px;}
+  .day-cell.offline{background:var(--accent-light);border-color:#f0c9a4;}
+  .day-detail{background:#fff;border:1px solid var(--primary);border-radius:12px;padding:14px;margin-top:10px;font-size:13.5px;}
+  .day-detail .dd-title{font-weight:700;color:var(--primary-dark);margin-bottom:6px;font-size:14.5px;}
+  .badge-off{display:inline-block;background:var(--accent);color:#fff;font-size:10px;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px;}
+  .legend{font-size:11.5px;color:var(--sub);margin-top:8px;}
+  /* chat mock */
+  .chat-box{background:#eef4f7;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;}
+  .chat-log{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;}
+  .msg{max-width:85%;padding:8px 12px;border-radius:14px;font-size:13px;line-height:1.6;}
+  .msg.ai{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;}
+  .msg.user{background:var(--primary);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+  .chat-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .chat-actions button{background:#fff;border:1px solid var(--primary);color:var(--primary);border-radius:999px;padding:6px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+  .chat-actions button:disabled{opacity:.4;cursor:default;}
+  /* programs */
+  .prog{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .prog-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;}
+  .prog-head .pic{width:36px;height:36px;border-radius:9px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .prog-head .pt{flex:1;}
+  .prog-head .pt b{font-size:14px;color:var(--primary-dark);display:block;}
+  .prog-head .cats{font-size:10.5px;color:var(--sub);}
+  .prog-head .arrow{color:var(--sub);transition:.2s;font-size:12px;}
+  .prog.open .arrow{transform:rotate(90deg);}
+  .prog-body{display:none;border-top:1px solid var(--line);padding:12px 14px;font-size:13px;background:#fbfdfe;}
+  .prog.open .prog-body{display:block;}
+  .prog-body dl div{margin-bottom:8px;}
+  .prog-body dt{font-weight:700;font-size:12px;color:var(--primary);}
+  .prog-body dd{margin-left:0;}
+  .cat-chip{display:inline-block;background:var(--primary-light);color:var(--primary-dark);border-radius:4px;font-size:10px;padding:1px 6px;margin-right:4px;}
+  .cat-chip.off{background:var(--accent-light);color:#9a5a1a;}
+  /* report */
+  .report{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(10,60,80,.07);}
+  .report-head{background:var(--primary-dark);color:#fff;padding:14px 16px;}
+  .report-head .rh-sub{font-size:11px;opacity:.8;}
+  .report-head .rh-title{font-size:16px;font-weight:700;}
+  .report-sec{padding:14px 16px;border-bottom:1px solid var(--line);}
+  .report-sec h4{font-size:13.5px;color:var(--primary-dark);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+  .pill{font-size:10px;border-radius:999px;padding:2px 9px;font-weight:700;}
+  .pill.ok{background:var(--green-light);color:var(--green);}
+  .pill.mid{background:var(--accent-light);color:#9a5a1a;}
+  .bar-row{display:flex;align-items:center;gap:8px;font-size:11.5px;margin-bottom:5px;}
+  .bar-row .lbl{width:74px;color:var(--sub);flex-shrink:0;}
+  .bar-track{flex:1;background:#edf2f5;border-radius:5px;height:12px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:5px;background:var(--primary);}
+  .bar-fill.g{background:var(--green);}
+  .bar-fill.a{background:var(--accent);}
+  .bar-row .val{width:56px;text-align:right;color:var(--sub);flex-shrink:0;}
+  .spark{display:flex;align-items:flex-end;gap:3px;height:56px;margin:8px 0 2px;}
+  .spark span{flex:1;background:var(--primary);border-radius:3px 3px 0 0;opacity:.85;}
+  .spark span.low{background:var(--accent);}
+  .rep-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;}
+  .rep-table th,.rep-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
+  .rep-table th{background:var(--primary-light);color:var(--primary-dark);font-size:11px;}
+  .note-small{font-size:11px;color:var(--sub);margin-top:8px;}
+  footer{background:var(--primary-dark);color:rgba(255,255,255,.85);font-size:11.5px;text-align:center;padding:22px 16px;line-height:1.9;}
+  footer a{color:#bfe3ef;}
+  .backlink{display:inline-block;margin:0 0 14px;font-size:13px;color:var(--primary);text-decoration:none;}
+  .disclaimer-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;color:var(--sub);margin-top:18px;}
+  .disclaimer-box b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">⚠ 本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。</div>
+
+<header class="site">
+  <div class="office">YAMAGISHI OCCUPATIONAL PHYSICIAN OFFICE</div>
+  <h1>復職Ready AI</h1>
+  <div class="tag">DEMO ／ 構想イメージ ｜ 産業医が設計</div>
+  <p class="lead">空白の2週間を、復職準備の2週間に。<br>AI＋オンラインで完結する、復職前2週間の短期集中準備プログラム。</p>
+</header>
+
+<div class="countdown">🗓 産業医面談まで <b id="cd-days">12</b> 日 ｜ 今日のタスク：朝チェックイン ✅ ／ 模擬ワーク45分 ／ 夜チェックアウト</div>
+
+<nav class="tabs" id="tabs">
+  <button class="active" data-tab="t1">サービス概要</button>
+  <button data-tab="t2">2週間スケジュール</button>
+  <button data-tab="t3">9つのプログラム</button>
+  <button data-tab="t4">レポートプレビュー</button>
+</nav>
+
+<main>
+
+<!-- ================= TAB 1 ================= -->
+<section class="panel active" id="t1">
+  <a class="backlink" href="./index.html">← 山岸産業医事務所デモTOPへ</a>
+  <h2 class="sec"><span class="chip">CONCEPT</span>「支援の谷間」の2週間とは</h2>
+
+  <div class="card">
+    <p style="font-size:13.5px;">主治医が「復職可能」と判断して診断書を発行しても、産業医の定例訪問（多くの企業で<b>月1回</b>）まで<b>約2週間の空白期間</b>が生じることが少なくありません。この間、休職者は「待つだけ」になりがちで、企業側も準備状況を客観的に把握できないまま面談日を迎えます。</p>
+    <div class="gap-flow" style="margin-top:16px;">
+      <div class="gap-step">
+        <div class="gap-node"><div class="gap-dot">🏥</div><div class="gap-line"></div></div>
+        <div class="gap-body"><b>主治医が「復職可能」と判断</b><br><span class="muted">就労可能の診断書が発行される</span></div>
+      </div>
+      <div class="gap-step hl">
+        <div class="gap-node"><div class="gap-dot">⏳</div><div class="gap-line"></div></div>
+        <div class="gap-body"><b>空白の約2週間 ＝ 復職Ready AI の出番</b><br><span class="muted">生活記録・模擬ワーク・通勤トライアルをAIが伴走で構造化。準備状況を「客観データ」として蓄積します。</span></div>
+      </div>
+      <div class="gap-step">
+        <div class="gap-node"><div class="gap-dot">👨‍⚕️</div><div class="gap-line"></div></div>
+        <div class="gap-body"><b>産業医面談（月1回の定例訪問）</b><br><span class="muted">2週間の記録をまとめた「復職準備レポート」を材料に、充実した面談へ</span></div>
+      </div>
+      <div class="gap-step">
+        <div class="gap-node"><div class="gap-dot">🌱</div></div>
+        <div class="gap-body"><b>職場復帰へ</b><br><span class="muted">再発予防プランを持って、安心のスタート</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>サービスの特長</h3>
+    <div class="points">
+      <div>🤖 <b>原則AI＋オンライン完結</b><br>通所不要。自宅からスマホで毎日10〜30分</div>
+      <div>🚶 <b>唯一のオフライン課題は「通勤」</b><br>実際の経路で通勤トライアル→AIに記録報告</div>
+      <div>📊 <b>面談に持ち込める客観データ</b><br>産業医の復職判定6観点に対応したレポートを自動生成</div>
+      <div>🩺 <b>産業医が設計</b><br>厚労省「職場復帰支援の手引き」の考え方に準拠した構成</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>産業医が復職判定で見る6つの観点（本サービスのアウトプット設計の軸）</h3>
+    <ol style="font-size:13px;padding-left:20px;">
+      <li>通勤時間帯に一人で安全に通勤できること</li>
+      <li>勤務日に勤務時間の就労が継続して可能なこと</li>
+      <li>業務に必要な作業をこなせること</li>
+      <li>作業による疲労が翌日までに十分回復すること</li>
+      <li>適切な睡眠覚醒リズムが整っていること</li>
+      <li>業務遂行に必要な注意力・集中力が回復していること</li>
+    </ol>
+    <p class="note-small">※ 厚生労働省「心の健康問題により休業した労働者の職場復帰支援の手引き」等を参考に整理</p>
+  </div>
+
+  <div class="callout">
+    <b>🌿 本サービスは「治療」ではありません。</b><br>
+    復職Ready AIが行うのは<b>準備・記録・整理</b>です。診断・治療・症状評価・服薬に関する助言は行いません。体調について気になることがあれば、必ず主治医にご相談ください。体調悪化のサインがみられた場合、AIはプログラムを一旦止めて主治医への相談をご案内します。
+  </div>
+</section>
+
+<!-- ================= TAB 2 ================= -->
+<section class="panel" id="t2">
+  <h2 class="sec"><span class="chip">SCHEDULE</span>Day 1〜14 モデルスケジュール</h2>
+  <p class="muted" style="margin-bottom:10px;">日付をタップすると、その日のプログラムが表示されます。🚶＝オフライン課題（通勤トライアル）の日。</p>
+
+  <div class="daily-note">☀️ <b>毎日の共通タスク</b>：朝チェックイン（起床報告＋コンディション1分チェック）／ 🌙 夜チェックアウト（1日の記録・疲労確認）</div>
+
+  <div class="week-label">Week 1：生活を整える・現状把握</div>
+  <div class="day-grid" id="grid-w1"></div>
+  <div class="week-label w2">Week 2：負荷を上げる・仕上げ</div>
+  <div class="day-grid" id="grid-w2"></div>
+  <div class="legend">オレンジ背景＝オフライン課題日（通勤トライアル）。それ以外はすべてオンラインで完結します。</div>
+
+  <div class="day-detail" id="day-detail">
+    <div class="dd-title">Day 1：オリエンテーション</div>
+    <div id="dd-body">AIとの対話で2週間の目標を設定し、生活記録をスタートします。所要時間：約20分。</div>
+  </div>
+
+  <h2 class="sec" style="margin-top:24px;"><span class="chip">TRY</span>体験：朝チェックインのイメージ</h2>
+  <div class="card">
+    <p class="muted">実際の画面イメージです。ボタンを押すと、AIとのやり取りのサンプルが進みます。</p>
+    <div class="chat-box">
+      <div class="chat-log" id="chat-log">
+        <div class="msg ai">おはようございます、ゆうきさん ☀️ 起床時刻を教えてください。</div>
+      </div>
+      <div class="chat-actions" id="chat-actions">
+        <button onclick="chatStep(this)">▶ 会話を進める</button>
+      </div>
+    </div>
+    <p class="note-small">※ デモ用のサンプル会話です。人物・データはすべて架空のものです。</p>
+  </div>
+</section>
+
+<!-- ================= TAB 3 ================= -->
+<section class="panel" id="t3">
+  <h2 class="sec"><span class="chip">PROGRAM</span>9つのプログラム候補</h2>
+  <p class="muted" style="margin-bottom:12px;">一般的なリワークプログラム（医療リワーク・職リハリワーク等）の要素を参考に、「2週間・AI＋オンライン」に最適化した構成です。タップで詳細が開きます。</p>
+  <div id="prog-list"></div>
+  <div class="callout warn">
+    <b>⚠ 医療行為ではありません：</b>各プログラムは「治療」ではなく、復職準備のための<b>記録・練習・整理</b>です。心理療法・診断・症状評価は行いません。記録の共有は必ずご本人の確認・承認を経て行います。
+  </div>
+</section>
+
+<!-- ================= TAB 4 ================= -->
+<section class="panel" id="t4">
+  <h2 class="sec"><span class="chip">REPORT</span>復職準備レポート（サンプル）</h2>
+  <p class="muted" style="margin-bottom:12px;">2週間の記録から自動生成され、<b>ご本人が内容を確認・承認したうえで</b>産業医面談に共有されるレポートのサンプルです。（架空データ）</p>
+
+  <div class="report">
+    <div class="report-head">
+      <div class="rh-sub">復職Ready AI ｜ 復職準備レポート（本人承認済み）</div>
+      <div class="rh-title">サンプル 太郎 様 ｜ 記録期間：Day 1–14</div>
+    </div>
+
+    <div class="report-sec">
+      <h4>① 生活リズムサマリー <span class="pill ok">安定</span></h4>
+      <div class="bar-row"><span class="lbl">平均睡眠時間</span><div class="bar-track"><div class="bar-fill g" style="width:82%"></div></div><span class="val">7.2 h</span></div>
+      <div class="bar-row"><span class="lbl">起床のばらつき</span><div class="bar-track"><div class="bar-fill g" style="width:25%"></div></div><span class="val">±22 分</span></div>
+      <div class="bar-row"><span class="lbl">日中の眠気</span><div class="bar-track"><div class="bar-fill g" style="width:15%"></div></div><span class="val">2/14 日</span></div>
+      <p class="note-small">起床時刻は Week 2 で 7:00±15分に収束。昼夜逆転の傾向はみられません。</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>② 通勤トライアル <span class="pill ok">3回 完了</span></h4>
+      <table class="rep-table">
+        <tr><th>実施</th><th>時間帯</th><th>所要</th><th>体調</th><th>疲労(5)</th><th>不安(5)</th></tr>
+        <tr><td>Day 5</td><td>10時台</td><td>48分</td><td>症状なし</td><td>3</td><td>3</td></tr>
+        <tr><td>Day 9</td><td>出勤時間帯</td><td>52分</td><td>症状なし</td><td>2</td><td>2</td></tr>
+        <tr><td>Day 12</td><td>出勤時間帯</td><td>50分</td><td>症状なし</td><td>2</td><td>1</td></tr>
+      </table>
+      <p class="note-small">ラッシュ時間帯での単独通勤を2回完了。回を追うごとに疲労・不安スコアが低下しています。</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>③ 模擬ワーク負荷耐性 <span class="pill ok">90分連続まで到達</span></h4>
+      <div class="bar-row"><span class="lbl">Week 1</span><div class="bar-track"><div class="bar-fill" style="width:35%"></div></div><span class="val">30–45分</span></div>
+      <div class="bar-row"><span class="lbl">Week 2</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span class="val">60–90分</span></div>
+      <p class="note-small">課題完遂率 100%（12/12課題）。作業翌日に疲労が残った日：1日（Day 8）→ 翌日は回復を確認。</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>④ 集中力チェック推移 <span class="pill ok">改善傾向</span></h4>
+      <div class="spark">
+        <span style="height:45%"></span><span style="height:52%"></span><span style="height:60%"></span><span style="height:58%"></span><span style="height:70%"></span><span style="height:78%"></span>
+      </div>
+      <p class="note-small">セルフチェック課題スコア（Day 2 → Day 13、計6回）。初回比 +33%。※医学的検査ではありません。</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>⑤ コンディション推移 <span class="pill mid">後半安定</span></h4>
+      <div class="spark">
+        <span style="height:55%"></span><span style="height:48%"></span><span class="low" style="height:38%"></span><span style="height:50%"></span><span style="height:62%"></span><span style="height:60%"></span><span style="height:68%"></span><span style="height:64%"></span><span style="height:72%"></span><span style="height:70%"></span><span style="height:75%"></span><span style="height:72%"></span><span style="height:78%"></span><span style="height:80%"></span>
+      </div>
+      <p class="note-small">毎日のセルフ評価（5段階×4項目の合成）。Day 3に一時低下→以降は緩やかに回復・安定。</p>
+    </div>
+
+    <div class="report-sec">
+      <h4>⑥ 再発予防プラン（要約・本人承認分）</h4>
+      <table class="rep-table">
+        <tr><th>サイン</th><th>本人の対処</th></tr>
+        <tr><td>早期：寝つきが悪くなる／メール返信を後回しにする</td><td>業務量を上司に相談・睡眠記録を再開</td></tr>
+        <tr><td>注意：週末に横になって過ごす時間が増える</td><td>産業医面談を前倒しで依頼</td></tr>
+      </table>
+      <p class="note-small">職場に相談したい配慮事項の候補：当面の残業制限／週1回の上司との15分面談（面談時のたたき台）。</p>
+    </div>
+
+    <div class="report-sec" style="border-bottom:none;">
+      <h4>⑦ 本人コメント・相談希望</h4>
+      <p style="font-size:13px;">「通勤は思ったより大丈夫でした。復帰直後の業務量の調整について、面談でご相談したいです。」</p>
+    </div>
+  </div>
+  <p class="note-small" style="margin-top:10px;">※ 本レポートはサンプルです。実際の運用では、共有前に必ずご本人が内容を確認し、承認した項目のみが共有されます。</p>
+</section>
+
+<div class="disclaimer-box">
+  <b>免責事項・本デモについて</b><br>
+  ・本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。<br>
+  ・復職Ready AIは医療行為（診断・治療・症状評価・服薬指導等）を行うものではなく、復職準備のための記録・練習・整理を支援するサービス構想です。復職可否の判断は行いません。<br>
+  ・体調に関するご心配は主治医に、就業に関するご相談は所属企業の産業保健スタッフにご相談ください。
+</div>
+
+</main>
+
+<footer>
+  © 2026 山岸産業医事務所 ｜ 本デモ画面は事業計画検討用の資料です<br>
+  <a href="./index.html">山岸産業医事務所（デモTOP）へ戻る</a>
+</footer>
+
+<script>
+/* ---------- tabs ---------- */
+const tabs=document.querySelectorAll('nav.tabs button');
+tabs.forEach(b=>b.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section.panel').forEach(p=>p.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById(b.dataset.tab).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ---------- schedule ---------- */
+const days=[
+ {d:1,ic:'🎯',t:'オリエンテーション',b:'AIとの対話で2週間の目標を設定し、生活記録（睡眠・食事・外出など）をスタート。所要約20分。'},
+ {d:2,ic:'🧠',t:'集中力チェック（ベースライン）',b:'ゲーム形式の短い課題で、現在の集中力を測定。今後の変化の基準点になります。※医学的検査ではありません。'},
+ {d:3,ic:'💻',t:'模擬ワーク30分＋振り返り対話①',b:'軽めのPC課題（文書要約など）30分。夜に休職経緯の整理をAIと少しずつ開始。'},
+ {d:4,ic:'🗺',t:'通勤トライアル計画づくり',b:'AIと一緒に通勤経路・時間帯・無理をしない中止基準を決めます。'},
+ {d:5,ic:'🚶',t:'通勤トライアル①（時間帯自由）',b:'実際の経路で職場近くまで移動（職場には入りません）。帰宅後、所要時間・体調・疲労をAIに報告。',off:true},
+ {d:6,ic:'💻',t:'模擬ワーク45分＋集中力チェック②',b:'作業時間を少し延長。課題後の疲労が翌日に残るかも確認します。'},
+ {d:7,ic:'🌿',t:'週次振り返り・休息日',b:'AIがWeek 1のサマリーを提示。頑張りすぎていないかもチェック。しっかり休む日です。'},
+ {d:8,ic:'💻',t:'模擬ワーク60分×2コマ開始',b:'午前・午後の2コマ制へ。勤務日の時間感覚に近づけます。'},
+ {d:9,ic:'🚶',t:'通勤トライアル②（出勤時間帯）',b:'実際の出勤時間帯（ラッシュ）で実施。混雑度・身体症状の有無も記録します。',off:true},
+ {d:10,ic:'🛡',t:'集中力チェック③＋再発予防プラン作成①',b:'休職経緯の整理をもとに、自分の再発サインと対処をAIと文書化していきます。'},
+ {d:11,ic:'🎭',t:'模擬ワーク90分＋面談練習',b:'AIが上司役になり、復職挨拶や業務相談のロールプレイ。伝え方を一緒に整理します。'},
+ {d:12,ic:'🚶',t:'通勤トライアル③（仕上げ）',b:'出勤時間帯での最終確認。3回の記録がレポートの「通勤」セクションになります。',off:true},
+ {d:13,ic:'📝',t:'再発予防プラン完成＋レポート下書き確認',b:'2週間の記録から自動生成されたレポートのドラフトを本人が確認・修正。'},
+ {d:14,ic:'✅',t:'レポート承認・面談リハーサル',b:'共有する項目を本人が承認。産業医面談の想定問答をAIと練習して仕上げます。'}
+];
+const g1=document.getElementById('grid-w1'),g2=document.getElementById('grid-w2');
+days.forEach((x,i)=>{
+  const c=document.createElement('div');
+  c.className='day-cell'+(x.off?' offline':'');
+  c.innerHTML='<div class="d">Day</div><div class="n">'+x.d+'</div><div class="ic">'+x.ic+'</div>';
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.day-cell').forEach(e=>e.classList.remove('selected'));
+    c.classList.add('selected');
+    document.querySelector('#day-detail .dd-title').innerHTML='Day '+x.d+'：'+x.t+(x.off?'<span class="badge-off">オフライン課題</span>':'');
+    document.getElementById('dd-body').textContent=x.b;
+    document.getElementById('day-detail').scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  (i<7?g1:g2).appendChild(c);
+  if(i===0)c.classList.add('selected');
+});
+
+/* ---------- chat demo ---------- */
+const script=[
+ {u:'7時に起きました'},
+ {a:'7時起床ですね、3日連続で同じ時刻です 👏 昨夜の眠りはいかがでしたか？'},
+ {u:'途中で1回目が覚めたけど、わりとよく眠れた'},
+ {a:'記録しました（睡眠 約7時間・中途覚醒1回）。今日のコンディションを1〜5で教えてください。気分／意欲／不安／体調 の順で大丈夫です。'},
+ {u:'4・3・2・4 くらい'},
+ {a:'ありがとうございます、昨日より少し上向きですね 📈 今日の予定は「模擬ワーク45分」です。無理のないペースでいきましょう。つらいと感じたら途中で止めて大丈夫です。'}
+];
+let ci=0;
+function chatStep(btn){
+  const log=document.getElementById('chat-log');
+  if(ci>=script.length){btn.textContent='サンプル終了';btn.disabled=true;return;}
+  const m=script[ci++];
+  const div=document.createElement('div');
+  div.className='msg '+(m.u?'user':'ai');
+  div.textContent=m.u||m.a;
+  log.appendChild(div);
+  log.scrollTop=log.scrollHeight;
+  if(ci>=script.length){btn.textContent='サンプル終了';btn.disabled=true;}
+}
+
+/* ---------- programs ---------- */
+const progs=[
+ {ic:'🌅',t:'1. AI生活リズムログ（中核）',c:['生活リズム'],
+  n:'毎日、起床・就寝・睡眠の質・食事・服薬有無・外出・日中の眠気・疲労度を記録。厚労省の手引き等で用いられる「生活記録表」のデジタル版です。',
+  a:'毎朝・毎晩のチャットの問いかけで自動収集（入力は1〜2分）。起床時刻のばらつきや昼夜逆転の傾向を検知してやさしくフィードバック。',
+  o:'14日間の生活記録表＋定量サマリー（平均睡眠時間・起床時刻の安定度・日中眠気の頻度）。判定観点⑤に直結。'},
+ {ic:'💻',t:'2. 模擬オフィスワーク・ドリル',c:['オフィスワーク模擬'],
+  n:'1日30〜90分、段階的に負荷を上げるPC作業課題（文書要約・データ入力・メール文作成など）。Week 1は30分×1コマ→Week 2は60〜90分×2コマへ漸増。',
+  a:'職種に合わせた課題をAIが生成・出題。所要時間・完遂率・自己疲労度を記録し、「疲労が翌日に残ったか」まで確認。',
+  o:'作業時間の推移グラフ、課題完遂率、作業後疲労の回復状況。判定観点②③④⑥に対応。'},
+ {ic:'🧠',t:'3. 集中力・注意力セルフチェック',c:['オフィスワーク模擬'],
+  n:'2〜3日おきに行う短時間の認知課題（計算・記憶・注意切替、ゲーム形式）。医学的検査ではなく自己確認ツールです。',
+  a:'出題・採点・推移の可視化。初日比の変化を本人向けに分かりやすく解説。',
+  o:'スコア推移グラフ。判定観点⑥（注意力・集中力）の参考データ。'},
+ {ic:'🚶',t:'4. 通勤トライアル（唯一のオフライン課題）',c:['復職実務','オフライン'],off:true,
+  n:'実際の通勤経路・時間帯で自宅→職場近くまで移動（職場には入りません）。Week 1に1回→Week 2に2回と段階化。',
+  a:'事前の計画づくり（経路・時間帯・中止基準）を支援。実施後は所要時間・混雑度・身体症状の有無・疲労/不安度をチャット報告で構造化記録。',
+  o:'通勤トライアル実施記録（3回分の推移）。判定観点①に直結する、本サービスの特長的アウトプット。'},
+ {ic:'📖',t:'5. 休職の振り返り・再発サイン整理',c:['認知行動療法系','再発予防'],
+  n:'休職に至った経緯・きっかけ・当時のサインを、AIとの対話で時系列に整理（治療的介入ではなく「事実の整理」）。',
+  a:'構造化インタビュー形式で質問し、本人の言葉を要約。解釈の押し付けはせず、つらくなったら中断・主治医相談を案内。',
+  o:'「休職経緯サマリー」1枚（本人承認分のみ）。産業医の経緯把握の時間を短縮。'},
+ {ic:'🛡',t:'6. マイ再発予防プラン作成',c:['再発予防'],
+  n:'振り返りをもとに、自分の再発サイン（早期→注意→危険）と各段階の対処、職場に相談したい配慮事項の候補を1枚のプランに。',
+  a:'テンプレートに沿って対話で引き出し、文書化。配慮事項の候補は面談用の「たたき台」として生成。',
+  o:'再発予防プラン1枚。産業医の就業上の措置検討の材料に。'},
+ {ic:'🎭',t:'7. 復職後シミュレーション面談練習',c:['認知行動療法系','集団プログラム代替'],
+  n:'上司への復職挨拶・業務相談・断り方などをAIとロールプレイ。産業医面談の想定問答練習も可能。',
+  a:'上司役・産業医役をAIが演じ、練習後に「伝わりやすかった点・整理するとよい点」をフィードバック（性格評価はしません）。',
+  o:'実施回数と本人メモ（主に本人向け。レポートには実施記録のみ）。'},
+ {ic:'📈',t:'8. セルフコンディション日次チェック',c:['生活リズム','再発予防'],
+  n:'毎日1分、気分・意欲・不安・体調を5段階でセルフ評価（医学的評価尺度は使用しません）。',
+  a:'毎日決まった時間にリマインドし、トレンドを可視化。連続低下時は「主治医に相談を」と案内（AIは評価・診断しません）。',
+  o:'コンディション推移グラフ（14日間）。体調の安定性の確認材料。'},
+ {ic:'📋',t:'9. 復職準備レポート自動生成（統合）',c:['統合アウトプット'],
+  n:'プログラム1〜8の記録を統合し、産業医面談用の「復職準備レポート」を自動生成。本人が確認・承認した内容のみ共有します。',
+  a:'全データを産業医の復職判定6観点に対応する形で構成・要約。',
+  o:'レポート本体（→「レポートプレビュー」タブでサンプルをご覧いただけます）。'}
+];
+const pl=document.getElementById('prog-list');
+progs.forEach(p=>{
+  const d=document.createElement('div');d.className='prog';
+  d.innerHTML='<div class="prog-head"><div class="pic">'+p.ic+'</div><div class="pt"><b>'+p.t+'</b><span class="cats">'
+    +p.c.map(c=>'<span class="cat-chip'+(c==='オフライン'?' off':'')+'">'+c+'</span>').join('')
+    +'</span></div><span class="arrow">▶</span></div>'
+    +'<div class="prog-body"><dl>'
+    +'<div><dt>内容</dt><dd>'+p.n+'</dd></div>'
+    +'<div><dt>AIの関与</dt><dd>'+p.a+'</dd></div>'
+    +'<div><dt>産業医面談へのアウトプット</dt><dd>'+p.o+'</dd></div>'
+    +'</dl></div>';
+  d.querySelector('.prog-head').addEventListener('click',()=>d.classList.toggle('open'));
+  pl.appendChild(d);
+});
+</script>
+</body>
+</html>
