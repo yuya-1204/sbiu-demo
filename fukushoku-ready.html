@@ -135,24 +135,46 @@
   .step-flow .st b{display:block;color:var(--primary-dark);font-size:12.5px;margin-bottom:2px;}
   .case-box{background:#fffdf7;border:1px dashed var(--accent);border-radius:10px;padding:12px;font-size:13px;margin:10px 0;}
   .goal-band{background:var(--accent-light);border:1px solid #f0c9a4;border-radius:10px;padding:10px 12px;font-size:12.5px;margin:10px 0;}
+  /* ===== password gate ===== */
+  body.locked>*:not(#gate){display:none;}
+  .gate-wrap{max-width:440px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:40px 36px;text-align:center;}
+  .gate-wrap .lock{font-size:36px;}
+  .gate-wrap h2{font-size:18px;color:var(--primary-dark);margin:12px 0 6px;}
+  .gate-wrap p{font-size:13px;color:var(--sub);margin-bottom:20px;}
+  .gate-wrap input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:15px;text-align:center;letter-spacing:.2em;font-family:inherit;}
+  .gate-wrap input:focus{outline:2px solid var(--primary);}
+  .gate-err{color:var(--danger);font-size:12px;min-height:18px;margin-top:8px;}
+  .gate-btn{width:100%;margin-top:6px;background:var(--primary);color:#fff;border:none;border-radius:8px;padding:11px 26px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .gate-btn:hover{background:var(--primary-dark);}
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="gate">
+  <div class="gate-wrap">
+    <div class="lock">🔒</div>
+    <h2>復職Ready AI｜デモ体験ページ</h2>
+    <p>本ページは事業構想を体験いただくためのデモページです。実データ・個人情報は含まれません。<br>閲覧コードを入力して開始してください。</p>
+    <input type="password" id="pw" placeholder="閲覧コード" onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="gate-err" id="pwErr"></div>
+    <button class="gate-btn" onclick="checkPw()">開く</button>
+  </div>
+</div>
 
 <div class="demo-banner">⚠ 本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。</div>
 
 <header class="site">
-  <div class="office">YAMAGISHI OCCUPATIONAL PHYSICIAN OFFICE</div>
+  <div class="office">YAMAGISHI INDUSTRIAL MEDICAL OFFICE</div>
   <h1>復職Ready AI</h1>
   <div class="tag">DEMO ／ 構想イメージ ｜ 産業医が設計</div>
-  <p class="lead">空白の2週間を、復職準備の2週間に。<br>AI＋オンラインで完結する、復職前2週間の短期集中準備プログラム。</p>
+  <p class="lead">空白の2週間を、復職準備の2週間に。<br>AI＋オンラインで完結する、復職前の短期集中準備プログラム（5日〜3週間・4コース）。</p>
 </header>
 
-<div class="countdown">🗓 産業医面談まで <b id="cd-days">12</b> 日 ｜ 今日のタスク：朝チェックイン ✅ ／ 模擬ワーク45分 ／ 夜チェックアウト</div>
+<div class="countdown">🗓 産業医面談まで <b id="cd-days">12</b> 日 ｜ 今日のタスク：朝チェックイン ✅ ／ 模擬ワーク（午前） ／ 夕方の日報</div>
 
 <nav class="tabs" id="tabs">
   <button class="active" data-tab="t1">サービス概要</button>
-  <button data-tab="t2">2週間スケジュール</button>
+  <button data-tab="t2">モデルスケジュール</button>
   <button data-tab="t3">プログラム一覧</button>
   <button data-tab="t5">学習・ワーク</button>
   <button data-tab="t4">レポートプレビュー</button>
@@ -207,11 +229,22 @@
   <div class="card">
     <h3>サービスの特長</h3>
     <div class="points">
-      <div>🤖 <b>原則AI＋オンライン完結</b><br>通所不要。自宅からスマホで毎日10〜30分</div>
+      <div>🤖 <b>原則AI＋オンライン完結</b><br>通所不要。自宅からスマホ・PCで、すべて日中に実施（夕方以降のプログラムはありません）</div>
       <div>🚶 <b>唯一のオフライン課題は「通勤」</b><br>実際の経路で通勤トライアル→AIに記録報告</div>
       <div>📊 <b>面談に持ち込める客観データ</b><br>産業医の復職判定6観点に対応したレポートを自動生成</div>
       <div>🩺 <b>産業医が設計</b><br>厚労省「職場復帰支援の手引き」の考え方に準拠した構成</div>
     </div>
+  </div>
+
+  <div class="card">
+    <h3>コースは4種類（期間で選べます）</h3>
+    <ul style="font-size:13px;padding-left:20px;">
+      <li><b>ロング</b>：2週間以上〜3週間</li>
+      <li><b>ノーマル</b>：2週間（標準。本デモのモデルスケジュール）</li>
+      <li><b>ショート</b>：10日以上〜2週間未満</li>
+      <li><b>ベリーショート</b>：5日以上〜10日未満</li>
+    </ul>
+    <p class="note-small">※ いずれのコースも、日中の勤務復帰を目指すサービスのため、プログラムはすべて日中に実施し、夕方以降には行いません（夕方の日報提出は報告作業のため除く）。土日はリワーク自体はお休みで、「朝の気分・体調の報告」と「夕方の日報」のみ行います。開始日は月〜金の任意の曜日から設定でき、土日はどの位置に来ても自動的に休みに配置されるため、無理のない自然なスケジュールになります。</p>
   </div>
 
   <div class="card">
@@ -235,20 +268,22 @@
 
 <!-- ================= TAB 2 ================= -->
 <section class="panel" id="t2">
-  <h2 class="sec"><span class="chip">SCHEDULE</span>Day 1〜14 モデルスケジュール</h2>
-  <p class="muted" style="margin-bottom:10px;">日付をタップすると、その日のプログラムが表示されます。🚶＝オフライン課題（通勤トライアル）の日。</p>
+  <h2 class="sec"><span class="chip">SCHEDULE</span>Day 1〜14 モデルスケジュール（ノーマルコース：2週間）</h2>
+  <p class="muted" style="margin-bottom:10px;">開始日は月〜金の任意の曜日でOK。開始曜日を選ぶと、カレンダー上の土日が自動的に「リワーク休み」に配置され、自然なスケジュールが組まれます。日付をタップすると、その日のプログラムが表示されます。🚶＝オフライン課題（通勤トライアル）の日。🌿＝週末（リワーク休み）。プログラムはすべて日中に実施し、夕方以降には行いません。</p>
 
-  <div class="daily-note">☀️ <b>毎日の共通タスク</b>：朝チェックイン（起床報告＋コンディション1分チェック）／ 🌙 夜チェックアウト（1日の記録・疲労確認）</div>
+  <div class="daily-note">🗓 <b>開始曜日を選択</b>：<select id="start-dow" onchange="buildSchedule()" style="font-family:inherit;font-size:12.5px;padding:2px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);"><option value="1" selected>月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option></select>　開始日から14日間のうち、土日はどの位置に来ても自動的にリワーク休みとなり、プログラム実施日は平日の10日間です。</div>
 
-  <div class="week-label">Week 1：生活を整える・現状把握</div>
+  <div class="daily-note">⏰ <b>実施時間</b>：プログラム実施日（平日）のうち最初の5日間は半日（9:00〜11:00／午後は外出・作業・趣味など自由）、6日目以降は9:00〜16:00。／ ☀️ <b>毎日の共通タスク</b>：朝チェックイン（起床報告＋コンディション1分チェック）と 🌇 夕方の日報（1日の記録・疲労確認。実施日の最初の5日間は15:30〜17:30の間に、6日目以降は17:30までに提出）。土日も「朝の報告」と「夕方の日報」は行います。</div>
+
+  <div class="week-label">Week 1（Day 1〜7）：生活を整える・現状把握</div>
   <div class="day-grid" id="grid-w1"></div>
-  <div class="week-label w2">Week 2：負荷を上げる・仕上げ</div>
+  <div class="week-label w2">Week 2（Day 8〜14）：負荷を上げる・仕上げ</div>
   <div class="day-grid" id="grid-w2"></div>
-  <div class="legend">オレンジ背景＝オフライン課題日（通勤トライアル）。それ以外はすべてオンラインで完結します。</div>
+  <div class="legend">オレンジ背景＝オフライン課題日（通勤トライアル）。🌿＝週末（リワーク休み：朝の報告と夕方の日報のみ）。開始曜日に応じて週末の位置は自動で変わります。それ以外はすべてオンラインで完結します。</div>
 
   <div class="day-detail" id="day-detail">
-    <div class="dd-title">Day 1：オリエンテーション</div>
-    <div id="dd-body">AIとの対話で2週間の目標を設定し、生活記録をスタートします。所要時間：約20分。</div>
+    <div class="dd-title">Day 1：説明動画＋オリエンテーション</div>
+    <div id="dd-body">説明動画を視聴後、AIとの対話で目標を設定し、生活記録をスタートします（9:00〜11:00）。午後は外出・作業・趣味などで自由に過ごし、15:30〜17:30に日報を提出します。</div>
   </div>
 
   <h2 class="sec" style="margin-top:24px;"><span class="chip">TRY</span>体験：朝チェックインのイメージ</h2>
@@ -352,7 +387,7 @@
 <!-- ================= TAB 4 ================= -->
 <section class="panel" id="t4">
   <h2 class="sec"><span class="chip">REPORT</span>復職準備レポート（サンプル）</h2>
-  <p class="muted" style="margin-bottom:12px;">2週間の記録から自動生成され、<b>ご本人が内容を確認・承認したうえで</b>産業医面談に共有されるレポートのサンプルです。（架空データ）</p>
+  <p class="muted" style="margin-bottom:12px;">2週間の記録から自動生成され、<b>ご本人が内容を確認・承認したうえで</b>産業医面談に共有されるレポートのサンプルです。（架空データ・月曜開始のノーマルコースの例）</p>
 
   <div class="report">
     <div class="report-head">
@@ -374,7 +409,7 @@
         <tr><th>実施</th><th>時間帯</th><th>所要</th><th>体調</th><th>疲労(5)</th><th>不安(5)</th></tr>
         <tr><td>Day 5</td><td>10時台</td><td>48分</td><td>症状なし</td><td>3</td><td>3</td></tr>
         <tr><td>Day 9</td><td>出勤時間帯</td><td>52分</td><td>症状なし</td><td>2</td><td>2</td></tr>
-        <tr><td>Day 12</td><td>出勤時間帯</td><td>50分</td><td>症状なし</td><td>2</td><td>1</td></tr>
+        <tr><td>Day 11</td><td>出勤時間帯</td><td>50分</td><td>症状なし</td><td>2</td><td>1</td></tr>
       </table>
       <p class="note-small">ラッシュ時間帯での単独通勤を2回完了。回を追うごとに疲労・不安スコアが低下しています。</p>
     </div>
@@ -391,7 +426,7 @@
       <div class="spark">
         <span style="height:45%"></span><span style="height:52%"></span><span style="height:60%"></span><span style="height:58%"></span><span style="height:70%"></span><span style="height:78%"></span>
       </div>
-      <p class="note-small">セルフチェック課題スコア（Day 2 → Day 13、計6回）。初回比 +33%。※医学的検査ではありません。</p>
+      <p class="note-small">セルフチェック課題スコア（Day 2 → Day 12、計6回）。初回比 +33%。※医学的検査ではありません。</p>
     </div>
 
     <div class="report-sec">
@@ -408,8 +443,8 @@
         <tr><th>モジュール</th><th>実施状況</th></tr>
         <tr><td>説明動画（使い方・注意事項）</td><td>Day 1 視聴済み</td></tr>
         <tr><td>座学①：メンタルヘルス不調の理解</td><td>Day 2 視聴済み・学習メモあり</td></tr>
-        <tr><td>座学②：CBTの基礎</td><td>Day 6 視聴済み</td></tr>
-        <tr><td>CBT事例演習ワーク＋振り返り報告書</td><td>演習2回（Day 8・11）・報告書1枚作成</td></tr>
+        <tr><td>座学②：CBTの基礎</td><td>Day 8 視聴済み</td></tr>
+        <tr><td>CBT事例演習ワーク＋振り返り報告書</td><td>演習（Day 10）・報告書1枚作成（Day 11）</td></tr>
       </table>
       <p class="note-small">報告書より（抜粋）：「頼まれごとを『迷惑をかけているサイン』と受け取りやすいクセに気づいた。期限が厳しいときは『相談する』を選択肢に入れたい。」</p>
     </div>
@@ -453,6 +488,19 @@
 </footer>
 
 <script>
+/* ---------- password gate ---------- */
+const PASSWORD="sbiuReady"; // デモ用（公開時は必ずサーバ側認証に置換）
+function checkPw(){
+  const v=document.getElementById('pw').value;
+  if(v===PASSWORD){
+    document.body.classList.remove('locked');
+    document.getElementById('gate').style.display='none';
+    window.scrollTo({top:0});
+  }else{
+    document.getElementById('pwErr').textContent='閲覧コードが違います';
+  }
+}
+
 /* ---------- tabs ---------- */
 const tabs=document.querySelectorAll('nav.tabs button');
 tabs.forEach(b=>b.addEventListener('click',()=>{
@@ -464,37 +512,54 @@ tabs.forEach(b=>b.addEventListener('click',()=>{
 }));
 
 /* ---------- schedule ---------- */
-const days=[
- {d:1,ic:'🎬',t:'説明動画＋オリエンテーション',b:'「使い方・注意事項の説明動画」（約5分）を視聴してからスタート。AIとの対話で2週間の目標を設定し、生活記録（睡眠・食事・外出など）を開始します。所要約25分。'},
- {d:2,ic:'🧠',t:'集中力チェック＋座学①',b:'ゲーム形式の課題で集中力のベースラインを測定（※医学的検査ではありません）。夜は座学動画「メンタルヘルス不調の理解」（うつ病・適応障害・不安症）を視聴します。'},
- {d:3,ic:'💻',t:'模擬ワーク30分＋振り返り対話①',b:'軽めのPC課題（文書要約など）30分。夜に不調の契機（プライベート／業務）の整理をAIと少しずつ開始。振り返りシートの材料になります。'},
- {d:4,ic:'🗺',t:'通勤トライアル計画づくり',b:'AIと一緒に通勤経路・時間帯・無理をしない中止基準を決めます。'},
- {d:5,ic:'🚶',t:'通勤トライアル①（時間帯自由）',b:'実際の経路で職場近くまで移動（職場には入りません）。帰宅後、所要時間・体調・疲労をAIに報告。',off:true},
- {d:6,ic:'📚',t:'模擬ワーク45分＋座学②（CBT）',b:'作業時間を少し延長し、疲労の翌日への残り方も確認。夜は座学動画「認知行動療法（CBT）の基礎」を視聴します。'},
- {d:7,ic:'🌿',t:'週次振り返り・休息日',b:'AIがWeek 1のサマリーを提示。頑張りすぎていないかもチェック。しっかり休む日です。'},
- {d:8,ic:'💻',t:'模擬ワーク60分×2＋CBT事例演習①',b:'午前・午後の2コマ制へ。架空事例をコラム法形式で整理するCBT事例演習ワークにも取り組みます。'},
- {d:9,ic:'🚶',t:'通勤トライアル②（出勤時間帯）',b:'実際の出勤時間帯（ラッシュ）で実施。混雑度・身体症状の有無も記録します。',off:true},
- {d:10,ic:'📝',t:'集中力チェック③＋振り返りシート作成①',b:'座学と振り返り対話をもとに、不調の契機と再燃予防の工夫を「振り返りシート」に自分の言葉で記載していきます（会社・産業医への提出が目標の一つ）。'},
- {d:11,ic:'🎭',t:'模擬ワーク90分＋面談練習＋CBT報告書',b:'AIが上司役になり復職挨拶や業務相談のロールプレイ。CBT事例演習の振り返り報告書もまとめます。'},
- {d:12,ic:'🚶',t:'通勤トライアル③（仕上げ）',b:'出勤時間帯での最終確認。3回の記録がレポートの「通勤」セクションになります。',off:true},
- {d:13,ic:'🛡',t:'振り返りシート・再発予防プラン完成',b:'提出目標の振り返りシートと再発予防プランを仕上げ、自動生成されたレポートのドラフトを本人が確認・修正。'},
- {d:14,ic:'✅',t:'レポート承認・面談リハーサル',b:'共有する項目を本人が承認。産業医面談の想定問答をAIと練習して仕上げます。'}
+/* 開始曜日（月〜金）に応じて、カレンダー上の土日を自動的に「リワーク休み」に配置します。
+   14日間には必ず土日が4日含まれるため、プログラム実施日は常に平日の10日間です。 */
+const wdName=['日','月','火','水','木','金','土'];
+const progDays=[
+ {ic:'🎬',t:'説明動画＋オリエンテーション',b:'「使い方・注意事項の説明動画」（約5分）を視聴してからスタート。AIとの対話で目標を設定し、生活記録（睡眠・食事・外出など）を開始します（半日 9:00〜11:00）。午後は外出・作業・趣味などで自由に過ごし、15:30〜17:30に日報を提出。'},
+ {ic:'🧠',t:'集中力チェック＋座学①',b:'ゲーム形式の課題で集中力のベースラインを測定（※医学的検査ではありません）。あわせて座学動画「メンタルヘルス不調の理解」（うつ病・適応障害・不安症）を視聴します（半日 9:00〜11:00）。'},
+ {ic:'💻',t:'模擬ワーク30分＋振り返り対話①',b:'軽めのPC課題（文書要約など）30分。不調の契機（プライベート／業務）の整理もAIと少しずつ開始します（半日 9:00〜11:00）。振り返りシートの材料になります。'},
+ {ic:'🗺',t:'通勤トライアル計画づくり',b:'AIと一緒に通勤経路・時間帯・無理をしない中止基準を決めます（半日 9:00〜11:00）。'},
+ {ic:'🚶',t:'通勤トライアル①（午前）',b:'実際の経路で職場近くまで移動（職場には入りません）。帰宅後、所要時間・体調・疲労をAIに報告。実施は日中のみです。',off:true},
+ {ic:'📚',t:'模擬ワーク60分＋座学②（CBT）',b:'プログラム実施6日目からは9:00〜16:00に拡大。作業時間を延長し、疲労の翌日への残り方も確認。日中に座学動画「認知行動療法（CBT）の基礎」も視聴します。日報は17:30までに提出。'},
+ {ic:'🚶',t:'通勤トライアル②（出勤時間帯）',b:'実際の出勤時間帯（朝のラッシュ）で実施。混雑度・身体症状の有無も記録します。',off:true},
+ {ic:'📝',t:'模擬ワーク90分＋CBT事例演習＋振り返りシート作成①',b:'午前・午後の2コマ制へ。架空事例をコラム法形式で整理するCBT事例演習ワークと、「振り返りシート」（不調の契機と再燃予防の工夫）の作成を開始します（会社・産業医への提出が目標の一つ）。'},
+ {ic:'🎭',t:'通勤トライアル③（仕上げ）＋面談練習・CBT報告書',b:'出勤時間帯での最終確認（3回の記録がレポートの「通勤」セクションに）。帰宅後の日中に、AIが上司役になるロールプレイと、CBT事例演習の振り返り報告書のまとめを行います。',off:true},
+ {ic:'✅',t:'振り返りシート・再発予防プラン完成＋レポート承認・面談リハーサル',b:'提出目標の振り返りシートと再発予防プランを仕上げ、自動生成されたレポートを本人が確認・承認。産業医面談の想定問答をAIと練習して仕上げます。'}
+];
+const wkendTexts=[
+ '土日はリワーク自体はお休みです。「朝の気分・体調の報告」と「夕方の日報」のみ行います。しっかり休むことも大切な復職準備です。',
+ '引き続きお休みです。朝の気分・体調の報告と夕方の日報だけ済ませ、ゆっくり過ごしましょう。'
 ];
 const g1=document.getElementById('grid-w1'),g2=document.getElementById('grid-w2');
-days.forEach((x,i)=>{
-  const c=document.createElement('div');
-  c.className='day-cell'+(x.off?' offline':'');
-  c.innerHTML='<div class="d">Day</div><div class="n">'+x.d+'</div><div class="ic">'+x.ic+'</div>';
-  c.addEventListener('click',()=>{
-    document.querySelectorAll('.day-cell').forEach(e=>e.classList.remove('selected'));
-    c.classList.add('selected');
-    document.querySelector('#day-detail .dd-title').innerHTML='Day '+x.d+'：'+x.t+(x.off?'<span class="badge-off">オフライン課題</span>':'');
-    document.getElementById('dd-body').textContent=x.b;
-    document.getElementById('day-detail').scrollIntoView({behavior:'smooth',block:'nearest'});
-  });
-  (i<7?g1:g2).appendChild(c);
-  if(i===0)c.classList.add('selected');
-});
+function buildSchedule(){
+  const start=parseInt(document.getElementById('start-dow').value,10);
+  g1.innerHTML='';g2.innerHTML='';
+  let w=0,wk=0;
+  for(let i=0;i<14;i++){
+    const d=i+1,dow=(start+i)%7;
+    let x;
+    if(dow===0||dow===6){x={ic:'🌿',t:'週末（リワーク休み）',b:wkendTexts[wk%2]};wk++;}
+    else{x=progDays[w++];}
+    const c=document.createElement('div');
+    c.className='day-cell'+(x.off?' offline':'');
+    c.innerHTML='<div class="d">Day・'+wdName[dow]+'</div><div class="n">'+d+'</div><div class="ic">'+x.ic+'</div>';
+    c.addEventListener('click',()=>{
+      document.querySelectorAll('.day-cell').forEach(e=>e.classList.remove('selected'));
+      c.classList.add('selected');
+      document.querySelector('#day-detail .dd-title').innerHTML='Day '+d+'（'+wdName[dow]+'）：'+x.t+(x.off?'<span class="badge-off">オフライン課題</span>':'');
+      document.getElementById('dd-body').textContent=x.b;
+      document.getElementById('day-detail').scrollIntoView({behavior:'smooth',block:'nearest'});
+    });
+    (i<7?g1:g2).appendChild(c);
+    if(i===0){
+      c.classList.add('selected');
+      document.querySelector('#day-detail .dd-title').innerHTML='Day 1（'+wdName[dow]+'）：'+x.t;
+      document.getElementById('dd-body').textContent=x.b;
+    }
+  }
+}
+buildSchedule();
 
 /* ---------- chat demo ---------- */
 const script=[
@@ -503,7 +568,7 @@ const script=[
  {u:'途中で1回目が覚めたけど、わりとよく眠れた'},
  {a:'記録しました（睡眠 約7時間・中途覚醒1回）。今日のコンディションを1〜5で教えてください。気分／意欲／不安／体調 の順で大丈夫です。'},
  {u:'4・3・2・4 くらい'},
- {a:'ありがとうございます、昨日より少し上向きですね 📈 今日の予定は「模擬ワーク45分」です。無理のないペースでいきましょう。つらいと感じたら途中で止めて大丈夫です。'}
+ {a:'ありがとうございます、昨日より少し上向きですね 📈 今日の予定は「模擬ワーク（午前）」です。無理のないペースでいきましょう。つらいと感じたら途中で止めて大丈夫です。'}
 ];
 let ci=0;
 function chatStep(btn){
@@ -522,10 +587,10 @@ function chatStep(btn){
 const progs=[
  {ic:'🌅',t:'1. AI生活リズムログ（中核）',c:['生活リズム'],
   n:'毎日、起床・就寝・睡眠の質・食事・服薬有無・外出・日中の眠気・疲労度を記録。厚労省の手引き等で用いられる「生活記録表」のデジタル版です。',
-  a:'毎朝・毎晩のチャットの問いかけで自動収集（入力は1〜2分）。起床時刻のばらつきや昼夜逆転の傾向を検知してやさしくフィードバック。',
+  a:'毎朝のチェックインと夕方の日報の問いかけで自動収集（入力は1〜2分）。起床時刻のばらつきや昼夜逆転の傾向を検知してやさしくフィードバック。',
   o:'14日間の生活記録表＋定量サマリー（平均睡眠時間・起床時刻の安定度・日中眠気の頻度）。判定観点⑤に直結。'},
  {ic:'💻',t:'2. 模擬オフィスワーク・ドリル',c:['オフィスワーク模擬'],
-  n:'1日30〜90分、段階的に負荷を上げるPC作業課題（文書要約・データ入力・メール文作成など）。Week 1は30分×1コマ→Week 2は60〜90分×2コマへ漸増。',
+  n:'1日30〜90分、段階的に負荷を上げるPC作業課題（文書要約・データ入力・メール文作成など）。Week 1（半日 9:00〜11:00）は30分×1コマ→Week 2（9:00〜16:00）は60〜90分×2コマへ漸増。実施は平日の日中のみで、夕方以降には行いません。',
   a:'職種に合わせた課題をAIが生成・出題。所要時間・完遂率・自己疲労度を記録し、「疲労が翌日に残ったか」まで確認。',
   o:'作業時間の推移グラフ、課題完遂率、作業後疲労の回復状況。判定観点②③④⑥に対応。'},
  {ic:'🧠',t:'3. 集中力・注意力セルフチェック',c:['オフィスワーク模擬'],
@@ -557,8 +622,8 @@ const progs=[
   a:'上司役・産業医役をAIが演じ、練習後に「伝わりやすかった点・整理するとよい点」をフィードバック（性格評価はしません）。',
   o:'実施回数と本人メモ（主に本人向け。レポートには実施記録のみ）。'},
  {ic:'📈',t:'10. セルフコンディション日次チェック',c:['生活リズム','再発予防'],
-  n:'毎日1分、気分・意欲・不安・体調を5段階でセルフ評価（医学的評価尺度は使用しません）。',
-  a:'毎日決まった時間にリマインドし、トレンドを可視化。連続低下時は「主治医に相談を」と案内（AIは評価・診断しません）。',
+  n:'毎朝1分、気分・意欲・不安・体調を5段階でセルフ評価（医学的評価尺度は使用しません）。土日も朝の報告と夕方の日報は継続します。',
+  a:'毎朝決まった時間にリマインドし、トレンドを可視化。連続低下時は「主治医に相談を」と案内（AIは評価・診断しません）。',
   o:'コンディション推移グラフ（14日間）。体調の安定性の確認材料。'},
  {ic:'📋',t:'11. 復職準備レポート自動生成（統合）',c:['統合アウトプット'],
   n:'プログラム1〜10の記録（学習・演習の実施状況、振り返りシートを含む）を統合し、産業医面談用の「復職準備レポート」を自動生成。本人が確認・承認した内容のみ共有します。',
