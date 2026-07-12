@@ -377,6 +377,27 @@
     .episode-button:disabled { cursor: not-allowed; opacity: .58; }
     .lecture-player { margin-top: 18px; }
     .lecture-player video { width: 100%; max-height: 520px; border-radius: 12px; background: #09192c; }
+    .reflection-test { margin-top: 18px; padding: 18px; border: 1px solid #aacfd3; border-radius: 14px; background: linear-gradient(145deg,#f5fbfb,#fff); }
+    .reflection-test[hidden], .reflection-form[hidden] { display: none; }
+    .reflection-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .reflection-head h4 { margin: 4px 0 0; color: var(--navy); font-size: 1.08rem; }
+    .reflection-state { padding: 5px 10px; border-radius: 999px; color: #76511b; background: #fff0d8; font-size: .78rem; font-weight: 800; }
+    .reflection-state.unlocked { color: #236e50; background: #e5f5ec; }
+    .reflection-locked { margin-top: 14px; padding: 15px; border: 1px dashed #b6c2ce; border-radius: 11px; color: var(--muted); background: #f8fafc; }
+    .reflection-locked p { margin: 5px 0 0; }
+    .reflection-form { margin-top: 14px; }
+    .reflection-form fieldset { margin: 0; padding: 0; border: 0; }
+    .reflection-form legend { margin-bottom: 12px; color: var(--navy); font-weight: 800; line-height: 1.6; }
+    .reflection-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    .reflection-option { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; min-height: 74px; padding: 13px; border: 1px solid #b9c7d3; border-radius: 11px; background: white; cursor: pointer; }
+    .reflection-option:hover { border-color: var(--teal); background: #f4fbfb; }
+    .reflection-option input { width: 19px; height: 19px; margin-top: 2px; }
+    .reflection-option strong { color: var(--navy); }
+    .reflection-actions { margin-top: 13px; }
+    .reflection-feedback { min-height: 1.7em; margin: 10px 0 0; font-weight: 700; }
+    .reflection-feedback.is-correct { color: #236e50; }
+    .reflection-feedback.is-incorrect { color: #9a5b16; }
+    .reflection-note { margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
 
     .work-tabs, .level-buttons { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
     .work-tab, .level-button { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
@@ -532,6 +553,7 @@
       .day { min-height: 92px; }
       .route-buttons { grid-template-columns: 1fr; }
       .lecture-grid, .assertion-grid { grid-template-columns: 1fr; }
+      .reflection-options { grid-template-columns: 1fr; }
       .assertion-grid .field:last-child { grid-column: auto; }
       .game-score-summary, .game-choices { grid-template-columns: 1fr; }
       .game-history-head, .game-panel-head { flex-direction: column; }
@@ -704,6 +726,7 @@
               poster="videos/V10_修了と産業医面談の準備_サムネイル.png"
               aria-describedby="finalDayVideoStatus"></video>
           </div>
+          <div class="reflection-test" id="finalDayReflection"></div>
         </div>
       </div>
     </section>
@@ -756,6 +779,7 @@
         <h3 id="lectureTitle">動画を選択してください</h3>
         <video id="lectureVideo" controls preload="metadata" playsinline aria-describedby="lectureStatus"></video>
         <p class="status-line" id="lectureStatus">V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。</p>
+        <div class="reflection-test" id="lectureReflection" hidden></div>
       </div>
       <div class="callout callout-warning" style="margin-top:18px"><p><strong>学びを練習へ：</strong>認知行動療法（CBT）は下の「出来事・考え・反応・行動」を整理する基礎ワークで、アサーションスキルは「状況・影響・希望・調整案」を言葉にするワークで体験できます。いずれも一般的な学習・演習であり、治療や能力評価ではありません。</p></div>
     </section>
@@ -1173,6 +1197,149 @@
         document.getElementById('program').scrollIntoView({behavior:'smooth'});
       });
 
+      const videoReflectionDefinitions = {
+        V00: {
+          title:'利用開始・安全説明',
+          question:'復職ReadyAIの役割として正しいのはどちらでしょう？',
+          options:['生活や活動の記録を整理し、面談で相談する材料を作る','記録を採点し、復職できるかをAIが決める'],
+          correct:'a',
+          explanation:'AIは記録や質問を整理しますが、診断や復職判定は行いません。'
+        },
+        V01: {
+          title:'職場復帰までの流れ',
+          question:'職場復帰の最終的な決定について、正しいのはどちらでしょう？',
+          options:['主治医が復職可能と書けば、自動的に復職が決まる','本人や主治医、産業医などの情報と職場の状況を踏まえ、会社が手続きに沿って決める'],
+          correct:'b',
+          explanation:'主治医や産業医の意見は大切ですが、会社の最終決定とは役割が分かれています。'
+        },
+        V02: {
+          title:'うつ病を正しく知る',
+          question:'紹介された症状が自分に当てはまるとき、適切なのはどちらでしょう？',
+          options:['自分やAIだけで、うつ病だと確定する','自己診断をせず、気になる変化を医療機関へ相談する'],
+          correct:'b',
+          explanation:'似た症状はほかの心身の状態でも起こるため、病名は医師が個別に判断します。'
+        },
+        V03: {
+          title:'適応反応と不安を理解する',
+          question:'ストレスの後に不調が現れた場合、正しい考え方はどちらでしょう？',
+          options:['反応の強さ、続く期間、生活への影響を整理し、病名は医師へ相談する','ストレスの後の不調は、すべて適応障害だと考える'],
+          correct:'a',
+          explanation:'ストレス反応の現れ方はさまざまで、病名は経過なども確認して医師が判断します。'
+        },
+        V04: {
+          title:'睡眠・活動・疲労の記録方法',
+          question:'睡眠時刻を思い出せない日の記録として、適切なのはどちらでしょう？',
+          options:['空欄を避けるため、正確そうな数字を推測して入力する','「未記録」にするか、おおよその時刻であることを明記する'],
+          correct:'b',
+          explanation:'推測を事実のように埋めず、分かる範囲をそのまま残します。'
+        },
+        V05: {
+          title:'不調の早期サインと相談行動',
+          question:'「不調の早期サイン」の使い方として正しいのはどちらでしょう？',
+          options:['普段との変化に気づき、早めに休む・相談するための合図にする','一つ当てはまっただけで、再発や復職不合格と判定する'],
+          correct:'a',
+          explanation:'早期サインは病名や合否を決めるものではなく、早めに助けを求めるための準備です。'
+        },
+        V06: {
+          title:'復職後の配慮を言葉にする',
+          question:'復職後の配慮について、正しい考え方はどちらでしょう？',
+          options:['困る場面、仕事への影響、希望する工夫、見直す時期を整理し、関係者と相談する','本人が希望した配慮は、すべてそのまま会社に認められる'],
+          correct:'a',
+          explanation:'配慮は本人の希望だけで決まらず、安全、業務条件、実施可能性を確認して話し合います。'
+        },
+        V07: {
+          title:'レポート確認と情報共有',
+          question:'復職準備レポートの共有について、正しいのはどちらでしょう？',
+          options:['完成すると、すべての入力内容が関係者へ自動送信される','本人が共有先、項目、表現、版を確認し、承認した範囲だけを共有する'],
+          correct:'b',
+          explanation:'レポートは自動共有されません。本人が修正・除外し、必要最小限の内容を最終確認します。'
+        },
+        V08: {
+          title:'アサーションスキル',
+          question:'アサーティブな伝え方として、より適切なのはどちらでしょう？',
+          options:['事実、自分の考え、具体的な希望、代案を伝え、相談を続ける','希望を必ず受け入れてもらうため、強く押し通す'],
+          correct:'a',
+          explanation:'アサーションは自分も相手も尊重する伝え方で、必ずYESを得る技術ではありません。'
+        },
+        V09: {
+          title:'認知行動療法・思考の柔軟性',
+          question:'0〜100の連続した尺度について、正しいのはどちらでしょう？',
+          options:['復職準備の合否や復職可否を決める点数である','できた部分と難しかった部分を白黒の間で眺める目安で、合格線はない'],
+          correct:'b',
+          explanation:'数字は程度を整理する目安で、成績や復職可否の判定には使いません。'
+        },
+        V10: {
+          title:'修了・産業医面談に向けて',
+          question:'復職ReadyAIを修了したことについて、正しいのはどちらでしょう？',
+          options:['修了は合格証明ではなく、できたことや難しかったことを面談で相談する材料にする','修了すれば医学的に問題がないと証明され、復職できる'],
+          correct:'a',
+          explanation:'修了は診断書や復職判定ではありません。関係者の意見と職場の状況を踏まえて確認します。'
+        }
+      };
+      const completedVideoReflections = new Set();
+      const videoReflectionAnswers = new Map();
+      const lectureReflection = document.getElementById('lectureReflection');
+      const finalDayReflection = document.getElementById('finalDayReflection');
+      let selectedLectureEpisode = '';
+      const episodeIdFromVideoPath = path => {
+        const matched = String(path || '').match(/\/(V\d{2})_/);
+        return matched ? matched[1] : '';
+      };
+      const renderVideoReflection = (container, episodeId) => {
+        const definition = videoReflectionDefinitions[episodeId];
+        if (!definition) { container.hidden = true; return; }
+        const unlocked = completedVideoReflections.has(episodeId);
+        const answer = videoReflectionAnswers.get(episodeId);
+        container.hidden = false;
+        container.dataset.episode = episodeId;
+        const stateText = unlocked ? '視聴完了・回答できます' : '視聴完了後に開きます';
+        const stateClass = unlocked ? 'reflection-state unlocked' : 'reflection-state';
+        const lockedHtml = `<div class="reflection-locked"><strong>🔒 まだテストは開いていません</strong><p>動画を最後まで視聴すると、問題と選択肢が表示されます。</p></div>`;
+        const optionsHtml = definition.options.map((option, index) => {
+          const value = index === 0 ? 'a' : 'b';
+          const label = index === 0 ? 'A' : 'B';
+          const checked = answer && answer.value === value ? ' checked' : '';
+          return `<label class="reflection-option"><input type="radio" name="reflection-${episodeId}" value="${value}"${checked}><span><strong>${label}.</strong> ${escapeHtml(option)}</span></label>`;
+        }).join('');
+        const feedbackText = answer ? `${answer.correct ? '正解です。' : 'もう一度選んでみましょう。'}${definition.explanation}` : '';
+        const feedbackClass = answer ? `reflection-feedback ${answer.correct ? 'is-correct' : 'is-incorrect'}` : 'reflection-feedback';
+        const formHtml = `<form class="reflection-form" data-reflection-form data-episode="${episodeId}"><fieldset><legend>${escapeHtml(definition.question)}</legend><div class="reflection-options">${optionsHtml}</div></fieldset><div class="reflection-actions"><button class="btn btn-teal" type="submit">回答を確認する</button></div><p class="${feedbackClass}" role="status" aria-live="polite">${escapeHtml(feedbackText)}</p><p class="reflection-note">理解を確認する1問です。採点・診断・復職可否判定には使わず、間違えても何度でも選び直せます。</p></form>`;
+        container.innerHTML = `<div class="reflection-head"><div><div class="kicker">振り返りテスト｜1問・2択</div><h4>${episodeId}｜${escapeHtml(definition.title)}</h4></div><span class="${stateClass}" role="status">${stateText}</span></div>${unlocked ? formHtml : lockedHtml}`;
+      };
+      const handleReflectionSubmit = event => {
+        event.preventDefault();
+        const form = event.target;
+        if (!form.matches('[data-reflection-form]')) return;
+        const episodeId = form.dataset.episode;
+        const definition = videoReflectionDefinitions[episodeId];
+        const selected = form.querySelector('input[type="radio"]:checked');
+        const feedback = form.querySelector('.reflection-feedback');
+        if (!selected) {
+          feedback.className = 'reflection-feedback is-incorrect';
+          feedback.textContent = 'AかBのどちらかを選んでください。';
+          return;
+        }
+        const correct = selected.value === definition.correct;
+        videoReflectionAnswers.set(episodeId,{value:selected.value,correct});
+        feedback.className = `reflection-feedback ${correct ? 'is-correct' : 'is-incorrect'}`;
+        feedback.textContent = `${correct ? '正解です。' : 'もう一度選んでみましょう。'}${definition.explanation}`;
+      };
+      lectureReflection.addEventListener('submit',handleReflectionSubmit);
+      finalDayReflection.addEventListener('submit',handleReflectionSubmit);
+      const unlockVideoReflection = (container, episodeId) => {
+        completedVideoReflections.add(episodeId);
+        renderVideoReflection(container,episodeId);
+      };
+      const resetVideoReflections = () => {
+        completedVideoReflections.clear();
+        videoReflectionAnswers.clear();
+        selectedLectureEpisode = '';
+        lectureReflection.hidden = true;
+        lectureReflection.innerHTML = '';
+        renderVideoReflection(finalDayReflection,'V10');
+      };
+      renderVideoReflection(finalDayReflection,'V10');
+
       const days = [
         ['Day 1','説明と目標','安全説明、役割の理解、2週間で確認したいことを整理します。'],
         ['Day 2','生活リズム','起床・就寝・日中活動を記録し、短い模擬作業を試します。'],
@@ -1228,6 +1395,11 @@
         finalDayVideoStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
         finalDayPlayer.scrollIntoView({behavior:'smooth', block:'center'});
       });
+      finalDayVideo.addEventListener('ended', () => {
+        if (episodeIdFromVideoPath(finalDayVideo.currentSrc) !== 'V10') return;
+        unlockVideoReflection(finalDayReflection,'V10');
+        finalDayVideoStatus.textContent = '視聴が完了しました。下の振り返りテストを開きました。';
+      });
 
       document.getElementById('checkinForm').addEventListener('submit', e => {
         e.preventDefault();
@@ -1242,12 +1414,20 @@
       const lectureStatus = document.getElementById('lectureStatus');
       lectureButtons.forEach(button => button.addEventListener('click', () => {
         lectureButtons.forEach(b => b.classList.toggle('active', b === button));
+        selectedLectureEpisode = episodeIdFromVideoPath(button.dataset.video);
         lectureTitle.textContent = button.dataset.title;
         lectureStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
         lectureVideo.src = button.dataset.video;
         lectureVideo.load();
+        renderVideoReflection(lectureReflection,selectedLectureEpisode);
         document.querySelector('.lecture-player').scrollIntoView({behavior:'smooth', block:'center'});
       }));
+      lectureVideo.addEventListener('ended', () => {
+        const endedEpisode = episodeIdFromVideoPath(lectureVideo.currentSrc);
+        if (!selectedLectureEpisode || endedEpisode !== selectedLectureEpisode) return;
+        unlockVideoReflection(lectureReflection,selectedLectureEpisode);
+        lectureStatus.textContent = '視聴が完了しました。下の振り返りテストを開きました。';
+      });
 
       const workLabels = {
         summary:'一般業務メールの要約', data:'データ入力', memo:'読書とメモ（任意）', email:'架空のメール整理', cbt:'認知行動療法（CBT）の基礎', assertion:'アサーションスキルの練習'
@@ -1749,6 +1929,7 @@
         lectureVideo.load();
         lectureTitle.textContent = '動画を選択してください';
         lectureStatus.textContent = 'V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。';
+        resetVideoReflections();
         window.scrollTo({top:0, behavior:'smooth'});
       });
 
