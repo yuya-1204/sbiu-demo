@@ -491,12 +491,29 @@
       .video-controls { flex-wrap: wrap; }
       .report { padding: 18px; }
     }
+    @page { size: A4 portrait; margin: 12mm; }
     @media print {
       .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #lecture, #work, #safety, #certificate, #disclosure { display: none !important; }
       body, main { background: white; margin: 0; width: 100%; }
-      #report { margin: 0; }
-      #report .section-head, #report .share-controls, #report .callout { display: none; }
-      .report { box-shadow: none; border: 0; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      #report { margin: 0; padding: 0; }
+      #report .section-head, #report .share-panel { display: none !important; }
+      #report .report-layout { display: block; }
+      #report .report {
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        padding: 8mm;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        font-size: 10pt;
+        line-height: 1.45;
+      }
+      #report .report-head { padding-bottom: 3mm; }
+      #report .report-section { padding: 3mm 0; break-inside: avoid; page-break-inside: avoid; }
+      #report .report-section h4 { margin-bottom: 1.5mm; }
+      #report .report-limit { padding: 3mm; break-inside: avoid; page-break-inside: avoid; }
     }
   </style>
 </head>
@@ -805,8 +822,8 @@
         <h2>本人が共有項目を選ぶ復職準備レポート</h2>
         <p class="lead">下のスイッチを切り替えると、レポートの表示内容が変わります。</p>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
+      <div class="grid grid-2 report-layout">
+        <div class="card share-panel">
           <h3>共有範囲</h3>
           <p class="lead">デモでは産業医共有用を想定しています。本人は共有前に修正・削除できます。</p>
           <div class="share-controls">
