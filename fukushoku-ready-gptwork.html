@@ -393,6 +393,42 @@
     .assertion-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
     .assertion-grid .field:last-child { grid-column: 1 / -1; }
 
+    .game-guidance { display: grid; gap: 12px; margin-bottom: 18px; }
+    .game-history { margin-bottom: 18px; }
+    .game-history-head, .game-panel-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .game-history-head p, .game-panel-head p { margin: 0; color: var(--muted); }
+    .game-score-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 18px 0; }
+    .game-score-metric { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
+    .game-score-metric span { display: block; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .game-score-metric strong { display: block; margin-top: 3px; color: var(--navy); font-size: 1.35rem; }
+    .game-score-chart { min-height: 180px; display: flex; align-items: flex-end; gap: 10px; padding: 14px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfd; }
+    .game-score-column { flex: 1 0 70px; display: grid; gap: 5px; justify-items: center; color: var(--muted); font-size: .75rem; }
+    .game-score-track { width: 100%; height: 120px; display: flex; align-items: flex-end; border-radius: 8px 8px 3px 3px; background: #e7edf3; overflow: hidden; }
+    .game-score-fill { width: 100%; min-height: 4px; background: linear-gradient(180deg, var(--teal), var(--navy)); }
+    .game-score-column strong { color: var(--navy); font-size: .82rem; }
+    .game-score-table-wrap { margin-top: 14px; overflow-x: auto; }
+    .game-score-table { min-width: 650px; }
+    .game-score-table caption { padding-bottom: 8px; color: var(--muted); font-size: .84rem; font-weight: 700; text-align: left; }
+    .game-tabs { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
+    .game-tab { padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .game-tab.active { border-color: var(--navy); color: white; background: var(--navy); }
+    .game-panel { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcfd; }
+    .game-panel[hidden], .game-play[hidden] { display: none; }
+    .game-time-chip { flex: 0 0 auto; padding: 5px 10px; border-radius: 999px; color: var(--navy); background: var(--orange-soft); font-size: .8rem; font-weight: 800; }
+    .game-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .game-play { margin-top: 16px; }
+    .game-progress { margin-bottom: 8px; color: var(--teal); font-size: .82rem; font-weight: 800; letter-spacing: .04em; }
+    .game-question { padding: 16px; border-left: 4px solid var(--teal); border-radius: 10px; background: white; }
+    .game-question h4 { margin: 0 0 6px; color: var(--navy); }
+    .game-question p { margin: 0; white-space: pre-line; }
+    .game-choices { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+    .game-choice { min-height: 48px; padding: 10px 12px; border: 1px solid #aebdca; border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .game-choice:hover:not(:disabled) { border-color: var(--navy); background: #eef3f8; }
+    .game-choice.correct { border-color: #2d8a62; background: #e8f6ef; }
+    .game-choice.incorrect { border-color: #c97a2c; background: #fff2e3; }
+    .game-choice:disabled { cursor: default; opacity: 1; }
+    .game-feedback { min-height: 1.7em; margin: 10px 0 0; color: var(--muted); font-weight: 700; }
+
     .certificate-shell { display: grid; grid-template-columns: .75fr 1.25fr; gap: 18px; }
     .cert-qr { width: 86px; height: 86px; border: 6px solid white; border-radius: 8px; background: repeating-conic-gradient(#18324f 0 25%,#fff 0 50%) 0 0/12px 12px; box-shadow: 0 0 0 1px var(--line); }
     .cert-extra[hidden] { display: none; }
@@ -497,6 +533,8 @@
       .route-buttons { grid-template-columns: 1fr; }
       .lecture-grid, .assertion-grid { grid-template-columns: 1fr; }
       .assertion-grid .field:last-child { grid-column: auto; }
+      .game-score-summary, .game-choices { grid-template-columns: 1fr; }
+      .game-history-head, .game-panel-head { flex-direction: column; }
       .email-item { grid-template-columns: 1fr; }
       .video-stage { min-height: 390px; padding: 24px 16px; }
       .video-controls { flex-wrap: wrap; }
@@ -504,7 +542,7 @@
     }
     @page { size: A4 portrait; margin: 12mm; }
     @media print {
-      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #lecture, #work, #safety, #certificate, #disclosure { display: none !important; }
+      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #lecture, #work, #games, #safety, #certificate, #disclosure { display: none !important; }
       body, main { background: white; margin: 0; width: 100%; }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       #report { margin: 0; padding: 0; }
@@ -561,6 +599,7 @@
           <li>利用開始時の安全説明と本人同意</li>
           <li>14日間の標準プログラム</li>
           <li>朝チェックインと模擬ワーク記録</li>
+          <li>約10分で楽しめる作業ゲーム3種類と日別スコア</li>
           <li>認知行動療法（CBT）の基礎とアサーション練習</li>
           <li>体調変化時の安全ルーティング</li>
           <li>本人が共有項目を選ぶ復職準備レポート</li>
@@ -578,6 +617,7 @@
       <a href="#checkin">朝チェック</a>
       <a href="#lecture">座学・CBT</a>
       <a href="#work">模擬ワーク・アサーション</a>
+      <a href="#games">作業ゲーム</a>
       <a href="#safety">安全導線</a>
       <a href="#report">レポート</a>
       <a href="#certificate">受講証明（TuringCerts）</a>
@@ -842,6 +882,114 @@
       </div>
     </section>
 
+    <section id="games">
+      <div class="section-head">
+        <div class="kicker">DAILY WORK GAMES</div>
+        <h2>連日楽しめる3つの作業ゲーム</h2>
+        <p class="lead">一般業務をイメージした短いゲームです。1セット5問を自分のペースで行い、日別スコアと累積スコアの変化を確認できます。</p>
+      </div>
+
+      <div class="game-guidance">
+        <div class="callout callout-warning">
+          <p><strong>時間の注意：</strong>1日1ゲームにつき約10分、5～15分の範囲を目安にしてください。3ゲームすべて行う場合も、最大15分×3ゲーム＋ゲーム間の小休止5分×2回＝55分とし、合計1時間を超えないようにします。疲れた日は1ゲームだけ、または途中終了で構いません。時間を競うゲームではないため、カウントダウンや時間切れによる減点は設けません。</p>
+          <p class="helper">時間設計の参考：<a href="https://www.mhlw.go.jp/web/t_doc_keyword?dataId=00tc4418&amp;dataType=1&amp;keyword=%E6%83%85%E5%A0%B1%E6%A9%9F%E5%99%A8%E4%BD%9C%E6%A5%AD&amp;mode=0&amp;pageNo=1" target="_blank" rel="noopener">厚生労働省「情報機器作業における労働衛生管理のためのガイドライン」</a></p>
+        </div>
+        <div class="callout">
+          <p><strong>スコアの見方：</strong>各ゲームは5問・100点満点で、速度点や休憩による減点はありません。ゲームスコアとは別に、各ゲームのその日の最高点へ1日1回10ポイントを加えた「累積練習ポイント」を表示し、続けた分が積み上がるようにします。繰り返しによる慣れでも得点は上がるため、回復度、就労能力、復職可否、再休職リスクの評価には使いません。日ごとの変動も自然なものとして扱います。</p>
+          <p class="helper">履歴はデモとしてこのブラウザ内だけに保存し、外部送信や会社・支援者への自動共有は行いません。ブラウザのデータを消去すると履歴も消えます。</p>
+        </div>
+      </div>
+
+      <div class="card game-history">
+        <div class="game-history-head">
+          <div>
+            <h3>日別スコアと累積練習ポイント</h3>
+            <p id="gameHistoryCaption">まだ記録がないため、累積練習ポイントが上がる表示例を示しています。</p>
+          </div>
+          <button class="btn btn-outline btn-small" id="clearGameHistory" type="button">このブラウザのゲーム履歴を消去</button>
+        </div>
+        <div class="game-score-summary">
+          <div class="game-score-metric"><span>練習日数</span><strong id="gamePracticeDays">0日</strong></div>
+          <div class="game-score-metric"><span>今日の合計</span><strong id="gameTodayTotal">— / 300</strong></div>
+          <div class="game-score-metric"><span>累積練習ポイント</span><strong id="gameCumulativeScore">0</strong></div>
+        </div>
+        <div class="game-score-chart" id="gameScoreChart" role="img" aria-label="累積練習ポイントの推移"></div>
+        <div class="game-score-table-wrap">
+          <table class="mini-table game-score-table">
+            <caption>直近7日の日別ゲームスコアと累積練習ポイント</caption>
+            <thead><tr><th scope="col">日</th><th scope="col">メール仕分け</th><th scope="col">データ照合</th><th scope="col">段取り</th><th scope="col">1日ゲーム点</th><th scope="col">累積ポイント</th></tr></thead>
+            <tbody id="gameScoreRows"></tbody>
+          </table>
+        </div>
+        <p class="status-line" id="gameStorageStatus" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <div class="game-tabs" role="tablist" aria-label="作業ゲームを選択">
+          <button class="game-tab active" id="game-tab-mail" type="button" role="tab" aria-selected="true" aria-controls="game-panel-mail" data-game-tab="mail">1｜依頼メール仕分け</button>
+          <button class="game-tab" id="game-tab-check" type="button" role="tab" aria-selected="false" aria-controls="game-panel-check" data-game-tab="check" tabindex="-1">2｜データ照合</button>
+          <button class="game-tab" id="game-tab-order" type="button" role="tab" aria-selected="false" aria-controls="game-panel-order" data-game-tab="order" tabindex="-1">3｜段取りパズル</button>
+        </div>
+
+        <div class="game-panel" id="game-panel-mail" role="tabpanel" aria-labelledby="game-tab-mail" data-game-panel="mail" tabindex="0">
+          <div class="game-panel-head">
+            <div><h3>依頼メール仕分け</h3><p>期限が明記された架空メールを「今日対応」「今週対応」「参考」に分けます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="mail">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="mail" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="mail" hidden>
+            <div class="game-progress" data-game-progress="mail"></div>
+            <div class="game-question"><h4 id="game-question-title-mail" data-game-question-title="mail"></h4><p id="game-question-detail-mail" data-game-question-detail="mail"></p></div>
+            <div class="game-choices" data-game-choices="mail" role="group" aria-labelledby="game-question-title-mail game-question-detail-mail"></div>
+            <p class="game-feedback" data-game-feedback="mail" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="mail" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="mail" role="status" aria-live="polite" hidden></div>
+        </div>
+
+        <div class="game-panel" id="game-panel-check" role="tabpanel" aria-labelledby="game-tab-check" data-game-panel="check" tabindex="0" hidden>
+          <div class="game-panel-head">
+            <div><h3>データ照合チェック</h3><p>入力元と登録データを見比べ、「一致」か「要確認」かを選びます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="check">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="check" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="check" hidden>
+            <div class="game-progress" data-game-progress="check"></div>
+            <div class="game-question"><h4 id="game-question-title-check" data-game-question-title="check"></h4><p id="game-question-detail-check" data-game-question-detail="check"></p></div>
+            <div class="game-choices" data-game-choices="check" role="group" aria-labelledby="game-question-title-check game-question-detail-check"></div>
+            <p class="game-feedback" data-game-feedback="check" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="check" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="check" role="status" aria-live="polite" hidden></div>
+        </div>
+
+        <div class="game-panel" id="game-panel-order" role="tabpanel" aria-labelledby="game-tab-order" data-game-panel="order" tabindex="0" hidden>
+          <div class="game-panel-head">
+            <div><h3>今日の段取りパズル</h3><p>画面に書かれた期限や確認条件を読み、次に行う手順を選びます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="order">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="order" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="order" hidden>
+            <div class="game-progress" data-game-progress="order"></div>
+            <div class="game-question"><h4 id="game-question-title-order" data-game-question-title="order"></h4><p id="game-question-detail-order" data-game-question-detail="order"></p></div>
+            <div class="game-choices" data-game-choices="order" role="group" aria-labelledby="game-question-title-order game-question-detail-order"></div>
+            <p class="game-feedback" data-game-feedback="order" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="order" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="order" role="status" aria-live="polite" hidden></div>
+        </div>
+      </div>
+    </section>
+
     <section id="safety">
       <div class="section-head">
         <div class="kicker">SAFETY ROUTING</div>
@@ -958,7 +1106,7 @@
         <button class="btn btn-teal btn-small" type="submit" style="margin-top:14px">開示プレビューを更新</button>
         <div class="output" id="disclosureOutput" hidden></div>
       </form>
-      <div class="reset-bar"><button class="btn btn-outline btn-small" id="resetDemo" type="button">デモ入力を初期化</button></div>
+      <div class="reset-bar"><button class="btn btn-outline btn-small" id="resetDemo" type="button">画面入力を初期化（ゲーム履歴は保持）</button></div>
     </section>
   </main>
 
@@ -1180,6 +1328,358 @@
         out.innerHTML = `<p><strong>課題実施記録</strong></p><p>${document.getElementById('taskType').value}を${document.getElementById('duration').value}、休憩${document.getElementById('breaks').value}で実施。</p><p>実施状況：${document.getElementById('completion').value}／終了時の疲労：${document.getElementById('fatigue').value}</p><p><span class="data-label">本人記載</span>${escapeHtml(document.getElementById('workNote').value)}</p><p><strong>AIは、この記録から就労能力や復職可否を判断しません。</strong></p>`;
       });
 
+      const gameDefinitions = {
+        mail: {
+          label: '依頼メール仕分け',
+          questions: [
+            { title:'件名：明日10時の会議確認', detail:'出席可否を本日17時までに返信してください。', options:['今日対応','今週対応','参考'], correct:0, explanation:'返信期限が本日17時なので「今日対応」です。' },
+            { title:'件名：来月の社内研修', detail:'参加希望者は今週金曜日までに申し込んでください。', options:['今日対応','今週対応','参考'], correct:1, explanation:'期限が今週金曜日なので「今週対応」です。' },
+            { title:'件名：社内報8月号', detail:'新しい福利厚生制度の紹介です。返信や申込みは不要です。', options:['今日対応','今週対応','参考'], correct:2, explanation:'対応期限や返信がないため「参考」です。' },
+            { title:'件名：請求書の金額修正', detail:'本日14時までに金額を修正し、経理担当へ再提出してください。', options:['今日対応','今週対応','参考'], correct:0, explanation:'再提出期限が本日14時なので「今日対応」です。' },
+            { title:'件名：備品棚卸しのお願い', detail:'来週水曜日の集計に向け、担当分を今週中に入力してください。', options:['今日対応','今週対応','参考'], correct:1, explanation:'担当分の入力期限が今週中なので「今週対応」です。' }
+          ]
+        },
+        check: {
+          label: 'データ照合チェック',
+          questions: [
+            { title:'伝票1｜交通費', detail:'入力元：7/10・A-104・交通費・1,280円\n登録値：7/10・A-104・交通費・1,280円', options:['一致','要確認'], correct:0, explanation:'4項目すべて一致しています。' },
+            { title:'伝票2｜書籍費', detail:'入力元：7/11・B-208・書籍費・2,640円\n登録値：7/11・B-208・書籍費・2,460円', options:['一致','要確認'], correct:1, explanation:'金額が2,640円と2,460円で異なります。' },
+            { title:'伝票3｜郵送費', detail:'入力元：7/12・C-315・郵送費・840円\n登録値：7/12・C-351・郵送費・840円', options:['一致','要確認'], correct:1, explanation:'社員コードがC-315とC-351で異なります。' },
+            { title:'伝票4｜消耗品費', detail:'入力元：7/13・D-402・消耗品費・980円\n登録値：7/13・D-402・消耗品費・980円', options:['一致','要確認'], correct:0, explanation:'4項目すべて一致しています。' },
+            { title:'伝票5｜書籍費', detail:'入力元：7/14・E-507・書籍費・1,500円\n登録値：7/14・E-507・郵送費・1,500円', options:['一致','要確認'], correct:1, explanation:'区分が書籍費と郵送費で異なります。' }
+          ]
+        },
+        order: {
+          label: '今日の段取りパズル',
+          questions: [
+            { title:'会議資料を作り始める前', detail:'依頼メールには、提出期限と指定テンプレートが書かれています。最初に行うことは？', options:['すぐ本文を書く','依頼内容と期限を確認する','翌日に回す'], correct:1, explanation:'作業前に依頼内容・期限・指定形式を確認します。' },
+            { title:'数値が資料と合わない', detail:'売上表の数値と元データが一致せず、どちらが正しいか判断できません。次に行うことは？', options:['推測で入力する','数値を空欄で提出する','担当者へ確認する'], correct:2, explanation:'判断できない数値は推測せず、担当者へ確認します。' },
+            { title:'資料の更新が終わった', detail:'指定は「共有フォルダへ保存し、完了後に返信」です。次に行うことは？', options:['保存先とファイル名を確認して保存・返信する','自分のPCだけに保存する','返信せず終了する'], correct:0, explanation:'指定された保存先とファイル名を確認し、保存後に完了返信します。' },
+            { title:'2つの依頼が届いた', detail:'Aは本日16時までの修正、Bは来週水曜日までの資料整理です。先に確認するのは？', options:['Bの資料整理','Aの本日締切の修正','どちらも翌日にする'], correct:1, explanation:'画面上の期限では、本日締切のAを先に確認します。' },
+            { title:'社外メールを送る前', detail:'宛先と添付ファイルを指定して送信する作業です。送信直前に行うことは？', options:['宛先・添付・本文を再確認する','件名だけ確認する','確認せず送信する'], correct:0, explanation:'誤送信を防ぐため、宛先・添付・本文を送信前に確認します。' }
+          ]
+        }
+      };
+
+      const gameKeys = Object.keys(gameDefinitions);
+      const gameTabs = [...document.querySelectorAll('[data-game-tab]')];
+      const gamePanels = [...document.querySelectorAll('[data-game-panel]')];
+      const gameStates = {};
+      const GAME_HISTORY_KEY = 'fukushokuAiReadyGameHistoryV1';
+      let gameStorageAvailable = false;
+      let gameHistoryRecovered = false;
+      let gameHistory = {};
+
+      const todayKey = () => {
+        const now = new Date();
+        const pad = value => String(value).padStart(2, '0');
+        return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      };
+      const cleanGameScore = value => Number.isFinite(Number(value)) ? Math.max(0, Math.min(100, Math.round(Number(value)))) : null;
+
+      try {
+        const probeKey = `${GAME_HISTORY_KEY}-probe`;
+        localStorage.setItem(probeKey, '1');
+        localStorage.removeItem(probeKey);
+        gameStorageAvailable = true;
+        const stored = JSON.parse(localStorage.getItem(GAME_HISTORY_KEY) || '{}');
+        if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+          Object.entries(stored).forEach(([date, scores]) => {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !scores || typeof scores !== 'object') return;
+            const cleanDay = {};
+            gameKeys.forEach(key => {
+              const score = cleanGameScore(scores[key]);
+              if (score !== null) cleanDay[key] = score;
+            });
+            if (Object.keys(cleanDay).length) gameHistory[date] = cleanDay;
+          });
+        }
+      } catch (error) {
+        gameHistory = {};
+        try {
+          localStorage.removeItem(GAME_HISTORY_KEY);
+          gameStorageAvailable = true;
+          gameHistoryRecovered = true;
+        } catch (storageError) {
+          gameStorageAvailable = false;
+        }
+      }
+
+      const persistGameHistory = () => {
+        if (!gameStorageAvailable) return;
+        try {
+          localStorage.setItem(GAME_HISTORY_KEY, JSON.stringify(gameHistory));
+        } catch (error) {
+          gameStorageAvailable = false;
+          document.getElementById('gameStorageStatus').textContent = 'ブラウザ内へ保存できなかったため、このページを閉じるまでの一時表示に切り替えました。';
+        }
+      };
+
+      const sampleGameRows = [
+        { label:'Day 1', mail:40, check:40, order:40, total:120, cumulative:150 },
+        { label:'Day 2', mail:60, check:40, order:60, total:160, cumulative:340 },
+        { label:'Day 3', mail:60, check:60, order:60, total:180, cumulative:550 },
+        { label:'Day 4', mail:80, check:60, order:60, total:200, cumulative:780 },
+        { label:'Day 5', mail:80, check:80, order:80, total:240, cumulative:1050 }
+      ];
+
+      const renderGameHistory = () => {
+        const dates = Object.keys(gameHistory).sort();
+        let cumulative = 0;
+        const actualRows = dates.map(date => {
+          const scores = gameHistory[date];
+          const completed = gameKeys.filter(key => Number.isFinite(scores[key])).length;
+          const total = gameKeys.reduce((sum, key) => sum + (scores[key] || 0), 0);
+          cumulative += total + completed * 10;
+          return {
+            label: date.slice(5).replace('-', '/'),
+            mail: scores.mail,
+            check: scores.check,
+            order: scores.order,
+            total,
+            cumulative
+          };
+        });
+        const hasActual = actualRows.length > 0;
+        const displayRows = (hasActual ? actualRows : sampleGameRows).slice(-7);
+        const todayScores = gameHistory[todayKey()] || {};
+        const todayTotal = gameKeys.reduce((sum, key) => sum + (todayScores[key] || 0), 0);
+
+        document.getElementById('gamePracticeDays').textContent = `${dates.length}日`;
+        document.getElementById('gameTodayTotal').textContent = Object.keys(todayScores).length ? `${todayTotal} / 300` : '— / 300';
+        document.getElementById('gameCumulativeScore').textContent = String(cumulative);
+        document.getElementById('gameHistoryCaption').textContent = hasActual
+          ? 'このブラウザに保存された直近7日分です。累積練習ポイントは、各ゲームのその日の最高点と1日1回の継続10ポイントを積み上げます。'
+          : 'まだ記録がないため、累積練習ポイントが上がる表示例（サンプル）を示しています。';
+
+        const chart = document.getElementById('gameScoreChart');
+        chart.replaceChildren();
+        const maxValue = Math.max(...displayRows.map(row => row.cumulative), 1);
+        displayRows.forEach(row => {
+          const column = document.createElement('div');
+          column.className = 'game-score-column';
+          const value = document.createElement('strong');
+          value.textContent = String(row.cumulative);
+          const track = document.createElement('div');
+          track.className = 'game-score-track';
+          const fill = document.createElement('div');
+          fill.className = 'game-score-fill';
+          fill.style.height = `${Math.max(4, Math.round(row.cumulative / maxValue * 100))}%`;
+          track.appendChild(fill);
+          const label = document.createElement('span');
+          label.textContent = row.label;
+          column.append(value, track, label);
+          chart.appendChild(column);
+        });
+        chart.setAttribute('aria-label', `${hasActual ? 'このブラウザの記録' : 'サンプル表示'}。累積練習ポイント：${displayRows.map(row => `${row.label} ${row.cumulative}`).join('、')}`);
+
+        const rows = document.getElementById('gameScoreRows');
+        rows.replaceChildren();
+        displayRows.forEach(row => {
+          const tr = document.createElement('tr');
+          [row.label, row.mail, row.check, row.order, row.total, row.cumulative].forEach((value, index) => {
+            const cell = document.createElement(index === 0 ? 'th' : 'td');
+            if (index === 0) cell.setAttribute('scope', 'row');
+            cell.textContent = value === undefined ? '—' : String(value);
+            tr.appendChild(cell);
+          });
+          rows.appendChild(tr);
+        });
+
+        const status = document.getElementById('gameStorageStatus');
+        if (!status.textContent) {
+          status.textContent = gameHistoryRecovered
+            ? '読み込めない古いゲーム履歴を消去し、新しい履歴へ切り替えました。'
+            : gameStorageAvailable
+            ? 'ゲーム終了時の今日の最高点を、このブラウザ内だけに保存します。'
+            : 'この環境ではブラウザ保存を利用できないため、履歴はページを閉じるまでの一時表示です。';
+        }
+      };
+
+      const selectGameTab = key => {
+        gameTabs.forEach(tab => {
+          const active = tab.dataset.gameTab === key;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+        });
+        gamePanels.forEach(panel => panel.hidden = panel.dataset.gamePanel !== key);
+      };
+
+      gameTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectGameTab(tab.dataset.gameTab));
+        tab.addEventListener('keydown', event => {
+          let nextIndex = null;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % gameTabs.length;
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + gameTabs.length) % gameTabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = gameTabs.length - 1;
+          if (nextIndex === null) return;
+          event.preventDefault();
+          selectGameTab(gameTabs[nextIndex].dataset.gameTab);
+          gameTabs[nextIndex].focus();
+        });
+      });
+
+      const panelPart = (key, attribute) => document.querySelector(`[data-game-panel="${key}"] [${attribute}="${key}"]`);
+
+      const resetGameSession = key => {
+        gameStates[key] = { index:0, correct:0, answered:false, active:false };
+        const start = panelPart(key, 'data-game-start');
+        const stop = panelPart(key, 'data-game-stop');
+        const play = panelPart(key, 'data-game-play');
+        const result = panelPart(key, 'data-game-result');
+        const choices = panelPart(key, 'data-game-choices');
+        const feedback = panelPart(key, 'data-game-feedback');
+        const next = panelPart(key, 'data-game-next');
+        start.hidden = false;
+        start.textContent = 'ゲームを開始';
+        stop.hidden = true;
+        play.hidden = true;
+        result.hidden = true;
+        result.replaceChildren();
+        choices.replaceChildren();
+        feedback.textContent = '';
+        next.hidden = true;
+      };
+
+      const renderGameQuestion = key => {
+        const definition = gameDefinitions[key];
+        const state = gameStates[key];
+        const question = definition.questions[state.index];
+        panelPart(key, 'data-game-progress').textContent = `問題 ${state.index + 1} / ${definition.questions.length}｜1問20点・速度点なし`;
+        panelPart(key, 'data-game-question-title').textContent = question.title;
+        panelPart(key, 'data-game-question-detail').textContent = question.detail;
+        panelPart(key, 'data-game-feedback').textContent = '';
+        panelPart(key, 'data-game-stop').hidden = false;
+        const next = panelPart(key, 'data-game-next');
+        next.hidden = true;
+        next.textContent = state.index === definition.questions.length - 1 ? '結果を見る' : '次の問題へ';
+
+        const choices = panelPart(key, 'data-game-choices');
+        choices.replaceChildren();
+        question.options.forEach((option, optionIndex) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'game-choice';
+          button.textContent = option;
+          button.addEventListener('click', () => {
+            if (state.answered) return;
+            state.answered = true;
+            const correct = optionIndex === question.correct;
+            if (correct) state.correct += 1;
+            [...choices.children].forEach((choiceButton, index) => {
+              choiceButton.disabled = true;
+              if (index === question.correct) {
+                choiceButton.classList.add('correct');
+                choiceButton.textContent = `✓ ${question.options[index]}`;
+              }
+              if (index === optionIndex && !correct) {
+                choiceButton.classList.add('incorrect');
+                choiceButton.textContent = `選択：${question.options[index]}`;
+              }
+            });
+            panelPart(key, 'data-game-feedback').textContent = `${correct ? '確認できました。' : '今回は別の選択でした。'} ${question.explanation}`;
+            if (state.index === definition.questions.length - 1) panelPart(key, 'data-game-stop').hidden = true;
+            next.hidden = false;
+            next.focus();
+          });
+          choices.appendChild(button);
+        });
+        choices.querySelector('button')?.focus();
+      };
+
+      const recordGameScore = (key, score) => {
+        const date = todayKey();
+        const day = gameHistory[date] || {};
+        const previous = Number.isFinite(day[key]) ? day[key] : null;
+        day[key] = previous === null ? score : Math.max(previous, score);
+        gameHistory[date] = day;
+        persistGameHistory();
+        renderGameHistory();
+        return { best:day[key], updated:previous === null || score > previous };
+      };
+
+      const finishGame = (key, completed) => {
+        const definition = gameDefinitions[key];
+        const state = gameStates[key];
+        const answered = state.index + (state.answered ? 1 : 0);
+        const start = panelPart(key, 'data-game-start');
+        const stop = panelPart(key, 'data-game-stop');
+        const play = panelPart(key, 'data-game-play');
+        const result = panelPart(key, 'data-game-result');
+        state.active = false;
+        start.hidden = false;
+        start.textContent = 'もう一度プレイ';
+        stop.hidden = true;
+        play.hidden = true;
+        result.hidden = false;
+        result.setAttribute('tabindex', '-1');
+
+        if (completed) {
+          const score = state.correct * 20;
+          const saved = recordGameScore(key, score);
+          result.innerHTML = `<p><strong>今回のゲームスコア：${score} / 100</strong></p><p>確認できた問題：${state.correct} / ${definition.questions.length}。今日の最高点：${saved.best} / 100${saved.updated ? '（更新）' : ''}</p><p>速度や休憩は採点していません。この点数はゲーム内の記録であり、回復度・就労能力・復職可否を示しません。</p>`;
+        } else {
+          result.innerHTML = `<p><strong>今日はここで終了しました。</strong></p><p>${answered} / ${definition.questions.length}問まで取り組みました。途中終了は失敗ではなく、スコア履歴にも加えません。</p><p>休憩する、別の日に行う、1ゲームだけにする、のいずれでも構いません。</p>`;
+        }
+        result.focus();
+      };
+
+      const startGame = key => {
+        resetGameSession(key);
+        const state = gameStates[key];
+        state.active = true;
+        panelPart(key, 'data-game-start').hidden = true;
+        panelPart(key, 'data-game-stop').hidden = false;
+        panelPart(key, 'data-game-play').hidden = false;
+        renderGameQuestion(key);
+      };
+
+      document.querySelectorAll('[data-game-start]').forEach(button => button.addEventListener('click', () => startGame(button.dataset.gameStart)));
+      document.querySelectorAll('[data-game-stop]').forEach(button => button.addEventListener('click', () => finishGame(button.dataset.gameStop, false)));
+      document.querySelectorAll('[data-game-next]').forEach(button => button.addEventListener('click', () => {
+        const key = button.dataset.gameNext;
+        const state = gameStates[key];
+        if (!state.answered) return;
+        if (state.index >= gameDefinitions[key].questions.length - 1) {
+          finishGame(key, true);
+        } else {
+          state.index += 1;
+          state.answered = false;
+          renderGameQuestion(key);
+        }
+      }));
+
+      const resetGameSessions = () => gameKeys.forEach(resetGameSession);
+      document.getElementById('clearGameHistory').addEventListener('click', () => {
+        if (!Object.keys(gameHistory).length) {
+          document.getElementById('gameStorageStatus').textContent = '消去するゲーム履歴はまだありません。下のグラフと表はサンプル表示です。';
+          return;
+        }
+        if (!window.confirm('このブラウザに保存されたゲーム履歴を消去しますか？')) return;
+        gameHistory = {};
+        let removedFromStorage = gameStorageAvailable;
+        if (gameStorageAvailable) {
+          try {
+            localStorage.removeItem(GAME_HISTORY_KEY);
+          } catch (error) {
+            gameStorageAvailable = false;
+            removedFromStorage = false;
+          }
+        }
+        resetGameSessions();
+        selectGameTab('mail');
+        document.getElementById('gameStorageStatus').textContent = removedFromStorage
+          ? 'このブラウザのゲーム履歴を消去しました。下のグラフと表はサンプル表示に戻りました。'
+          : 'このページ内の履歴は消去しましたが、ブラウザ保存を消去できませんでした。ブラウザのサイトデータ設定から削除してください。';
+        renderGameHistory();
+      });
+
+      resetGameSessions();
+      selectGameTab('mail');
+      renderGameHistory();
+
       document.querySelectorAll('[data-route]').forEach(button => {
         button.addEventListener('click', () => {
           const level = button.dataset.route;
@@ -1232,6 +1732,8 @@
         document.getElementById('checkinOutput').hidden = true;
         document.getElementById('workOutput').hidden = true;
         document.querySelectorAll('.demo-output').forEach(out => out.hidden = true);
+        resetGameSessions();
+        selectGameTab('mail');
         document.getElementById('disclosureOutput').hidden = true;
         document.getElementById('routeResult').dataset.level = '1';
         document.getElementById('routeResult').innerHTML = '<p>上の申告例を選ぶと、安全画面の内容が表示されます。</p>';
