@@ -332,6 +332,17 @@
     .day strong { display: block; margin-bottom: 5px; }
     .day span { font-size: .78rem; line-height: 1.35; }
     .day-detail { margin-top: 16px; }
+    .completion-card {
+      margin-top: 16px;
+      border: 2px solid #9fd0d4;
+      background: linear-gradient(145deg, #f4fbfb, #fffaf2);
+    }
+    .completion-card[hidden], .completion-player[hidden] { display: none; }
+    .completion-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .completion-head h3 { margin: 5px 0 0; color: var(--navy); font-size: 1.28rem; }
+    .completion-points { display: grid; gap: 7px; margin: 15px 0; padding-left: 1.2em; }
+    .completion-player { margin-top: 16px; }
+    .completion-player video { width: 100%; max-height: 520px; border-radius: 12px; background: #09192c; }
 
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
     .field { display: grid; gap: 6px; }
@@ -634,6 +645,26 @@
       <div class="card">
         <div class="calendar" id="calendar"></div>
         <div class="callout day-detail" id="dayDetail" aria-live="polite"></div>
+        <div class="card completion-card" id="finalDayVideoBlock" hidden>
+          <div class="completion-head">
+            <div><div class="kicker">FINAL DAY VIDEO</div><h3>修了お疲れさまでした。産業医面談に向けて</h3></div>
+            <span class="tag tag-green">最終日の最後に視聴</span>
+          </div>
+          <p class="lead">Day 14のレポート確認と共有範囲の選択を終えたら、最後にご覧ください。休んだ日があっても失敗とは扱わず、ここまでの記録を産業医面談の相談材料に整えます。</p>
+          <ul class="completion-points">
+            <li>修了は、医学的な証明や復職可否の判定ではありません。</li>
+            <li>できたこと・難しかったこと・相談したいことを面談用に確認します。</li>
+            <li>自動再生はしません。途中で休む、後で見ることもできます。</li>
+          </ul>
+          <button class="btn btn-teal" id="unlockFinalVideo" type="button">本人確認を終えたので、動画を見る</button>
+          <p class="status-line" id="finalDayVideoStatus" role="status">ボタンを押すまで動画は読み込みません。</p>
+          <div class="completion-player" id="finalDayPlayer" hidden>
+            <video id="finalDayVideo" controls preload="metadata" playsinline
+              data-src="videos/V10_修了お疲れさまでした_産業医面談に向けて_Drやまねことゆきちゃん.mp4"
+              poster="videos/V10_修了と産業医面談の準備_サムネイル.png"
+              aria-describedby="finalDayVideoStatus"></video>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1008,13 +1039,29 @@
         ['Day 11','通勤②','想定出勤時間帯の通勤例。安全と主治医等の方針を優先します。'],
         ['Day 12','配慮と相談','配慮候補、相談相手、面談で聞きたいことを整理します。'],
         ['Day 13','週末・休息','朝夕の短い記録と相談先の再確認。'],
-        ['Day 14','本人確認','レポートを修正し、共有する項目を本人が選びます。']
+        ['Day 14','本人確認と修了','レポートを修正し、共有する項目を本人が選びます。確認を終えたら、最後に修了・産業医面談準備動画を視聴します。']
       ];
       const calendar = document.getElementById('calendar');
       const detail = document.getElementById('dayDetail');
+      const finalDayVideoBlock = document.getElementById('finalDayVideoBlock');
+      const finalDayPlayer = document.getElementById('finalDayPlayer');
+      const finalDayVideo = document.getElementById('finalDayVideo');
+      const finalDayVideoStatus = document.getElementById('finalDayVideoStatus');
+      const unlockFinalVideo = document.getElementById('unlockFinalVideo');
+      const resetFinalDayVideo = () => {
+        finalDayVideo.pause();
+        finalDayVideo.removeAttribute('src');
+        finalDayVideo.load();
+        finalDayPlayer.hidden = true;
+        unlockFinalVideo.hidden = false;
+        finalDayVideoStatus.textContent = 'ボタンを押すまで動画は読み込みません。';
+      };
       const selectDay = (i) => {
         [...calendar.children].forEach((b, j) => b.classList.toggle('active', i === j));
         detail.innerHTML = `<p><strong>${days[i][0]}｜${days[i][1]}</strong><br>${days[i][2]}</p>`;
+        const isFinalDay = i === days.length - 1;
+        finalDayVideoBlock.hidden = !isFinalDay;
+        if (!isFinalDay) resetFinalDayVideo();
       };
       days.forEach((d, i) => {
         const b = document.createElement('button');
@@ -1025,6 +1072,14 @@
         calendar.appendChild(b);
       });
       selectDay(0);
+      unlockFinalVideo.addEventListener('click', () => {
+        finalDayVideo.src = finalDayVideo.dataset.src;
+        finalDayVideo.load();
+        finalDayPlayer.hidden = false;
+        unlockFinalVideo.hidden = true;
+        finalDayVideoStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
+        finalDayPlayer.scrollIntoView({behavior:'smooth', block:'center'});
+      });
 
       document.getElementById('checkinForm').addEventListener('submit', e => {
         e.preventDefault();
