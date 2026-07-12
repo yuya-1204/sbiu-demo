@@ -648,7 +648,7 @@
           <div class="form-grid">
             <div class="field"><label for="wakeTime">起床時刻</label><input id="wakeTime" type="time" value="07:00" required></div>
             <div class="field"><label for="sleepNote">睡眠の本人評価</label><select id="sleepNote"><option>よく眠れた</option><option selected>まずまず</option><option>あまり眠れなかった</option><option>記録しない</option></select></div>
-            <div class="field full"><label for="plan">今日試す活動 <span class="helper">例：読書30分、散歩、PC作業</span></label><input id="plan" value="午前にPCで文章要約を45分試す" required></div>
+            <div class="field full"><label for="plan">今日試す活動 <span class="helper">例：読書30分、散歩、PC作業</span></label><input id="plan" value="午前にPCで業務メールの要約を45分試す" required></div>
             <div class="field full"><label for="pace">今日の進め方</label><select id="pace"><option>予定どおり試す</option><option>短縮して試す</option><option>今日は休む</option><option>主治医等へ相談してから決める</option></select></div>
           </div>
           <div style="margin-top:16px"><button class="btn btn-teal" type="submit">記録を整理する</button></div>
@@ -697,19 +697,25 @@
       </div>
       <div class="card">
         <div class="work-tabs" role="tablist" aria-label="模擬ワークを選択">
-          <button class="work-tab active" type="button" data-work="summary" role="tab" aria-selected="true">文章要約</button>
+          <button class="work-tab active" type="button" data-work="summary" role="tab" aria-selected="true">メール要約</button>
           <button class="work-tab" type="button" data-work="data" role="tab" aria-selected="false">データ入力</button>
-          <button class="work-tab" type="button" data-work="memo" role="tab" aria-selected="false">読書とメモ</button>
+          <button class="work-tab" type="button" data-work="memo" role="tab" aria-selected="false">読書とメモ（任意）</button>
           <button class="work-tab" type="button" data-work="email" role="tab" aria-selected="false">架空のメール整理</button>
           <button class="work-tab" type="button" data-work="cbt" role="tab" aria-selected="false">認知行動療法（CBT）の基礎</button>
           <button class="work-tab" type="button" data-work="assertion" role="tab" aria-selected="false">アサーションスキルの練習</button>
         </div>
 
         <div class="work-demo" id="demo-summary" data-work-panel="summary">
-          <h3>文章要約デモ</h3>
-          <div class="task-source"><p>復職後の働き方は、本人の希望だけでなく、主治医や産業医の意見、職場の業務内容、安全面、会社の制度を踏まえて検討します。最初から通常勤務に戻すとは限らず、勤務時間や業務量を段階的に調整し、定期的に見直す方法があります。</p></div>
-          <div class="field" style="margin-top:12px"><label for="summaryText">80字以内を目安に要約</label><textarea id="summaryText" placeholder="要点を自分の言葉で入力"></textarea></div>
-          <button class="btn btn-teal btn-small demo-action" type="button" data-action="summary">要約を記録する</button>
+          <h3>一般業務メールの要約デモ</h3>
+          <p class="lead" style="margin-bottom:12px">下の社内メールから、依頼内容・期限・対応方法を読み取り、要点を短くまとめます。</p>
+          <div class="task-source" aria-label="要約する一般業務メール">
+            <p><strong>件名：月例会議資料の更新依頼</strong></p>
+            <p><strong>差出人：</strong>営業企画部 佐藤</p>
+            <p>各位</p>
+            <p>来週火曜日10時からの月例会議に向け、担当資料を更新してください。売上実績を6月確定値に差し替え、施策別の進捗を1枚追加してください。修正版は今週金曜日15時までに共有フォルダへ保存し、完了後、このメールに返信してください。不明点は木曜日正午までに営業企画部の佐藤へ連絡してください。</p>
+          </div>
+          <div class="field" style="margin-top:12px"><label for="summaryText">このメールを80字以内を目安に要約</label><textarea id="summaryText" placeholder="依頼内容・期限・対応方法を簡潔に入力"></textarea></div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="summary">メールの要約を記録する</button>
           <div class="output demo-output" id="summaryResult" hidden></div>
         </div>
 
@@ -727,11 +733,16 @@
         </div>
 
         <div class="work-demo" id="demo-memo" data-work-panel="memo" hidden>
-          <h3>読書とメモのデモ</h3>
-          <div class="task-source"><p>疲労の感じ方は、その日の睡眠や活動、休憩の取り方によって変わります。1日の結果だけで結論を出さず、何日かの記録を本人の感覚とあわせて振り返ることが大切です。</p></div>
+          <h3>読書とメモのデモ <span class="tag">任意</span></h3>
+          <p class="lead">読書自体も任意です。読んだ日は、本のタイトルを1日2冊まで記録できます。1冊だけの入力や、タイトル・メモを空欄のままでも構いません。</p>
+          <div class="callout" style="margin:12px 0"><p><strong>本選びのおすすめ：</strong>メンタルヘルス不調に関する理解を深める本や、復職後を見据えた業務に関連する本なども選択肢です。体調や興味に合わせ、無理のない分量で構いません。</p></div>
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label for="memoBook1">本のタイトル（1冊目） <span class="helper">任意</span></label><input id="memoBook1" placeholder="読んだ本のタイトル"></div>
+            <div class="field"><label for="memoBook2">本のタイトル（2冊目） <span class="helper">任意</span></label><input id="memoBook2" placeholder="2冊目がある場合のみ"></div>
+          </div>
           <div class="assertion-grid" style="margin-top:12px">
-            <div class="field"><label for="memoPoint">要点</label><textarea id="memoPoint" placeholder="大切だと思った点"></textarea></div>
-            <div class="field"><label for="memoAction">次に試すこと</label><textarea id="memoAction" placeholder="自分で試したいこと"></textarea></div>
+            <div class="field"><label for="memoPoint">要点・印象 <span class="helper">任意</span></label><textarea id="memoPoint" placeholder="大切だと思った点や印象"></textarea></div>
+            <div class="field"><label for="memoAction">次に試すこと <span class="helper">任意</span></label><textarea id="memoAction" placeholder="自分で試したいこと"></textarea></div>
           </div>
           <button class="btn btn-teal btn-small demo-action" type="button" data-action="memo">メモを整理する</button>
           <div class="output demo-output" id="memoResult" hidden></div>
@@ -781,7 +792,7 @@
 
       <div class="grid grid-2">
         <form class="card" id="workForm">
-          <input id="taskType" type="hidden" value="文章要約">
+          <input id="taskType" type="hidden" value="一般業務メールの要約">
           <h3>実施後の共通記録</h3>
           <div class="form-grid">
             <div class="field"><label for="duration">実施時間</label><select id="duration"><option>15分</option><option>30分</option><option selected>45分</option><option>60分</option><option>90分</option></select></div>
@@ -845,7 +856,7 @@
           <div class="report-section"><h4>1. この復職 AI Ready（フクショク アイ レディ）を実践した感想と、現時点での復職意欲について</h4><p><span class="data-label">本人記載</span>2週間の記録を通じて、生活リズムと疲労の変化を振り返ることができた。現時点では復職したい気持ちはあるが、業務量や勤務時間について産業医や上司と相談しながら段階的に進めたい。</p></div>
           <div class="report-section" id="r-life"><h4>2. 生活リズム</h4><p><span class="data-label">本人申告</span>Week 2は勤務日に近い時刻で起床した日が多かった。睡眠には日ごとのばらつきがあった。</p></div>
           <div class="report-section" id="r-commute"><h4>3. 通勤トライアル</h4><p><span class="data-label">課題実施記録</span>2回実施。所要時間48分・51分。本人コメント：「2回目は混雑時間帯を試し、帰宅後に休憩した」。</p></div>
-          <div class="report-section" id="r-work"><h4>4. 模擬作業</h4><p><span class="data-label">課題実施記録</span>文章要約・データ入力を30～90分で実施。休憩を入れると続けやすいとの本人申告あり。</p></div>
+          <div class="report-section" id="r-work"><h4>4. 模擬作業</h4><p><span class="data-label">課題実施記録</span>業務メール要約・データ入力を30～90分で実施。休憩を入れると続けやすいとの本人申告あり。</p></div>
           <div class="report-section" id="r-signs"><h4>5. 早期サインと相談行動</h4><p><span class="data-label">本人承認</span>睡眠不足が続く、メール返信を後回しにする。変化が続いた場合は、上司または産業医へ早めに相談する。</p></div>
           <div class="report-section" id="r-support"><h4>6. 配慮の相談候補</h4><p><span class="data-label">本人承認</span>当面の残業制限、業務量の段階調整、週1回の短いフォロー面談。</p></div>
           <div class="report-limit"><strong>本資料の限界：</strong>本人の自己申告とデモ上の課題実施記録をまとめた補助情報です。医学的所見、就労能力の証明、復職可否判定、再休職リスク予測ではありません。</div>
@@ -1036,7 +1047,7 @@
       }));
 
       const workLabels = {
-        summary:'文章要約', data:'データ入力', memo:'読書とメモ', email:'架空のメール整理', cbt:'認知行動療法（CBT）の基礎', assertion:'アサーションスキルの練習'
+        summary:'一般業務メールの要約', data:'データ入力', memo:'読書とメモ（任意）', email:'架空のメール整理', cbt:'認知行動療法（CBT）の基礎', assertion:'アサーションスキルの練習'
       };
       const workTabs = [...document.querySelectorAll('.work-tab')];
       const workPanels = [...document.querySelectorAll('[data-work-panel]')];
@@ -1057,7 +1068,7 @@
           const text = document.getElementById('summaryText').value.trim();
           const out = document.getElementById('summaryResult');
           out.hidden = false;
-          out.innerHTML = text ? `<p><strong>本人の要約（${[...text].length}字）</strong></p><p>${escapeHtml(text)}</p><p>元の文章と照らし、意味が変わっていないか本人が確認します。AIは能力評価をしません。</p>` : '<p>要約を入力してください。未実施・中断を選んでも不合格にはなりません。</p>';
+          out.innerHTML = text ? `<p><strong>本人のメール要約（${[...text].length}字）</strong></p><p>${escapeHtml(text)}</p><p>元のメールと照らし、依頼内容や期限の意味が変わっていないか本人が確認します。AIは能力評価をしません。</p>` : '<p>メールの要約を入力してください。未実施・中断を選んでも不合格にはなりません。</p>';
         }
         if (action === 'data') {
           const values = {
@@ -1072,11 +1083,13 @@
           out.innerHTML = `<p><strong>照合結果：</strong>4項目中${matched.filter(Boolean).length}項目が入力元と一致しました。</p><p>これは操作デモの一致確認であり、就労能力の検査ではありません。必要なら休憩して再確認できます。</p>`;
         }
         if (action === 'memo') {
+          const book1 = document.getElementById('memoBook1').value.trim();
+          const book2 = document.getElementById('memoBook2').value.trim();
           const point = document.getElementById('memoPoint').value.trim();
           const next = document.getElementById('memoAction').value.trim();
           const out = document.getElementById('memoResult');
           out.hidden = false;
-          out.innerHTML = `<p><strong>要点：</strong>${escapeHtml(point || '未記入')}</p><p><strong>次に試すこと：</strong>${escapeHtml(next || '未記入')}</p><p>本人のメモとして保存する想定です。内容の良し悪しを採点しません。</p>`;
+          out.innerHTML = `<p><strong>本のタイトル（任意）</strong></p><p>1冊目：${escapeHtml(book1 || '未入力')}<br>2冊目：${escapeHtml(book2 || '未入力')}</p><p><strong>要点・印象：</strong>${escapeHtml(point || '未記入')}</p><p><strong>次に試すこと：</strong>${escapeHtml(next || '未記入')}</p><p>本人の任意メモとして保存する想定です。未入力でも問題なく、内容の良し悪しを採点しません。</p>`;
         }
         if (action === 'email') {
           const categories = [...document.querySelectorAll('.email-category')].map((s,i) => `${i+1}通目：${s.value}`);
@@ -1158,6 +1171,7 @@
 
       document.getElementById('resetDemo').addEventListener('click', () => {
         document.querySelectorAll('form').forEach(f => f.reset());
+        document.querySelectorAll('#demo-summary textarea, #demo-memo input, #demo-memo textarea').forEach(field => field.value = '');
         consents.forEach(c => c.checked = false);
         document.querySelectorAll('.share-toggle').forEach(t => { t.checked = true; document.getElementById(t.dataset.target).hidden = false; });
         document.getElementById('checkinOutput').hidden = true;
