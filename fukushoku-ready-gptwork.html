@@ -759,9 +759,9 @@
 
     <section id="lecture">
       <div class="section-head">
-        <div class="kicker">10-VIDEO LEARNING</div>
-        <h2>座学（疾病理解と認知行動療法）</h2>
-        <p class="lead">Dr.やまねことゆきちゃんによる10本の教育動画を視聴できるライブラリーです。一般教育であり、個別の診断・治療・心理療法ではありません。</p>
+        <div class="kicker">11-VIDEO LEARNING</div>
+        <h2>座学（疾病理解・セルフケア・認知行動療法）</h2>
+        <p class="lead">Dr.やまねことゆきちゃんによる11本の教育動画を視聴できるライブラリーです。一般教育であり、個別の診断・治療・心理療法ではありません。</p>
       </div>
       <div class="lecture-grid">
         <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V00｜利用開始・安全説明</h3><p>安心して使うために最初に知ってほしいこと</p><button class="episode-button" type="button" data-video="videos/V00_利用開始・安全説明_Drやまねことゆきちゃん.mp4" data-title="V00｜利用開始・安全説明">この動画を見る</button></article>
@@ -774,14 +774,15 @@
         <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V07｜レポート確認と情報共有</h3><p>本人が内容と共有範囲を最終確認する</p><button class="episode-button" type="button" data-video="videos/V07_レポート確認と情報共有_Drやまねことゆきちゃん.mp4" data-title="V07｜レポート確認と情報共有">この動画を見る</button></article>
         <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V08｜アサーションスキル</h3><p>我慢でも言い負かすことでもない、相談につながる伝え方</p><button class="episode-button" type="button" data-video="videos/V08_アサーションスキル_Drやまねことゆきちゃん.mp4" data-title="V08｜アサーションスキル">この動画を見る</button></article>
         <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V09｜認知行動療法の考え方</h3><p>事実と解釈を分け、0か100以外の見方を探す</p><button class="episode-button" type="button" data-video="videos/V09_認知行動療法_思考の柔軟性_Drやまねことゆきちゃん.mp4" data-title="V09｜認知行動療法の考え方・思考の柔軟性">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V11｜セルフケア</h3><p>健康的なストレス解消行動を、具体的な時間に予定して試す</p><button class="episode-button" type="button" data-video="videos/V11_セルフケア_健康的なストレス解消_Drやまねことゆきちゃん.mp4" data-title="V11｜セルフケア・健康的なストレス解消行動">この動画を見る</button></article>
       </div>
       <div class="card lecture-player">
         <h3 id="lectureTitle">動画を選択してください</h3>
         <video id="lectureVideo" controls preload="metadata" playsinline aria-describedby="lectureStatus"></video>
-        <p class="status-line" id="lectureStatus">V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。</p>
+        <p class="status-line" id="lectureStatus">V00～V09・V11の11本を選択できます。再生ボタンを押すまで自動再生しません。</p>
         <div class="reflection-test" id="lectureReflection" hidden></div>
       </div>
-      <div class="callout callout-warning" style="margin-top:18px"><p><strong>学びを練習へ：</strong>認知行動療法（CBT）は下の「出来事・考え・反応・行動」を整理する基礎ワークで、アサーションスキルは「状況・影響・希望・調整案」を言葉にするワークで体験できます。いずれも一般的な学習・演習であり、治療や能力評価ではありません。</p></div>
+      <div class="callout callout-warning" style="margin-top:18px"><p><strong>学びを練習へ：</strong>セルフケアは、睡眠・休息を疲労回復の土台として確保しつつ、健康的な具体的行動へ意識して時間を使う考え方を学びます。認知行動療法（CBT）は下の「出来事・考え・反応・行動」を整理する基礎ワークで、アサーションスキルは「状況・影響・希望・調整案」を言葉にするワークで体験できます。いずれも一般的な学習・演習であり、治療や能力評価ではありません。</p></div>
     </section>
 
     <section id="work">
@@ -1267,6 +1268,13 @@
           options:['復職準備の合否や復職可否を決める点数である','できた部分と難しかった部分を白黒の間で眺める目安で、合格線はない'],
           correct:'b',
           explanation:'数字は程度を整理する目安で、成績や復職可否の判定には使いません。'
+        },
+        V11: {
+          title:'セルフケア・健康的なストレス解消',
+          question:'セルフケアとして、より適切なストレス解消行動はどちらでしょう？',
+          options:['睡眠や休息を確保したうえで、翌日に響かない範囲の散歩や読書を具体的な時間に予定し、試した後に見直す','セルフケアは一人で解決することなので、深夜までゲームを続けたり、飲酒量を増やしたりして気をそらす'],
+          correct:'a',
+          explanation:'睡眠・休息は疲労回復の土台です。加えて、安全で生活への悪影響が少ない具体的な行動を無理のない時間で試します。相談することもセルフケアです。'
         },
         V10: {
           title:'修了・産業医面談に向けて',
@@ -1928,7 +1936,7 @@
         lectureVideo.removeAttribute('src');
         lectureVideo.load();
         lectureTitle.textContent = '動画を選択してください';
-        lectureStatus.textContent = 'V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。';
+        lectureStatus.textContent = 'V00～V09・V11の11本を選択できます。再生ボタンを押すまで自動再生しません。';
         resetVideoReflections();
         window.scrollTo({top:0, behavior:'smooth'});
       });
