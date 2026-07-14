@@ -1,0 +1,3091 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="復職 AI Ready（フクショク アイ レディ）のHyb（ハイブリッド版）デモ。AIとの対話形式で生活リズムを整理します。診断・治療・復職可否判定は行いません。">
+  <title>復職 AI Ready（フクショク アイ レディ）｜Hyb（ハイブリッド版）</title>
+  <style>
+    :root {
+      --navy: #173b68;
+      --navy-2: #0f2b4d;
+      --teal: #087f8c;
+      --teal-soft: #e8f6f7;
+      --orange: #d87916;
+      --orange-soft: #fff4e6;
+      --red: #c43d36;
+      --red-soft: #fff0ee;
+      --green: #2f7d5d;
+      --green-soft: #edf8f2;
+      --ink: #172334;
+      --muted: #607087;
+      --line: #d8e0e8;
+      --surface: #ffffff;
+      --bg: #f4f7fa;
+      --shadow: 0 12px 30px rgba(23, 59, 104, .10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      line-height: 1.7;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--navy); }
+    :focus-visible { outline: 3px solid #ffb34c; outline-offset: 3px; }
+
+    body.locked { overflow: hidden; }
+    body.locked > *:not(#accessGate) { display: none; }
+    .access-gate {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(36, 181, 194, .28), transparent 30%),
+        linear-gradient(135deg, var(--navy-2), var(--navy));
+    }
+    .access-gate[hidden] { display: none; }
+    .gate-card {
+      width: min(440px, 100%);
+      padding: 36px;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: 0 22px 55px rgba(9, 29, 52, .28);
+      text-align: center;
+    }
+    .gate-lock { font-size: 2.25rem; line-height: 1; }
+    .gate-card h1 { margin: 14px 0 8px; color: var(--navy-2); font-size: 1.35rem; }
+    .gate-card p { margin: 0 0 18px; color: var(--muted); font-size: .92rem; }
+    .gate-card label { display: block; margin-bottom: 7px; color: var(--navy); font-weight: 800; text-align: left; }
+    .gate-card input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      text-align: center;
+      letter-spacing: .12em;
+    }
+    .gate-card button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 10px;
+      color: white;
+      background: var(--teal);
+      font-weight: 800;
+    }
+    .gate-card button:hover { background: #066c77; }
+    .gate-error { min-height: 1.5em; margin-top: 8px !important; color: var(--red) !important; }
+
+    .skip-link {
+      position: fixed;
+      left: 12px;
+      top: -60px;
+      z-index: 1000;
+      padding: 10px 14px;
+      background: white;
+      border-radius: 8px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .notice {
+      background: var(--navy-2);
+      color: white;
+      padding: 10px 18px;
+      text-align: center;
+      font-size: .88rem;
+    }
+    .notice strong { color: #ffd18a; }
+
+    header {
+      color: white;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(36, 181, 194, .30), transparent 32%),
+        linear-gradient(135deg, var(--navy-2), var(--navy));
+      padding: 62px 20px 54px;
+    }
+    .hero {
+      width: min(1120px, 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 34px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+    .hero-copy {
+      margin: 18px 0 0;
+      max-width: 760px;
+      color: #e7f1fc;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      gap: 8px;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-weight: 750;
+      text-decoration: none;
+      transition: .18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: var(--navy-2); background: white; }
+    .btn-secondary { color: white; border-color: rgba(255,255,255,.45); background: transparent; }
+    .btn-navy { color: white; background: var(--navy); }
+    .btn-teal { color: white; background: var(--teal); }
+    .btn-outline { color: var(--navy); background: white; border-color: var(--line); }
+    .btn-danger { color: white; background: var(--red); }
+    .btn-small { min-height: 38px; padding: 7px 12px; font-size: .9rem; }
+
+    .hero-card {
+      padding: 24px;
+      color: var(--ink);
+      background: rgba(255,255,255,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-card h2 { margin: 0 0 12px; color: var(--navy); font-size: 1.05rem; }
+    .hero-card ul { margin: 0; padding-left: 1.3rem; }
+    .hero-card li + li { margin-top: 6px; }
+
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+    }
+    .sticky-nav-inner {
+      width: max-content;
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 14px;
+    }
+    .sticky-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 700;
+    }
+    .sticky-nav a:hover { background: #eef3f8; }
+
+    main { width: min(1120px, calc(100% - 32px)); margin: 34px auto 80px; }
+    section { scroll-margin-top: 76px; margin-top: 34px; }
+    .section-head { margin-bottom: 18px; }
+    .kicker { color: var(--teal); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    h2 { margin: 4px 0 8px; color: var(--navy); font-size: clamp(1.45rem, 3vw, 2rem); line-height: 1.35; }
+    h3 { margin: 0 0 10px; color: var(--navy); line-height: 1.4; }
+    .lead { margin: 0; color: var(--muted); }
+    .card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 6px 20px rgba(23,59,104,.05);
+    }
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .mini-card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+    .mini-card p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 10px;
+      border-radius: 50%;
+      color: white;
+      background: var(--navy);
+      font-weight: 800;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: #076672;
+      font-size: .77rem;
+      font-weight: 800;
+    }
+    .tag-orange { background: var(--orange-soft); color: #9a540c; }
+    .tag-green { background: var(--green-soft); color: #27694f; }
+    .tag-red { background: var(--red-soft); color: #a52f2a; }
+
+    .callout {
+      padding: 16px 18px;
+      border-left: 5px solid var(--teal);
+      border-radius: 10px;
+      background: var(--teal-soft);
+    }
+    .callout p { margin: 0; }
+    .callout-warning { border-left-color: var(--orange); background: var(--orange-soft); }
+    .callout-danger { border-left-color: var(--red); background: var(--red-soft); }
+
+    .video-shell { overflow: hidden; padding: 0; }
+    .video-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      color: white;
+      background: var(--navy-2);
+    }
+    .video-stage {
+      min-height: 330px;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+      text-align: center;
+      background: linear-gradient(145deg, #eef5fb, #fff);
+    }
+    .slide { display: none; max-width: 760px; }
+    .slide.active { display: block; animation: fade .25s ease; }
+    .slide-icon { font-size: 2.7rem; }
+    .slide h3 { margin-top: 10px; font-size: clamp(1.35rem, 3vw, 2rem); }
+    .slide p { color: var(--muted); }
+    .video-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+    }
+    .dots { display: flex; gap: 7px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #c8d3df; }
+    .dot.active { background: var(--teal); }
+
+    .consent-list { display: grid; gap: 12px; margin: 18px 0; }
+    .check-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcfd;
+    }
+    .check-row input { width: 20px; height: 20px; margin-top: 2px; }
+    .status-line { min-height: 1.7em; color: var(--muted); font-size: .9rem; }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0,1fr));
+      gap: 10px;
+    }
+    .day {
+      min-height: 112px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: white;
+      text-align: left;
+    }
+    .day:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(8,127,140,.12); }
+    .day.active { color: white; background: var(--navy); border-color: var(--navy); }
+    .day.weekend { background: #f4f3f0; }
+    .day.active.weekend { background: var(--navy); }
+    .day strong { display: block; margin-bottom: 5px; }
+    .day span { font-size: .78rem; line-height: 1.35; }
+    .day-detail { margin-top: 16px; }
+    .completion-card {
+      margin-top: 16px;
+      border: 2px solid #9fd0d4;
+      background: linear-gradient(145deg, #f4fbfb, #fffaf2);
+    }
+    .completion-card[hidden], .completion-player[hidden] { display: none; }
+    .completion-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .completion-head h3 { margin: 5px 0 0; color: var(--navy); font-size: 1.28rem; }
+    .completion-points { display: grid; gap: 7px; margin: 15px 0; padding-left: 1.2em; }
+    .completion-player { margin-top: 16px; }
+    .completion-player video { width: 100%; max-height: 520px; border-radius: 12px; background: #09192c; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    label { color: var(--navy); font-weight: 700; }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #bdc9d6;
+      border-radius: 10px;
+      color: var(--ink);
+      background: white;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    .helper { color: var(--muted); font-size: .82rem; font-weight: 400; }
+    .output {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #b8dadd;
+      border-radius: 14px;
+      background: var(--teal-soft);
+    }
+    .output[hidden] { display: none; }
+    .output p { margin: 5px 0; }
+
+    .hyb-note {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 13px 16px;
+      border: 1px solid #abd7db;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal-soft), #fffaf2);
+      color: var(--navy);
+    }
+    .hyb-note strong { color: var(--teal); }
+    .checkin-chat-card { overflow: hidden; padding: 0; }
+    .checkin-chat-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 18px 20px;
+      color: white;
+      background: var(--navy-2);
+    }
+    .checkin-chat-head h3 { margin: 2px 0 0; }
+    .checkin-chat-head p { margin: 4px 0 0; color: #d6e5f2; font-size: .82rem; }
+    .checkin-progress {
+      flex: 0 0 auto;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: var(--navy-2);
+      background: white;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    .checkin-chat-log {
+      min-height: 280px;
+      max-height: 430px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f4f7fa;
+    }
+    .checkin-message {
+      max-width: 88%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+    .checkin-message.ai {
+      align-self: flex-start;
+      border: 1px solid #c9d7e3;
+      border-bottom-left-radius: 4px;
+      background: white;
+    }
+    .checkin-message.user {
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+      color: white;
+      background: var(--teal);
+    }
+    .checkin-message .speaker { display: block; margin-bottom: 2px; font-size: .72rem; font-weight: 800; opacity: .75; }
+    .checkin-answer-area { padding: 18px 20px 20px; border-top: 1px solid var(--line); }
+    .checkin-answer-area fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .checkin-answer-area legend { margin-bottom: 9px; color: var(--navy); font-weight: 700; }
+    .checkin-input-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .checkin-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+    .checkin-choice {
+      min-height: 46px;
+      padding: 9px 11px;
+      border: 1px solid #9fb1c1;
+      border-radius: 10px;
+      color: var(--navy);
+      background: white;
+      font-weight: 750;
+    }
+    .checkin-choice:hover, .checkin-choice:focus-visible { border-color: var(--teal); background: var(--teal-soft); }
+    .checkin-controls { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 13px; }
+    .checkin-error { min-height: 1.4em; margin: 8px 0 0; color: var(--red); font-size: .82rem; font-weight: 700; }
+    .checkin-summary-empty { margin-top: 18px; padding: 18px; border: 1px dashed #aebdca; border-radius: 12px; color: var(--muted); background: #f8fafc; }
+    .checkin-summary-editor { min-height: 180px; margin-top: 10px; line-height: 1.65; }
+    .checkin-summary-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+    .checkin-storage-note { margin-top: 14px; padding: 11px 13px; border-radius: 10px; color: var(--muted); background: #f3f5f7; font-size: .82rem; }
+    .checkin-safety-link { display: inline-block; margin-top: 8px; font-weight: 800; }
+    .checkin-history { margin-top: 18px; }
+    .checkin-history-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .checkin-history-head h3 { margin: 0; }
+    .checkin-history-head p { margin: 5px 0 0; color: var(--muted); }
+    .checkin-history-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 18px 0; }
+    .checkin-history-metric { padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: #f8fafc; }
+    .checkin-history-metric span { display: block; color: var(--muted); font-size: .76rem; font-weight: 700; }
+    .checkin-history-metric strong { display: block; margin-top: 3px; color: var(--navy); font-size: 1.15rem; }
+    .checkin-history-table-wrap { overflow-x: auto; }
+    .checkin-history-table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .82rem; }
+    .checkin-history-table th, .checkin-history-table td { padding: 8px 9px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .checkin-history-table th { color: var(--navy); background: #eef3f7; }
+
+    .lecture-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+    .episode-card { display: grid; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+    .episode-card h3 { margin: 0; font-size: .98rem; }
+    .episode-card p { margin: 0; color: var(--muted); font-size: .82rem; }
+    .episode-button { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid var(--navy); border-radius: 9px; color: var(--navy); background: white; font-weight: 750; }
+    .episode-button:hover:not(:disabled), .episode-button.active { color: white; background: var(--navy); }
+    .episode-button:disabled { cursor: not-allowed; opacity: .58; }
+    .lecture-player { margin-top: 18px; }
+    .lecture-player video { width: 100%; max-height: 520px; border-radius: 12px; background: #09192c; }
+    .reflection-test { margin-top: 18px; padding: 18px; border: 1px solid #aacfd3; border-radius: 14px; background: linear-gradient(145deg,#f5fbfb,#fff); }
+    .reflection-test[hidden], .reflection-form[hidden] { display: none; }
+    .reflection-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .reflection-head h4 { margin: 4px 0 0; color: var(--navy); font-size: 1.08rem; }
+    .reflection-state { padding: 5px 10px; border-radius: 999px; color: #76511b; background: #fff0d8; font-size: .78rem; font-weight: 800; }
+    .reflection-state.unlocked { color: #236e50; background: #e5f5ec; }
+    .reflection-locked { margin-top: 14px; padding: 15px; border: 1px dashed #b6c2ce; border-radius: 11px; color: var(--muted); background: #f8fafc; }
+    .reflection-locked p { margin: 5px 0 0; }
+    .reflection-form { margin-top: 14px; }
+    .reflection-form fieldset { margin: 0; padding: 0; border: 0; }
+    .reflection-form legend { margin-bottom: 12px; color: var(--navy); font-weight: 800; line-height: 1.6; }
+    .reflection-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    .reflection-option { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; min-height: 74px; padding: 13px; border: 1px solid #b9c7d3; border-radius: 11px; background: white; cursor: pointer; }
+    .reflection-option:hover { border-color: var(--teal); background: #f4fbfb; }
+    .reflection-option input { width: 19px; height: 19px; margin-top: 2px; }
+    .reflection-option strong { color: var(--navy); }
+    .reflection-actions { margin-top: 13px; }
+    .reflection-feedback { min-height: 1.7em; margin: 10px 0 0; font-weight: 700; }
+    .reflection-feedback.is-correct { color: #236e50; }
+    .reflection-feedback.is-incorrect { color: #9a5b16; }
+    .reflection-note { margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
+
+    .work-tabs, .level-buttons { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
+    .work-tab, .level-button { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .work-tab.active, .level-button.active { border-color: var(--navy); color: white; background: var(--navy); }
+    .work-demo { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcfd; }
+    .work-demo[hidden] { display: none; }
+    .task-source { padding: 15px; border-left: 4px solid var(--teal); border-radius: 9px; background: white; }
+    .task-source p { margin: 4px 0; }
+    .mini-table, .cert-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .mini-table th, .mini-table td, .cert-table th, .cert-table td { padding: 9px 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .mini-table th, .cert-table th { background: #eef3f7; color: var(--navy); }
+    .email-list { display: grid; gap: 10px; }
+    .email-item { display: grid; grid-template-columns: 1fr 170px; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .assertion-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .assertion-grid .field:last-child { grid-column: 1 / -1; }
+
+    .game-guidance { display: grid; gap: 12px; margin-bottom: 18px; }
+    .game-history { margin-bottom: 18px; }
+    .game-history-head, .game-panel-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .game-history-head p, .game-panel-head p { margin: 0; color: var(--muted); }
+    .game-score-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 18px 0; }
+    .game-score-metric { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
+    .game-score-metric span { display: block; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .game-score-metric strong { display: block; margin-top: 3px; color: var(--navy); font-size: 1.35rem; }
+    .game-score-chart { min-height: 180px; display: flex; align-items: flex-end; gap: 10px; padding: 14px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfd; }
+    .game-score-column { flex: 1 0 70px; display: grid; gap: 5px; justify-items: center; color: var(--muted); font-size: .75rem; }
+    .game-score-track { width: 100%; height: 120px; display: flex; align-items: flex-end; border-radius: 8px 8px 3px 3px; background: #e7edf3; overflow: hidden; }
+    .game-score-fill { width: 100%; min-height: 4px; background: linear-gradient(180deg, var(--teal), var(--navy)); }
+    .game-score-column strong { color: var(--navy); font-size: .82rem; }
+    .game-score-table-wrap { margin-top: 14px; overflow-x: auto; }
+    .game-score-table { min-width: 650px; }
+    .game-score-table caption { padding-bottom: 8px; color: var(--muted); font-size: .84rem; font-weight: 700; text-align: left; }
+    .game-tabs { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 16px; }
+    .game-tab { padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .game-tab.active { border-color: var(--navy); color: white; background: var(--navy); }
+    .game-panel { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcfd; }
+    .game-panel[hidden], .game-play[hidden] { display: none; }
+    .game-time-chip { flex: 0 0 auto; padding: 5px 10px; border-radius: 999px; color: var(--navy); background: var(--orange-soft); font-size: .8rem; font-weight: 800; }
+    .game-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .game-play { margin-top: 16px; }
+    .game-progress { margin-bottom: 8px; color: var(--teal); font-size: .82rem; font-weight: 800; letter-spacing: .04em; }
+    .game-question { padding: 16px; border-left: 4px solid var(--teal); border-radius: 10px; background: white; }
+    .game-question h4 { margin: 0 0 6px; color: var(--navy); }
+    .game-question p { margin: 0; white-space: pre-line; }
+    .game-choices { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+    .game-choice { min-height: 48px; padding: 10px 12px; border: 1px solid #aebdca; border-radius: 10px; color: var(--navy); background: white; font-weight: 750; }
+    .game-choice:hover:not(:disabled) { border-color: var(--navy); background: #eef3f8; }
+    .game-choice.correct { border-color: #2d8a62; background: #e8f6ef; }
+    .game-choice.incorrect { border-color: #c97a2c; background: #fff2e3; }
+    .game-choice:disabled { cursor: default; opacity: 1; }
+    .game-feedback { min-height: 1.7em; margin: 10px 0 0; color: var(--muted); font-weight: 700; }
+
+    .certificate-shell { display: grid; grid-template-columns: .75fr 1.25fr; gap: 18px; }
+    .cert-qr { width: 86px; height: 86px; border: 6px solid white; border-radius: 8px; background: repeating-conic-gradient(#18324f 0 25%,#fff 0 50%) 0 0/12px 12px; box-shadow: 0 0 0 1px var(--line); }
+    .cert-extra[hidden] { display: none; }
+    .cert-verify { min-height: 1.7em; margin-top: 10px; color: var(--green); font-weight: 800; }
+    .disclosure-options { display: grid; gap: 10px; margin-top: 14px; }
+
+    .route-buttons { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .route {
+      min-height: 92px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      font-weight: 750;
+    }
+    .route:hover { border-color: var(--navy); }
+    .route-result { margin-top: 16px; }
+    .route-result[data-level="1"] { border-left-color: var(--green); background: var(--green-soft); }
+    .route-result[data-level="2"] { border-left-color: var(--orange); background: var(--orange-soft); }
+    .route-result[data-level="3"] { border-left-color: var(--red); background: var(--red-soft); }
+
+    .share-controls { display: grid; gap: 10px; margin: 14px 0; }
+    .share-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .switch { width: 46px; height: 26px; position: relative; }
+    .switch input { opacity: 0; width: 1px; height: 1px; }
+    .switch span {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #b9c4ce;
+      transition: .18s;
+    }
+    .switch span::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: white;
+      transition: .18s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .switch input:checked + span { background: var(--teal); }
+    .switch input:checked + span::after { transform: translateX(20px); }
+
+    .report {
+      padding: 26px;
+      border: 1px solid #c8d1db;
+      border-radius: 8px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .report-head { padding-bottom: 16px; border-bottom: 3px solid var(--navy); }
+    .report-head h3 { margin: 0; font-size: 1.4rem; }
+    .report-meta { color: var(--muted); font-size: .86rem; }
+    .report-section { padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .report-section:last-child { border-bottom: 0; }
+    .report-section h4 { margin: 0 0 7px; color: var(--navy); }
+    .data-label { display: inline-block; margin-right: 6px; padding: 2px 7px; border-radius: 5px; background: #edf1f5; font-size: .72rem; font-weight: 800; }
+    .report-limit { padding: 12px; background: #f6f7f9; color: var(--muted); font-size: .82rem; }
+
+    .privacy-diagram { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .privacy-col { padding: 18px; border-radius: 14px; }
+    .private { background: #f0f2f5; }
+    .occupational { background: var(--teal-soft); }
+    .company { background: var(--orange-soft); }
+    .privacy-col ul { margin: 10px 0 0; padding-left: 1.15rem; font-size: .88rem; }
+
+    .reset-bar { display: flex; justify-content: flex-end; margin-top: 18px; }
+    footer { padding: 34px 20px; color: #d8e6f3; background: var(--navy-2); text-align: center; font-size: .86rem; }
+    footer a { color: white; }
+
+    @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+      .lecture-grid { grid-template-columns: repeat(2, 1fr); }
+      .certificate-shell { grid-template-columns: 1fr; }
+      .calendar { grid-template-columns: repeat(4, 1fr); }
+      .privacy-diagram { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      header { padding-top: 44px; }
+      main { width: min(100% - 20px, 1120px); }
+      .card { padding: 18px; }
+      .grid-2, .grid-4, .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .calendar { grid-template-columns: repeat(2, 1fr); }
+      .day { min-height: 92px; }
+      .route-buttons { grid-template-columns: 1fr; }
+      .lecture-grid, .assertion-grid { grid-template-columns: 1fr; }
+      .reflection-options { grid-template-columns: 1fr; }
+      .assertion-grid .field:last-child { grid-column: auto; }
+      .game-score-summary, .game-choices { grid-template-columns: 1fr; }
+      .game-history-head, .game-panel-head { flex-direction: column; }
+      .checkin-chat-head, .checkin-history-head { flex-direction: column; }
+      .checkin-message { max-width: 96%; }
+      .checkin-input-grid, .checkin-choice-grid, .checkin-history-metrics { grid-template-columns: 1fr; }
+      .email-item { grid-template-columns: 1fr; }
+      .video-stage { min-height: 390px; padding: 24px 16px; }
+      .video-controls { flex-wrap: wrap; }
+      .report { padding: 18px; }
+    }
+    @page { size: A4 portrait; margin: 12mm; }
+    @media print {
+      .notice, header, .sticky-nav, .video-controls, .hero-actions, .reset-bar, footer, button, form, #overview, #video, #program, #checkin, #lecture, #work, #games, #checkout, #safety, #certificate, #disclosure { display: none !important; }
+      body, main { background: white; margin: 0; width: 100%; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      #report { margin: 0; padding: 0; }
+      #report .section-head, #report .share-panel { display: none !important; }
+      #report .report-layout { display: block; }
+      #report .report {
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        padding: 8mm;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        font-size: 10pt;
+        line-height: 1.45;
+      }
+      #report .report-head { padding-bottom: 3mm; }
+      #report .report-section { padding: 3mm 0; break-inside: avoid; page-break-inside: avoid; }
+      #report .report-section h4 { margin-bottom: 1.5mm; }
+      #report .report-limit { padding: 3mm; break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body class="locked">
+  <div class="access-gate" id="accessGate" role="dialog" aria-modal="true" aria-labelledby="accessGateTitle">
+    <form class="gate-card" id="accessGateForm">
+      <div class="gate-lock" aria-hidden="true">🔒</div>
+      <h1 id="accessGateTitle">復職 AI Ready（フクショク アイ レディ）｜Hyb（ハイブリッド版）</h1>
+      <p>本ページは事業構想デモです。閲覧コードを入力して開始してください。</p>
+      <label for="accessCode">閲覧コード</label>
+      <input id="accessCode" name="access-code" type="password" autocomplete="off" aria-describedby="accessGateError" aria-invalid="false" required autofocus>
+      <p class="gate-error" id="accessGateError" role="alert" aria-live="polite"></p>
+      <button type="submit">デモを開く</button>
+      <noscript><p class="gate-error">このデモの閲覧にはJavaScriptが必要です。</p></noscript>
+    </form>
+  </div>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="notice"><strong>事業構想デモ</strong>　架空データのみ使用／診断・治療・復職可否判定は行いません</div>
+
+  <header>
+    <div class="hero">
+      <div>
+        <div class="eyebrow">SBI-Uチャレンジ 2026｜Hyb（ハイブリッド版）</div>
+        <h1>復職 AI Ready（フクショク アイ レディ）</h1>
+        <p class="hero-copy">空白の2週間を、復職準備の2週間に。記録して、試して、振り返る。判断するのはAIではなく、本人・主治医・産業医・会社です。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#video">安全説明から体験する</a>
+          <a class="btn btn-secondary" href="#report">レポートを見る</a>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="このデモで体験できること">
+        <h2>このデモで体験できること</h2>
+        <ul>
+          <li>利用開始時の安全説明と本人同意</li>
+          <li>14日間の標準プログラム</li>
+          <li>AIとの対話で行う朝のチェックインと夕方のチェックアウト</li>
+          <li>約10分で楽しめる作業ゲーム3種類と日別スコア</li>
+          <li>認知行動療法（CBT）の基礎とアサーション練習</li>
+          <li>体調変化時の安全ルーティング</li>
+          <li>本人が共有項目を選ぶ復職準備レポート</li>
+          <li>本人が開示範囲を選べるTuringCerts受講証明</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="sticky-nav" aria-label="ページ内メニュー">
+    <div class="sticky-nav-inner">
+      <a href="#overview">概要</a>
+      <a href="#video">安全説明</a>
+      <a href="#program">14日プログラム</a>
+      <a href="#checkin">朝チェックイン</a>
+      <a href="#lecture">座学・CBT</a>
+      <a href="#work">模擬ワーク・アサーション</a>
+      <a href="#games">作業ゲーム</a>
+      <a href="#checkout">夕方チェックアウト</a>
+      <a href="#safety">安全導線</a>
+      <a href="#report">レポート</a>
+      <a href="#certificate">受講証明（TuringCerts）</a>
+      <a href="#disclosure">情報開示範囲指定</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section id="overview">
+      <div class="section-head">
+        <div class="kicker">CONCEPT</div>
+        <h2>主治医の判断後、会社の最終判断前を支える</h2>
+        <p class="lead">復職 AI Ready（フクショク アイ レディ）は、本人の準備状況を記録・整理し、産業医面談や職場の受け入れ準備に使う補助情報を作る構想です。</p>
+      </div>
+      <div class="hyb-note"><strong>Hybとは</strong><span>GPTWork改良版の機能を保ちながら、朝のチェックインと夕方のチェックアウトをAIとの短い会話で整理するハイブリッド版です。</span></div>
+      <div class="grid grid-4">
+        <div class="mini-card"><div class="number">1</div><h3>主治医</h3><p>治療と医学的な職場復帰可能性について意見を示します。</p></div>
+        <div class="mini-card"><div class="number">2</div><h3>本人</h3><p>生活・活動・希望・相談したいことを、自分の言葉で整理します。</p></div>
+        <div class="mini-card"><div class="number">3</div><h3>産業医等</h3><p>業務内容との関係を確認し、会社に必要な意見を示します。</p></div>
+        <div class="mini-card"><div class="number">4</div><h3>会社</h3><p>就業上の配慮や復職支援プランを含め、最終判断を行います。</p></div>
+      </div>
+      <div class="callout" style="margin-top:18px"><p><strong>AIの役割：</strong>説明、記録補助、要約、質問リスト、レポート下書き。医学的判断や人事評価は行いません。</p></div>
+    </section>
+
+    <section id="video">
+      <div class="section-head">
+        <div class="kicker">V00｜ONBOARDING</div>
+        <h2>利用開始・安全説明動画（字幕スライド版）</h2>
+        <p class="lead">実際の動画制作前に、台本と画面遷移を体験するデモです。</p>
+      </div>
+      <div class="card video-shell">
+        <div class="video-top"><strong>約5分｜利用前に必ず確認</strong><span id="videoCount">1 / 5</span></div>
+        <div class="video-stage" aria-live="polite">
+          <article class="slide active"><div class="slide-icon">🌱</div><h3>復職を判定するサービスではありません</h3><p>復職前の生活や活動を記録し、主治医・産業医・会社と相談する材料を整理するためのデモです。</p></article>
+          <article class="slide"><div class="slide-icon">🧭</div><h3>できない日は、休む・短縮・中断を選べます</h3><p>課題の達成度だけで評価されることはありません。無理に続けることを勧めません。</p></article>
+          <article class="slide"><div class="slide-icon">🤖</div><h3>AIは記録を整理するだけ</h3><p>診断、治療、心理療法、服薬の助言、症状の確定、復職可否の判断は行いません。</p></article>
+          <article class="slide"><div class="slide-icon">🔐</div><h3>共有する内容は本人が選びます</h3><p>自由対話や私生活上の事情は標準共有しません。レポートは共有前に本人が修正・削除できます。</p></article>
+          <article class="slide"><div class="slide-icon">☎️</div><h3>体調が悪化したら、プログラムを止めて相談へ</h3><p>主治医や指定された相談先へ連絡してください。直ちに安全確保が必要な場合は、画面操作より安全を優先します。</p></article>
+        </div>
+        <div class="video-controls">
+          <button class="btn btn-outline btn-small" id="prevSlide" type="button">← 戻る</button>
+          <div class="dots" id="slideDots" aria-hidden="true"></div>
+          <button class="btn btn-navy btn-small" id="nextSlide" type="button">次へ →</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>利用前の確認</h3>
+        <p class="lead">これはデモ上の確認です。入力は送信・保存されません。</p>
+        <div class="consent-list">
+          <label class="check-row"><input class="consent" type="checkbox"><span>本サービスが診断・治療・復職可否判定を行わないことを理解しました。</span></label>
+          <label class="check-row"><input class="consent" type="checkbox"><span>課題は任意で、休む・短縮する・中断することができると理解しました。</span></label>
+          <label class="check-row"><input class="consent" type="checkbox"><span>共有する項目は本人が確認・選択することを理解しました。</span></label>
+        </div>
+        <button class="btn btn-teal" id="consentButton" type="button" disabled>同意してデモを開始</button>
+        <p class="status-line" id="consentStatus" role="status">3項目すべての確認が必要です。</p>
+      </div>
+    </section>
+
+    <section id="program">
+      <div class="section-head">
+        <div class="kicker">14-DAY PROGRAM</div>
+        <h2>標準2週間のモデルスケジュール</h2>
+        <p class="lead">Dayを選ぶと内容が変わります。土日は模擬業務を行わず、短い記録と休息を中心にします。</p>
+      </div>
+      <div class="card">
+        <div class="calendar" id="calendar"></div>
+        <div class="callout day-detail" id="dayDetail" aria-live="polite"></div>
+        <div class="card completion-card" id="finalDayVideoBlock" hidden>
+          <div class="completion-head">
+            <div><div class="kicker">FINAL DAY VIDEO</div><h3>修了お疲れさまでした。産業医面談に向けて</h3></div>
+            <span class="tag tag-green">最終日の最後に視聴</span>
+          </div>
+          <p class="lead">Day 14のレポート確認と共有範囲の選択を終えたら、最後にご覧ください。休んだ日があっても失敗とは扱わず、ここまでの記録を産業医面談の相談材料に整えます。</p>
+          <ul class="completion-points">
+            <li>修了は、医学的な証明や復職可否の判定ではありません。</li>
+            <li>できたこと・難しかったこと・相談したいことを面談用に確認します。</li>
+            <li>自動再生はしません。途中で休む、後で見ることもできます。</li>
+          </ul>
+          <button class="btn btn-teal" id="unlockFinalVideo" type="button">本人確認を終えたので、動画を見る</button>
+          <p class="status-line" id="finalDayVideoStatus" role="status">ボタンを押すまで動画は読み込みません。</p>
+          <div class="completion-player" id="finalDayPlayer" hidden>
+            <video id="finalDayVideo" controls preload="metadata" playsinline
+              data-src="videos/V10_修了お疲れさまでした_産業医面談に向けて_Drやまねことゆきちゃん.mp4"
+              poster="videos/V10_修了と産業医面談の準備_サムネイル.png"
+              aria-describedby="finalDayVideoStatus"></video>
+          </div>
+          <div class="reflection-test" id="finalDayReflection"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="checkin">
+      <div class="section-head">
+        <div class="kicker">W03｜AI CHECK-IN</div>
+        <h2>朝のAIチェックイン</h2>
+        <p class="lead">AIが一問ずつ伺い、日々の体調・睡眠・活動予定を「本人申告の記録案」にまとめます。医学的な症状評価や復職可否判定は行いません。</p>
+      </div>
+      <div class="hyb-note"><strong>約1〜2分</strong><span>すべての質問で「記録しない」を選べます。会話全文は保存せず、本人が確認した要約だけを保存します。</span></div>
+      <div class="grid grid-2">
+        <article class="card checkin-chat-card" aria-labelledby="checkinChatTitle">
+          <div class="checkin-chat-head">
+            <div><h3 id="checkinChatTitle">AIとの会話デモ</h3><p>定型ロジックによるデモ／外部送信なし</p></div>
+            <span class="checkin-progress" id="checkinProgress" role="status" aria-live="polite">1 / 6</span>
+          </div>
+          <div class="checkin-chat-log" id="checkinChatLog" role="log" aria-live="polite" aria-relevant="additions"></div>
+          <div class="checkin-answer-area" id="checkinAnswerArea">
+            <form id="aiCheckinForm" novalidate>
+              <div id="checkinInputHost"></div>
+              <div class="checkin-controls">
+                <button class="btn btn-teal btn-small" id="checkinSubmit" type="submit">回答を送る</button>
+                <button class="btn btn-outline btn-small" id="checkinSkip" type="button">記録しない</button>
+                <button class="btn btn-outline btn-small" id="checkinStop" type="button">今日はここで終了</button>
+              </div>
+              <p class="checkin-error" id="checkinInputError" role="alert"></p>
+            </form>
+            <button class="btn btn-outline btn-small" id="checkinRestart" type="button" hidden>会話をやり直す（保存済み記録は残す）</button>
+          </div>
+        </article>
+        <div class="card">
+          <h3>AIが作る「今日の記録案」</h3>
+          <p class="lead">会話内容を短く整理します。保存前に本人が確認し、必要なら会話をやり直して修正できます。</p>
+          <div class="checkin-summary-empty" id="checkinSummaryEmpty">会話が終わると、ここに記録案が表示されます。</div>
+          <div class="output" id="checkinOutput" hidden>
+            <label for="checkinSummaryEdit">本人確認用の記録案</label>
+            <textarea class="checkin-summary-editor" id="checkinSummaryEdit" readonly></textarea>
+            <p class="helper">項目を修正する場合は「会話をやり直して修正」を選んでください。これは本人申告の整理であり、AIによる病状評価・就労能力評価・復職可否判定ではありません。</p>
+            <div class="checkin-summary-actions">
+              <button class="btn btn-teal btn-small" id="confirmCheckin" type="button">この内容で記録</button>
+              <button class="btn btn-outline btn-small" id="reviseCheckin" type="button">会話をやり直して修正</button>
+              <button class="btn btn-outline btn-small" id="discardCheckin" type="button">保存せず終了</button>
+            </div>
+          </div>
+          <p class="status-line" id="checkinSaveStatus" role="status" aria-live="polite"></p>
+          <div class="checkin-storage-note">確認済み記録はこのブラウザ内だけに保存されます。外部には送信しません。共用端末では保存しないでください。</div>
+          <div class="callout callout-warning" style="margin-top:18px"><p>体調の悪化が気になる場合は、会話による判定を続けず、<a href="#safety">体調変化時の安全導線</a>をご利用ください。</p></div>
+        </div>
+      </div>
+      <div class="card checkin-history" aria-labelledby="checkinHistoryTitle">
+        <div class="checkin-history-head">
+          <div><h3 id="checkinHistoryTitle">最近の確認済み記録</h3><p>実際に保存された記録だけから傾向を整理します。データが足りないときは推測しません。</p></div>
+          <button class="btn btn-outline btn-small" id="clearCheckinHistory" type="button">このブラウザの体調・睡眠記録を消去</button>
+        </div>
+        <div class="checkin-history-metrics">
+          <div class="checkin-history-metric"><span>確認済み記録</span><strong id="checkinHistoryCount">0回</strong></div>
+          <div class="checkin-history-metric"><span>記録済みの平均睡眠時間</span><strong id="checkinAverageSleep">—</strong></div>
+          <div class="checkin-history-metric"><span>最新の進め方</span><strong id="checkinLatestPace">—</strong></div>
+        </div>
+        <p class="status-line" id="checkinTrendText">傾向を整理するための記録はまだありません。</p>
+        <div class="checkin-history-table-wrap">
+          <table class="checkin-history-table">
+            <caption>このブラウザに保存した直近7回の本人確認済み記録</caption>
+            <thead><tr><th scope="col">日付</th><th scope="col">起床</th><th scope="col">睡眠</th><th scope="col">眠り</th><th scope="col">今朝の体調</th><th scope="col">進め方</th></tr></thead>
+            <tbody id="checkinHistoryBody"><tr><td colspan="6">保存済みの記録はありません。</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="lecture">
+      <div class="section-head">
+        <div class="kicker">10-VIDEO LEARNING</div>
+        <h2>座学（疾病理解と認知行動療法）</h2>
+        <p class="lead">Dr.やまねことゆきちゃんによる10本の教育動画を視聴できるライブラリーです。一般教育であり、個別の診断・治療・心理療法ではありません。</p>
+      </div>
+      <div class="lecture-grid">
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V00｜利用開始・安全説明</h3><p>安心して使うために最初に知ってほしいこと</p><button class="episode-button" type="button" data-video="videos/V00_利用開始・安全説明_Drやまねことゆきちゃん.mp4" data-title="V00｜利用開始・安全説明">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V01｜職場復帰までの流れ</h3><p>本人・主治医・産業医・会社の役割</p><button class="episode-button" type="button" data-video="videos/V01_職場復帰までの流れ_Drやまねことゆきちゃん.mp4" data-title="V01｜職場復帰までの流れ">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V02｜うつ病を正しく知る</h3><p>こころ・からだ・考え方に現れる変化</p><button class="episode-button" type="button" data-video="videos/V02_うつ病を正しく知る_Drやまねことゆきちゃん.mp4" data-title="V02｜うつ病を正しく知る">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V03｜適応反応と不安を理解する</h3><p>ストレスに対する反応を整理する</p><button class="episode-button" type="button" data-video="videos/V03_適応反応と不安を理解する_Drやまねことゆきちゃん.mp4" data-title="V03｜適応反応と不安を理解する">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V04｜睡眠・活動・疲労の記録方法</h3><p>採点ではなく変化を振り返る記録</p><button class="episode-button" type="button" data-video="videos/V04_睡眠・活動・疲労の記録方法_Drやまねことゆきちゃん.mp4" data-title="V04｜睡眠・活動・疲労の記録方法">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V05｜不調の早期サインと相談行動</h3><p>普段との違いに気づき、早めに相談する</p><button class="episode-button" type="button" data-video="videos/V05_不調の早期サインと相談行動_Drやまねことゆきちゃん.mp4" data-title="V05｜不調の早期サインと相談行動">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V06｜復職後の配慮を言葉にする</h3><p>面談で相談したい働き方を具体化する</p><button class="episode-button" type="button" data-video="videos/V06_復職後の配慮を言葉にする_Drやまねことゆきちゃん.mp4" data-title="V06｜復職後の配慮を言葉にする">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V07｜レポート確認と情報共有</h3><p>本人が内容と共有範囲を最終確認する</p><button class="episode-button" type="button" data-video="videos/V07_レポート確認と情報共有_Drやまねことゆきちゃん.mp4" data-title="V07｜レポート確認と情報共有">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V08｜アサーションスキル</h3><p>我慢でも言い負かすことでもない、相談につながる伝え方</p><button class="episode-button" type="button" data-video="videos/V08_アサーションスキル_Drやまねことゆきちゃん.mp4" data-title="V08｜アサーションスキル">この動画を見る</button></article>
+        <article class="episode-card"><span class="tag tag-green">完成・再生可</span><h3>V09｜認知行動療法の考え方</h3><p>事実と解釈を分け、0か100以外の見方を探す</p><button class="episode-button" type="button" data-video="videos/V09_認知行動療法_思考の柔軟性_Drやまねことゆきちゃん.mp4" data-title="V09｜認知行動療法の考え方・思考の柔軟性">この動画を見る</button></article>
+      </div>
+      <div class="card lecture-player">
+        <h3 id="lectureTitle">動画を選択してください</h3>
+        <video id="lectureVideo" controls preload="metadata" playsinline aria-describedby="lectureStatus"></video>
+        <p class="status-line" id="lectureStatus">V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。</p>
+        <div class="reflection-test" id="lectureReflection" hidden></div>
+      </div>
+      <div class="callout callout-warning" style="margin-top:18px"><p><strong>学びを練習へ：</strong>認知行動療法（CBT）は下の「出来事・考え・反応・行動」を整理する基礎ワークで、アサーションスキルは「状況・影響・希望・調整案」を言葉にするワークで体験できます。いずれも一般的な学習・演習であり、治療や能力評価ではありません。</p></div>
+    </section>
+
+    <section id="work">
+      <div class="section-head">
+        <div class="kicker">6 INTERACTIVE WORKS</div>
+        <h2>模擬ワークの実演デモ</h2>
+        <p class="lead">6種類の画面を実際に操作できます。結果を能力検査や復職判定に使わず、実施時間・休憩・本人の感想を記録します。</p>
+      </div>
+      <div class="card">
+        <div class="work-tabs" role="tablist" aria-label="模擬ワークを選択">
+          <button class="work-tab active" type="button" data-work="summary" role="tab" aria-selected="true">メール要約</button>
+          <button class="work-tab" type="button" data-work="data" role="tab" aria-selected="false">データ入力</button>
+          <button class="work-tab" type="button" data-work="memo" role="tab" aria-selected="false">読書とメモ（任意）</button>
+          <button class="work-tab" type="button" data-work="email" role="tab" aria-selected="false">架空のメール整理</button>
+          <button class="work-tab" type="button" data-work="cbt" role="tab" aria-selected="false">認知行動療法（CBT）の基礎</button>
+          <button class="work-tab" type="button" data-work="assertion" role="tab" aria-selected="false">アサーションスキルの練習</button>
+        </div>
+
+        <div class="work-demo" id="demo-summary" data-work-panel="summary">
+          <h3>一般業務メールの要約デモ</h3>
+          <p class="lead" style="margin-bottom:12px">下の社内メールから、依頼内容・期限・対応方法を読み取り、要点を短くまとめます。</p>
+          <div class="task-source" aria-label="要約する一般業務メール">
+            <p><strong>件名：月例会議資料の更新依頼</strong></p>
+            <p><strong>差出人：</strong>営業企画部 佐藤</p>
+            <p>各位</p>
+            <p>来週火曜日10時からの月例会議に向け、担当資料を更新してください。売上実績を6月確定値に差し替え、施策別の進捗を1枚追加してください。修正版は今週金曜日15時までに共有フォルダへ保存し、完了後、このメールに返信してください。不明点は木曜日正午までに営業企画部の佐藤へ連絡してください。</p>
+          </div>
+          <div class="field" style="margin-top:12px"><label for="summaryText">このメールを80字以内を目安に要約</label><textarea id="summaryText" placeholder="依頼内容・期限・対応方法を簡潔に入力"></textarea></div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="summary">メールの要約を記録する</button>
+          <div class="output demo-output" id="summaryResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-data" data-work-panel="data" hidden>
+          <h3>データ入力デモ</h3>
+          <div class="task-source"><p><strong>入力元伝票：</strong>日付 7月10日／社員コード A-104／区分 交通費／金額 1,280円</p></div>
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label for="entryDate">日付</label><input id="entryDate" placeholder="例：7/10"></div>
+            <div class="field"><label for="entryCode">社員コード</label><input id="entryCode" placeholder="例：A-104"></div>
+            <div class="field"><label for="entryType">区分</label><select id="entryType"><option>選択してください</option><option>交通費</option><option>書籍費</option><option>郵送費</option></select></div>
+            <div class="field"><label for="entryAmount">金額</label><input id="entryAmount" inputmode="numeric" placeholder="数字のみ"></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="data">入力内容を照合する</button>
+          <div class="output demo-output" id="dataResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-memo" data-work-panel="memo" hidden>
+          <h3>読書とメモのデモ <span class="tag">任意</span></h3>
+          <p class="lead">読書自体も任意です。読んだ日は、本のタイトルを1日2冊まで記録できます。1冊だけの入力や、タイトル・メモを空欄のままでも構いません。</p>
+          <div class="callout" style="margin:12px 0"><p><strong>本選びのおすすめ：</strong>メンタルヘルス不調に関する理解を深める本や、復職後を見据えた業務に関連する本なども選択肢です。体調や興味に合わせ、無理のない分量で構いません。</p></div>
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label for="memoBook1">本のタイトル（1冊目） <span class="helper">任意</span></label><input id="memoBook1" placeholder="読んだ本のタイトル"></div>
+            <div class="field"><label for="memoBook2">本のタイトル（2冊目） <span class="helper">任意</span></label><input id="memoBook2" placeholder="2冊目がある場合のみ"></div>
+          </div>
+          <div class="assertion-grid" style="margin-top:12px">
+            <div class="field"><label for="memoPoint">要点・印象 <span class="helper">任意</span></label><textarea id="memoPoint" placeholder="大切だと思った点や印象"></textarea></div>
+            <div class="field"><label for="memoAction">次に試すこと <span class="helper">任意</span></label><textarea id="memoAction" placeholder="自分で試したいこと"></textarea></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="memo">メモを整理する</button>
+          <div class="output demo-output" id="memoResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-email" data-work-panel="email" hidden>
+          <h3>架空のメール整理デモ</h3>
+          <p class="lead" style="margin-bottom:12px">3通を「今日対応」「今週対応」「参考」に分類してください。正解を競う課題ではありません。</p>
+          <div class="email-list">
+            <div class="email-item"><span><strong>件名：明日10時の面談確認</strong><br><small>出席可否を本日17時までに返信してください。</small></span><select class="email-category" aria-label="明日10時の面談確認の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+            <div class="email-item"><span><strong>件名：来月の社内研修案内</strong><br><small>申込期限は今週金曜日です。</small></span><select class="email-category" aria-label="来月の社内研修案内の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+            <div class="email-item"><span><strong>件名：社内報7月号</strong><br><small>新しい制度の紹介を掲載しています。</small></span><select class="email-category" aria-label="社内報7月号の分類"><option>未分類</option><option>今日対応</option><option>今週対応</option><option>参考</option></select></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="email">分類結果を記録する</button>
+          <div class="output demo-output" id="emailResult" hidden></div>
+        </div>
+
+        <div class="work-demo" id="demo-cbt" data-work-panel="cbt" hidden>
+          <h3>認知行動療法（CBT）の基礎ワーク</h3>
+          <p class="lead">架空の場面を使い、「出来事」と、そのときの「考え・気分や身体の反応・行動」を分けて整理し、別の見方も検討する学習です。考えを無理に前向きに変えるものではありません。</p>
+          <div class="field" style="margin:12px 0"><label for="cbtEvent">1. 出来事（事実だけ）</label><textarea id="cbtEvent">復職後の会議で、提出した資料について上司から修正点を3つ伝えられた。</textarea></div>
+          <div class="assertion-grid">
+            <div class="field"><label for="cbtThought">2. 浮かんだ考え</label><textarea id="cbtThought">また失敗した。周囲に迷惑をかけているかもしれない。</textarea></div>
+            <div class="field"><label for="cbtResponse">3. 気分・身体の反応</label><textarea id="cbtResponse">不安が強くなり、肩に力が入った。</textarea></div>
+            <div class="field"><label for="cbtAction">4. その後の行動</label><textarea id="cbtAction">質問せずに席へ戻り、一人で抱え込んだ。</textarea></div>
+            <div class="field"><label for="cbtAlternative">5. 別の見方・次に試すこと</label><textarea id="cbtAlternative">修正点が具体的に分かったとも考えられる。優先順位を確認して、一つずつ対応する。</textarea></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="cbt">整理メモを作る</button>
+          <div class="output demo-output" id="cbtResult" hidden></div>
+          <div class="callout callout-warning" style="margin-top:14px"><p>治療としての認知行動療法ではなく、架空事例を用いた一般的な学習・演習です。つらさを感じた場合は中断し、主治医等に相談してください。</p></div>
+        </div>
+
+        <div class="work-demo" id="demo-assertion" data-work-panel="assertion" hidden>
+          <h3>アサーションスキルの練習</h3>
+          <p class="lead">自分と相手の双方を尊重し、「状況 → 自分への影響 → 希望 → 調整案」の順に相談文を作る練習です。相手に要求を必ず受け入れさせる方法ではありません。</p>
+          <div class="field" style="margin:12px 0"><label for="assertScenario">練習する場面</label><select id="assertScenario"><option>復職直後に急な残業を頼まれた</option><option>複数の締切が同時に重なった</option><option>休憩を取りたいが言い出しにくい</option></select></div>
+          <div class="assertion-grid">
+            <div class="field"><label for="assertFact">1. 状況を事実で伝える</label><input id="assertFact" value="今日は予定外の残業の依頼がありました"></div>
+            <div class="field"><label for="assertImpact">2. 自分への影響を伝える</label><input id="assertImpact" value="復職直後で、疲労が翌日に残ることが心配です"></div>
+            <div class="field"><label for="assertWish">3. 希望を具体的に伝える</label><input id="assertWish" value="今日は定時で退勤させていただきたいです"></div>
+            <div class="field"><label for="assertOption">4. 調整案を添える</label><input id="assertOption" value="必要な作業は明日の午前に優先して対応します"></div>
+          </div>
+          <button class="btn btn-teal btn-small demo-action" type="button" data-action="assertion">相談文を作る</button>
+          <div class="output demo-output" id="assertionResult" hidden></div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <form class="card" id="workForm">
+          <input id="taskType" type="hidden" value="一般業務メールの要約">
+          <h3>実施後の共通記録</h3>
+          <div class="form-grid">
+            <div class="field"><label for="duration">実施時間</label><select id="duration"><option>15分</option><option>30分</option><option selected>45分</option><option>60分</option><option>90分</option></select></div>
+            <div class="field"><label for="breaks">休憩</label><select id="breaks"><option>なし</option><option selected>1回</option><option>2回以上</option></select></div>
+            <div class="field"><label for="completion">実施状況</label><select id="completion"><option>予定した範囲まで実施</option><option>途中まで実施</option><option>中断</option><option>未実施</option></select></div>
+            <div class="field full"><label for="fatigue">終了時の疲労（本人評価）</label><select id="fatigue"><option>1：ほとんどない</option><option>2：軽い</option><option selected>3：中程度</option><option>4：強い</option><option>5：非常に強い</option><option>記録しない</option></select></div>
+            <div class="field full"><label for="workNote">気づいたこと</label><textarea id="workNote">30分を過ぎた頃から集中しづらくなったため、5分休憩した。</textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-teal" type="submit">実施記録を作る</button></div>
+        </form>
+        <div class="card">
+          <h3>記録と解釈を分ける</h3>
+          <div class="output" id="workOutput" hidden></div>
+          <div class="callout" style="margin-top:18px"><p><strong>翌朝に確認：</strong>疲労が残ったかを本人が記録します。AIが「回復した／していない」と医学的に確定しません。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="games">
+      <div class="section-head">
+        <div class="kicker">DAILY WORK GAMES</div>
+        <h2>連日楽しめる3つの作業ゲーム</h2>
+        <p class="lead">一般業務をイメージした短いゲームです。1セット5問を自分のペースで行い、日別スコアと累積スコアの変化を確認できます。</p>
+      </div>
+
+      <div class="game-guidance">
+        <div class="callout callout-warning">
+          <p><strong>時間の注意：</strong>1日1ゲームにつき約10分、5～15分の範囲を目安にしてください。3ゲームすべて行う場合も、最大15分×3ゲーム＋ゲーム間の小休止5分×2回＝55分とし、合計1時間を超えないようにします。疲れた日は1ゲームだけ、または途中終了で構いません。時間を競うゲームではないため、カウントダウンや時間切れによる減点は設けません。</p>
+          <p class="helper">時間設計の参考：<a href="https://www.mhlw.go.jp/web/t_doc_keyword?dataId=00tc4418&amp;dataType=1&amp;keyword=%E6%83%85%E5%A0%B1%E6%A9%9F%E5%99%A8%E4%BD%9C%E6%A5%AD&amp;mode=0&amp;pageNo=1" target="_blank" rel="noopener">厚生労働省「情報機器作業における労働衛生管理のためのガイドライン」</a></p>
+        </div>
+        <div class="callout">
+          <p><strong>スコアの見方：</strong>各ゲームは5問・100点満点で、速度点や休憩による減点はありません。ゲームスコアとは別に、各ゲームのその日の最高点へ1日1回10ポイントを加えた「累積練習ポイント」を表示し、続けた分が積み上がるようにします。繰り返しによる慣れでも得点は上がるため、回復度、就労能力、復職可否、再休職リスクの評価には使いません。日ごとの変動も自然なものとして扱います。</p>
+          <p class="helper">履歴はデモとしてこのブラウザ内だけに保存し、外部送信や会社・支援者への自動共有は行いません。ブラウザのデータを消去すると履歴も消えます。</p>
+        </div>
+      </div>
+
+      <div class="card game-history">
+        <div class="game-history-head">
+          <div>
+            <h3>日別スコアと累積練習ポイント</h3>
+            <p id="gameHistoryCaption">まだ記録がないため、累積練習ポイントが上がる表示例を示しています。</p>
+          </div>
+          <button class="btn btn-outline btn-small" id="clearGameHistory" type="button">このブラウザのゲーム履歴を消去</button>
+        </div>
+        <div class="game-score-summary">
+          <div class="game-score-metric"><span>練習日数</span><strong id="gamePracticeDays">0日</strong></div>
+          <div class="game-score-metric"><span>今日の合計</span><strong id="gameTodayTotal">— / 300</strong></div>
+          <div class="game-score-metric"><span>累積練習ポイント</span><strong id="gameCumulativeScore">0</strong></div>
+        </div>
+        <div class="game-score-chart" id="gameScoreChart" role="img" aria-label="累積練習ポイントの推移"></div>
+        <div class="game-score-table-wrap">
+          <table class="mini-table game-score-table">
+            <caption>直近7日の日別ゲームスコアと累積練習ポイント</caption>
+            <thead><tr><th scope="col">日</th><th scope="col">メール仕分け</th><th scope="col">データ照合</th><th scope="col">段取り</th><th scope="col">1日ゲーム点</th><th scope="col">累積ポイント</th></tr></thead>
+            <tbody id="gameScoreRows"></tbody>
+          </table>
+        </div>
+        <p class="status-line" id="gameStorageStatus" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <div class="game-tabs" role="tablist" aria-label="作業ゲームを選択">
+          <button class="game-tab active" id="game-tab-mail" type="button" role="tab" aria-selected="true" aria-controls="game-panel-mail" data-game-tab="mail">1｜依頼メール仕分け</button>
+          <button class="game-tab" id="game-tab-check" type="button" role="tab" aria-selected="false" aria-controls="game-panel-check" data-game-tab="check" tabindex="-1">2｜データ照合</button>
+          <button class="game-tab" id="game-tab-order" type="button" role="tab" aria-selected="false" aria-controls="game-panel-order" data-game-tab="order" tabindex="-1">3｜段取りパズル</button>
+        </div>
+
+        <div class="game-panel" id="game-panel-mail" role="tabpanel" aria-labelledby="game-tab-mail" data-game-panel="mail" tabindex="0">
+          <div class="game-panel-head">
+            <div><h3>依頼メール仕分け</h3><p>期限が明記された架空メールを「今日対応」「今週対応」「参考」に分けます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="mail">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="mail" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="mail" hidden>
+            <div class="game-progress" data-game-progress="mail"></div>
+            <div class="game-question"><h4 id="game-question-title-mail" data-game-question-title="mail"></h4><p id="game-question-detail-mail" data-game-question-detail="mail"></p></div>
+            <div class="game-choices" data-game-choices="mail" role="group" aria-labelledby="game-question-title-mail game-question-detail-mail"></div>
+            <p class="game-feedback" data-game-feedback="mail" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="mail" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="mail" role="status" aria-live="polite" hidden></div>
+        </div>
+
+        <div class="game-panel" id="game-panel-check" role="tabpanel" aria-labelledby="game-tab-check" data-game-panel="check" tabindex="0" hidden>
+          <div class="game-panel-head">
+            <div><h3>データ照合チェック</h3><p>入力元と登録データを見比べ、「一致」か「要確認」かを選びます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="check">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="check" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="check" hidden>
+            <div class="game-progress" data-game-progress="check"></div>
+            <div class="game-question"><h4 id="game-question-title-check" data-game-question-title="check"></h4><p id="game-question-detail-check" data-game-question-detail="check"></p></div>
+            <div class="game-choices" data-game-choices="check" role="group" aria-labelledby="game-question-title-check game-question-detail-check"></div>
+            <p class="game-feedback" data-game-feedback="check" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="check" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="check" role="status" aria-live="polite" hidden></div>
+        </div>
+
+        <div class="game-panel" id="game-panel-order" role="tabpanel" aria-labelledby="game-tab-order" data-game-panel="order" tabindex="0" hidden>
+          <div class="game-panel-head">
+            <div><h3>今日の段取りパズル</h3><p>画面に書かれた期限や確認条件を読み、次に行う手順を選びます。</p></div>
+            <span class="game-time-chip">約10分｜5～15分</span>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-small" type="button" data-game-start="order">ゲームを開始</button>
+            <button class="btn btn-outline btn-small" type="button" data-game-stop="order" hidden>今日はここで終了</button>
+          </div>
+          <div class="game-play" data-game-play="order" hidden>
+            <div class="game-progress" data-game-progress="order"></div>
+            <div class="game-question"><h4 id="game-question-title-order" data-game-question-title="order"></h4><p id="game-question-detail-order" data-game-question-detail="order"></p></div>
+            <div class="game-choices" data-game-choices="order" role="group" aria-labelledby="game-question-title-order game-question-detail-order"></div>
+            <p class="game-feedback" data-game-feedback="order" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-small" type="button" data-game-next="order" hidden>次の問題へ</button>
+          </div>
+          <div class="output" data-game-result="order" role="status" aria-live="polite" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="checkout">
+      <div class="section-head">
+        <div class="kicker">W03｜AI CHECK-OUT</div>
+        <h2>夕方のAIチェックアウト</h2>
+        <p class="lead">今日の主な活動・実施状況・活動時間・休憩・チェックアウト時の疲れ・本人の気づきをAIが一問ずつ伺い、「本人申告の振り返り案」にまとめます。医学的な症状評価や復職可否判定は行いません。</p>
+      </div>
+      <div class="hyb-note"><strong>約1〜2分</strong><span>未実施や途中終了も失敗扱いにしません。会話全文は保存せず、本人が確認した振り返りだけを保存します。</span></div>
+      <div class="grid grid-2">
+        <article class="card checkin-chat-card" aria-labelledby="checkoutChatTitle">
+          <div class="checkin-chat-head">
+            <div><h3 id="checkoutChatTitle">AIとの振り返り会話デモ</h3><p>定型ロジックによるデモ／外部送信なし</p></div>
+            <span class="checkin-progress" id="checkoutProgress" role="status" aria-live="polite">1 / 6</span>
+          </div>
+          <div class="checkin-chat-log" id="checkoutChatLog" role="log" aria-live="polite" aria-relevant="additions"></div>
+          <div class="checkin-answer-area">
+            <form id="aiCheckoutForm" novalidate>
+              <div id="checkoutInputHost"></div>
+              <div class="checkin-controls">
+                <button class="btn btn-teal btn-small" id="checkoutSubmit" type="submit">回答を送る</button>
+                <button class="btn btn-outline btn-small" id="checkoutSkip" type="button">記録しない</button>
+                <button class="btn btn-outline btn-small" id="checkoutStop" type="button">今日はここで終了</button>
+              </div>
+              <p class="checkin-error" id="checkoutInputError" role="alert"></p>
+            </form>
+            <button class="btn btn-outline btn-small" id="checkoutRestart" type="button" hidden>会話をやり直す（保存済み記録は残す）</button>
+          </div>
+        </article>
+        <div class="card">
+          <h3>AIが作る「今日の振り返り案」</h3>
+          <p class="lead">会話内容を短く整理します。保存前に本人が確認し、必要なら会話をやり直して修正できます。</p>
+          <div class="checkin-summary-empty" id="checkoutSummaryEmpty">会話が終わると、ここに振り返り案が表示されます。</div>
+          <div class="output" id="checkoutOutput" hidden>
+            <label for="checkoutSummaryEdit">本人確認用の振り返り案</label>
+            <textarea class="checkin-summary-editor" id="checkoutSummaryEdit" readonly></textarea>
+            <p class="helper">項目を修正する場合は「会話をやり直して修正」を選んでください。これは本人申告の整理であり、AIによる病状評価・就労能力評価・復職可否判定ではありません。</p>
+            <div class="checkin-summary-actions">
+              <button class="btn btn-teal btn-small" id="confirmCheckout" type="button">この内容で記録</button>
+              <button class="btn btn-outline btn-small" id="reviseCheckout" type="button">会話をやり直して修正</button>
+              <button class="btn btn-outline btn-small" id="discardCheckout" type="button">保存せず終了</button>
+            </div>
+          </div>
+          <p class="status-line" id="checkoutSaveStatus" role="status" aria-live="polite"></p>
+          <div class="checkin-storage-note">確認済み記録はこのブラウザ内だけに保存されます。外部への送信や会社・支援者への自動共有は行いません。</div>
+          <div class="callout callout-warning" style="margin-top:18px"><p>強い疲れや体調変化が気になる場合は、会話による判定を続けず、<a href="#safety">体調変化時の安全導線</a>をご利用ください。</p></div>
+        </div>
+      </div>
+      <div class="card checkin-history" aria-labelledby="checkoutHistoryTitle">
+        <div class="checkin-history-head">
+          <div><h3 id="checkoutHistoryTitle">最近の確認済みチェックアウト</h3><p>実際に保存された記録だけを並べます。未実施・途中終了を減点や失敗として扱いません。</p></div>
+          <button class="btn btn-outline btn-small" id="clearCheckoutHistory" type="button">このブラウザの夕方記録を消去</button>
+        </div>
+        <div class="checkin-history-metrics">
+          <div class="checkin-history-metric"><span>確認済みチェックアウト</span><strong id="checkoutHistoryCount">0回</strong></div>
+          <div class="checkin-history-metric"><span>実施日の平均活動時間</span><strong id="checkoutAverageDuration">—</strong></div>
+          <div class="checkin-history-metric"><span>最新のチェックアウト時の疲れ</span><strong id="checkoutLatestFatigue">—</strong></div>
+        </div>
+        <p class="status-line" id="checkoutTrendText">振り返りを整理するための記録はまだありません。</p>
+        <div class="checkin-history-table-wrap">
+          <table class="checkin-history-table">
+            <caption>このブラウザに保存した直近7回の本人確認済みチェックアウト</caption>
+            <thead><tr><th scope="col">日付</th><th scope="col">主な活動</th><th scope="col">実施状況</th><th scope="col">時間</th><th scope="col">休憩</th><th scope="col">疲れ（本人評価）</th></tr></thead>
+            <tbody id="checkoutHistoryBody"><tr><td colspan="6">保存済みの夕方記録はありません。</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="section-head">
+        <div class="kicker">SAFETY ROUTING</div>
+        <h2>体調変化時の安全導線デモ</h2>
+        <p class="lead">臨床的な危険度をAIが判定するのではなく、本人の明示的な申告を契機に定型画面へ切り替えます。</p>
+      </div>
+      <div class="card">
+        <div class="route-buttons">
+          <button class="route" type="button" data-route="1">少し疲れたので負荷を下げたい</button>
+          <button class="route" type="button" data-route="2">体調が悪化した・医療者に相談したい</button>
+          <button class="route" type="button" data-route="3">今すぐ自分の安全が心配</button>
+        </div>
+        <div class="callout route-result" id="routeResult" data-level="1" aria-live="assertive"><p>上の申告例を選ぶと、安全画面の内容が表示されます。</p></div>
+      </div>
+    </section>
+
+    <section id="report">
+      <div class="section-head">
+        <div class="kicker">DAY 14｜REPORT</div>
+        <h2>本人が共有項目を選ぶ復職準備レポート</h2>
+        <p class="lead">下のスイッチを切り替えると、レポートの表示内容が変わります。</p>
+      </div>
+      <div class="grid grid-2 report-layout">
+        <div class="card share-panel">
+          <h3>共有範囲</h3>
+          <p class="lead">デモでは産業医共有用を想定しています。本人は共有前に修正・削除できます。</p>
+          <div class="share-controls">
+            <div class="share-row"><span><strong>生活リズムの本人申告</strong><br><small>起床・就寝・日中活動の要約</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-life" checked aria-label="生活リズムを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>通勤トライアル</strong><br><small>日時・所要時間・本人の感想</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-commute" checked aria-label="通勤トライアルを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>模擬作業の実施記録</strong><br><small>時間・休憩・実施状況</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-work" checked aria-label="模擬作業を共有"><span></span></label></div>
+            <div class="share-row"><span><strong>早期サインと相談行動</strong><br><small>本人が承認した部分のみ</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-signs" checked aria-label="早期サインを共有"><span></span></label></div>
+            <div class="share-row"><span><strong>配慮の相談候補</strong><br><small>会社に必ず認められる要求ではありません</small></span><label class="switch"><input class="share-toggle" type="checkbox" data-target="r-support" checked aria-label="配慮候補を共有"><span></span></label></div>
+          </div>
+          <div class="callout callout-warning"><p>病名、自由対話全文、私生活上の事情、日次気分スコアは標準共有しません。</p></div>
+          <div style="margin-top:16px"><button class="btn btn-outline" type="button" onclick="window.print()">レポートを印刷プレビュー</button></div>
+        </div>
+
+        <article class="report" aria-label="復職準備レポートのサンプル">
+          <div class="report-head">
+            <h3>復職準備レポート</h3>
+            <div class="report-meta">本人確認済み（サンプル）｜記録期間 Day 1–14｜共有先：産業医</div>
+          </div>
+          <div class="report-section"><h4>1. この復職 AI Ready（フクショク アイ レディ）を実践した感想と、現時点での復職意欲について</h4><p><span class="data-label">本人記載</span>2週間の記録を通じて、生活リズムと疲労の変化を振り返ることができた。現時点では復職したい気持ちはあるが、業務量や勤務時間について産業医や上司と相談しながら段階的に進めたい。</p></div>
+          <div class="report-section" id="r-life"><h4>2. 生活リズム</h4><p><span class="data-label">本人申告</span>Week 2は勤務日に近い時刻で起床した日が多かった。睡眠には日ごとのばらつきがあった。</p></div>
+          <div class="report-section" id="r-commute"><h4>3. 通勤トライアル</h4><p><span class="data-label">課題実施記録</span>2回実施。所要時間48分・51分。本人コメント：「2回目は混雑時間帯を試し、帰宅後に休憩した」。</p></div>
+          <div class="report-section" id="r-work"><h4>4. 模擬作業</h4><p><span class="data-label">課題実施記録</span>業務メール要約・データ入力を30～90分で実施。休憩を入れると続けやすいとの本人申告あり。</p></div>
+          <div class="report-section" id="r-signs"><h4>5. 早期サインと相談行動</h4><p><span class="data-label">本人承認</span>睡眠不足が続く、メール返信を後回しにする。変化が続いた場合は、上司または産業医へ早めに相談する。</p></div>
+          <div class="report-section" id="r-support"><h4>6. 配慮の相談候補</h4><p><span class="data-label">本人承認</span>当面の残業制限、業務量の段階調整、週1回の短いフォロー面談。</p></div>
+          <div class="report-limit"><strong>本資料の限界：</strong>本人の自己申告とデモ上の課題実施記録をまとめた補助情報です。医学的所見、就労能力の証明、復職可否判定、再休職リスク予測ではありません。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="certificate">
+      <div class="section-head">
+        <div class="kicker">DIGITAL CERTIFICATE｜CONCEPT DEMO</div>
+        <h2>受講証明（TuringCerts）</h2>
+        <p class="lead">プログラム修了後、TuringCertsによる本人保有のデジタル受講証明を得られ、提示先ごとに開示範囲を選べる構想デモです。TuringCertsとの実連携は未実装です。</p>
+      </div>
+      <div class="certificate-shell">
+        <div class="card">
+          <h3>開示レベルを選択</h3>
+          <div class="level-buttons">
+            <button class="level-button active" type="button" data-cert-level="1">レベル1｜受講事実</button>
+            <button class="level-button" type="button" data-cert-level="2">レベル2｜コース・期間</button>
+            <button class="level-button" type="button" data-cert-level="3">レベル3｜実施記録</button>
+          </div>
+          <div class="callout"><p><strong>本人が選択：</strong>会社や支援者が一方的に開示範囲を広げる設計ではありません。</p></div>
+        </div>
+        <article class="report" aria-label="TuringCerts受講証明の構想サンプル">
+          <div class="report-head"><h3>復職 AI Ready（フクショク アイ レディ） 受講証明</h3><div class="report-meta">TuringCerts連携・デモ構想｜本人保有</div></div>
+          <div class="report-section" style="display:flex;gap:16px;align-items:center"><div class="cert-qr" aria-label="検証用QRコードのイメージ"></div><p>検証用QRコード（イメージ）<br><span class="helper">提示先は発行者と改ざんの有無を確認する想定です。</span></p></div>
+          <div class="report-section">
+            <table class="cert-table">
+              <tr><th>項目</th><th>内容</th></tr>
+              <tr><td>証明事項</td><td>復職 AI Ready（フクショク アイ レディ）プログラムを受講し、本人確認を終えたこと</td></tr>
+              <tr><td>受講者</td><td>サンプル利用者</td></tr>
+              <tr><td>発行者</td><td>山岸産業医事務所（構想）</td></tr>
+              <tr class="cert-extra cert-l2" hidden><td>受講コース</td><td>標準14日プログラム</td></tr>
+              <tr class="cert-extra cert-l2" hidden><td>受講期間</td><td>2026年7月1日～7月14日（サンプル）</td></tr>
+              <tr class="cert-extra cert-l3" hidden><td>実施記録</td><td>座学視聴、模擬ワーク、通勤トライアルの実施有無（合否・医学評価ではありません）</td></tr>
+              <tr><td>開示範囲</td><td id="certScope">レベル1：受講した事実のみ</td></tr>
+            </table>
+            <button class="btn btn-outline btn-small" id="verifyCert" type="button" style="margin-top:12px">証明の検証デモ</button>
+            <div class="cert-verify" id="certVerifyResult" role="status"></div>
+          </div>
+          <div class="report-limit">受講証明は医学的な回復、就労能力、復職可否、再休職リスクを証明するものではありません。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="disclosure">
+      <div class="section-head">
+        <div class="kicker">PRIVACY BY DESIGN</div>
+        <h2>情報開示範囲の設定 ＋ TuringCerts受講証明</h2>
+        <p class="lead">健康情報を一括共有せず、本人専用、産業医等へ共有可能、会社へ共有可能の3層に分けます。さらに修了後は、本人が保有するTuringCertsによるデジタル受講証明を得られる構想です。</p>
+      </div>
+      <div class="callout" style="margin-bottom:18px"><p><strong>設定できること／得られるもの：</strong>本人が共有する情報と提示先を選び、その選択とは別に、受講した事実を確認できるデジタル受講証明を本人が保有します。<a href="#certificate">TuringCerts受講証明のプレビューを見る</a>（構想・実連携未実装）</p></div>
+      <div class="privacy-diagram">
+        <div class="privacy-col private"><span class="tag">本人専用</span><h3>原則共有しない</h3><ul><li>自由対話全文</li><li>私生活上の事情</li><li>病名・症状の詳細</li><li>主治医への質問下書き</li></ul></div>
+        <div class="privacy-col occupational"><span class="tag tag-green">本人が選択</span><h3>産業医等へ</h3><ul><li>生活・活動の要約</li><li>通勤・模擬作業記録</li><li>相談したい事項</li><li>本人承認済み計画</li></ul></div>
+        <div class="privacy-col company"><span class="tag tag-orange">最小限</span><h3>会社へ</h3><ul><li>配慮の相談候補</li><li>フォロー面談の希望</li><li>本人が選んだ要約</li><li>共有同意の記録</li></ul></div>
+      </div>
+      <form class="card" id="disclosureForm" style="margin-top:18px">
+        <h3>開示プレビューを作る</h3>
+        <div class="field"><label for="disclosureRecipient">提示先</label><select id="disclosureRecipient"><option>産業医等</option><option>会社の人事・上司</option><option>主治医</option></select></div>
+        <div class="disclosure-options">
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="生活・活動の要約" checked><span>生活・活動の要約</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="通勤・模擬ワークの実施記録" checked><span>通勤・模擬ワークの実施記録</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="配慮の相談候補" checked><span>配慮の相談候補</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="病名・症状の詳細"><span>病名・症状の詳細（標準では選択しない）</span></label>
+          <label class="check-row"><input class="disclosure-field" type="checkbox" data-label="自由対話全文"><span>AIとの自由対話全文（標準では選択しない）</span></label>
+        </div>
+        <button class="btn btn-teal btn-small" type="submit" style="margin-top:14px">開示プレビューを更新</button>
+        <div class="output" id="disclosureOutput" hidden></div>
+      </form>
+      <div class="reset-bar"><button class="btn btn-outline btn-small" id="resetDemo" type="button">画面入力を初期化（保存済み履歴は保持）</button></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>復職 AI Ready（フクショク アイ レディ） Hyb（ハイブリッド版）デモ｜山岸産業医事務所／合同会社ヤマユウ</p>
+    <p>本ページは事業計画検討用のプロトタイプです。実利用者を対象とした効果検証済みサービスではありません。</p>
+    <p><a href="https://yamayu-sangyoui-oyama.localinfo.jp/">山岸産業医事務所へ戻る</a>　｜　<a href="https://kokoro.mhlw.go.jp/agency/" target="_blank" rel="noopener">公的な相談窓口案内</a></p>
+  </footer>
+
+  <script>
+    (() => {
+      const ACCESS_CODE = 'sbiu2Ready';
+      const accessGate = document.getElementById('accessGate');
+      const accessCode = document.getElementById('accessCode');
+      const accessGateError = document.getElementById('accessGateError');
+      document.getElementById('accessGateForm').addEventListener('submit', event => {
+        event.preventDefault();
+        if (accessCode.value === ACCESS_CODE) {
+          document.body.classList.remove('locked');
+          accessGate.hidden = true;
+          accessGateError.textContent = '';
+          accessCode.setAttribute('aria-invalid', 'false');
+          document.getElementById('main').setAttribute('tabindex', '-1');
+          document.getElementById('main').focus();
+        } else {
+          accessGateError.textContent = '閲覧コードが違います。もう一度入力してください。';
+          accessCode.setAttribute('aria-invalid', 'true');
+          accessCode.select();
+        }
+      });
+
+      const slides = [...document.querySelectorAll('.slide')];
+      const dots = document.getElementById('slideDots');
+      const count = document.getElementById('videoCount');
+      let slideIndex = 0;
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dots.appendChild(dot);
+      });
+      const renderSlide = () => {
+        slides.forEach((s, i) => s.classList.toggle('active', i === slideIndex));
+        [...dots.children].forEach((d, i) => d.classList.toggle('active', i === slideIndex));
+        count.textContent = `${slideIndex + 1} / ${slides.length}`;
+        document.getElementById('prevSlide').disabled = slideIndex === 0;
+        document.getElementById('nextSlide').textContent = slideIndex === slides.length - 1 ? '最初に戻る' : '次へ →';
+      };
+      document.getElementById('prevSlide').addEventListener('click', () => { slideIndex = Math.max(0, slideIndex - 1); renderSlide(); });
+      document.getElementById('nextSlide').addEventListener('click', () => { slideIndex = slideIndex === slides.length - 1 ? 0 : slideIndex + 1; renderSlide(); });
+      renderSlide();
+
+      const consents = [...document.querySelectorAll('.consent')];
+      const consentButton = document.getElementById('consentButton');
+      const consentStatus = document.getElementById('consentStatus');
+      const updateConsent = () => {
+        const ready = consents.every(c => c.checked);
+        consentButton.disabled = !ready;
+        consentStatus.textContent = ready ? '確認が完了しました。デモを開始できます。' : '3項目すべての確認が必要です。';
+      };
+      consents.forEach(c => c.addEventListener('change', updateConsent));
+      consentButton.addEventListener('click', () => {
+        consentStatus.textContent = 'デモを開始しました。次に14日プログラムをご覧ください。';
+        document.getElementById('program').scrollIntoView({behavior:'smooth'});
+      });
+
+      const videoReflectionDefinitions = {
+        V00: {
+          title:'利用開始・安全説明',
+          question:'復職ReadyAIの役割として正しいのはどちらでしょう？',
+          options:['生活や活動の記録を整理し、面談で相談する材料を作る','記録を採点し、復職できるかをAIが決める'],
+          correct:'a',
+          explanation:'AIは記録や質問を整理しますが、診断や復職判定は行いません。'
+        },
+        V01: {
+          title:'職場復帰までの流れ',
+          question:'職場復帰の最終的な決定について、正しいのはどちらでしょう？',
+          options:['主治医が復職可能と書けば、自動的に復職が決まる','本人や主治医、産業医などの情報と職場の状況を踏まえ、会社が手続きに沿って決める'],
+          correct:'b',
+          explanation:'主治医や産業医の意見は大切ですが、会社の最終決定とは役割が分かれています。'
+        },
+        V02: {
+          title:'うつ病を正しく知る',
+          question:'紹介された症状が自分に当てはまるとき、適切なのはどちらでしょう？',
+          options:['自分やAIだけで、うつ病だと確定する','自己診断をせず、気になる変化を医療機関へ相談する'],
+          correct:'b',
+          explanation:'似た症状はほかの心身の状態でも起こるため、病名は医師が個別に判断します。'
+        },
+        V03: {
+          title:'適応反応と不安を理解する',
+          question:'ストレスの後に不調が現れた場合、正しい考え方はどちらでしょう？',
+          options:['反応の強さ、続く期間、生活への影響を整理し、病名は医師へ相談する','ストレスの後の不調は、すべて適応障害だと考える'],
+          correct:'a',
+          explanation:'ストレス反応の現れ方はさまざまで、病名は経過なども確認して医師が判断します。'
+        },
+        V04: {
+          title:'睡眠・活動・疲労の記録方法',
+          question:'睡眠時刻を思い出せない日の記録として、適切なのはどちらでしょう？',
+          options:['空欄を避けるため、正確そうな数字を推測して入力する','「未記録」にするか、おおよその時刻であることを明記する'],
+          correct:'b',
+          explanation:'推測を事実のように埋めず、分かる範囲をそのまま残します。'
+        },
+        V05: {
+          title:'不調の早期サインと相談行動',
+          question:'「不調の早期サイン」の使い方として正しいのはどちらでしょう？',
+          options:['普段との変化に気づき、早めに休む・相談するための合図にする','一つ当てはまっただけで、再発や復職不合格と判定する'],
+          correct:'a',
+          explanation:'早期サインは病名や合否を決めるものではなく、早めに助けを求めるための準備です。'
+        },
+        V06: {
+          title:'復職後の配慮を言葉にする',
+          question:'復職後の配慮について、正しい考え方はどちらでしょう？',
+          options:['困る場面、仕事への影響、希望する工夫、見直す時期を整理し、関係者と相談する','本人が希望した配慮は、すべてそのまま会社に認められる'],
+          correct:'a',
+          explanation:'配慮は本人の希望だけで決まらず、安全、業務条件、実施可能性を確認して話し合います。'
+        },
+        V07: {
+          title:'レポート確認と情報共有',
+          question:'復職準備レポートの共有について、正しいのはどちらでしょう？',
+          options:['完成すると、すべての入力内容が関係者へ自動送信される','本人が共有先、項目、表現、版を確認し、承認した範囲だけを共有する'],
+          correct:'b',
+          explanation:'レポートは自動共有されません。本人が修正・除外し、必要最小限の内容を最終確認します。'
+        },
+        V08: {
+          title:'アサーションスキル',
+          question:'アサーティブな伝え方として、より適切なのはどちらでしょう？',
+          options:['事実、自分の考え、具体的な希望、代案を伝え、相談を続ける','希望を必ず受け入れてもらうため、強く押し通す'],
+          correct:'a',
+          explanation:'アサーションは自分も相手も尊重する伝え方で、必ずYESを得る技術ではありません。'
+        },
+        V09: {
+          title:'認知行動療法・思考の柔軟性',
+          question:'0〜100の連続した尺度について、正しいのはどちらでしょう？',
+          options:['復職準備の合否や復職可否を決める点数である','できた部分と難しかった部分を白黒の間で眺める目安で、合格線はない'],
+          correct:'b',
+          explanation:'数字は程度を整理する目安で、成績や復職可否の判定には使いません。'
+        },
+        V10: {
+          title:'修了・産業医面談に向けて',
+          question:'復職ReadyAIを修了したことについて、正しいのはどちらでしょう？',
+          options:['修了は合格証明ではなく、できたことや難しかったことを面談で相談する材料にする','修了すれば医学的に問題がないと証明され、復職できる'],
+          correct:'a',
+          explanation:'修了は診断書や復職判定ではありません。関係者の意見と職場の状況を踏まえて確認します。'
+        }
+      };
+      const completedVideoReflections = new Set();
+      const videoReflectionAnswers = new Map();
+      const lectureReflection = document.getElementById('lectureReflection');
+      const finalDayReflection = document.getElementById('finalDayReflection');
+      let selectedLectureEpisode = '';
+      const episodeIdFromVideoPath = path => {
+        const matched = String(path || '').match(/\/(V\d{2})_/);
+        return matched ? matched[1] : '';
+      };
+      const renderVideoReflection = (container, episodeId) => {
+        const definition = videoReflectionDefinitions[episodeId];
+        if (!definition) { container.hidden = true; return; }
+        const unlocked = completedVideoReflections.has(episodeId);
+        const answer = videoReflectionAnswers.get(episodeId);
+        container.hidden = false;
+        container.dataset.episode = episodeId;
+        const stateText = unlocked ? '視聴完了・回答できます' : '視聴完了後に開きます';
+        const stateClass = unlocked ? 'reflection-state unlocked' : 'reflection-state';
+        const lockedHtml = `<div class="reflection-locked"><strong>🔒 まだテストは開いていません</strong><p>動画を最後まで視聴すると、問題と選択肢が表示されます。</p></div>`;
+        const optionsHtml = definition.options.map((option, index) => {
+          const value = index === 0 ? 'a' : 'b';
+          const label = index === 0 ? 'A' : 'B';
+          const checked = answer && answer.value === value ? ' checked' : '';
+          return `<label class="reflection-option"><input type="radio" name="reflection-${episodeId}" value="${value}"${checked}><span><strong>${label}.</strong> ${escapeHtml(option)}</span></label>`;
+        }).join('');
+        const feedbackText = answer ? `${answer.correct ? '正解です。' : 'もう一度選んでみましょう。'}${definition.explanation}` : '';
+        const feedbackClass = answer ? `reflection-feedback ${answer.correct ? 'is-correct' : 'is-incorrect'}` : 'reflection-feedback';
+        const formHtml = `<form class="reflection-form" data-reflection-form data-episode="${episodeId}"><fieldset><legend>${escapeHtml(definition.question)}</legend><div class="reflection-options">${optionsHtml}</div></fieldset><div class="reflection-actions"><button class="btn btn-teal" type="submit">回答を確認する</button></div><p class="${feedbackClass}" role="status" aria-live="polite">${escapeHtml(feedbackText)}</p><p class="reflection-note">理解を確認する1問です。採点・診断・復職可否判定には使わず、間違えても何度でも選び直せます。</p></form>`;
+        container.innerHTML = `<div class="reflection-head"><div><div class="kicker">振り返りテスト｜1問・2択</div><h4>${episodeId}｜${escapeHtml(definition.title)}</h4></div><span class="${stateClass}" role="status">${stateText}</span></div>${unlocked ? formHtml : lockedHtml}`;
+      };
+      const handleReflectionSubmit = event => {
+        event.preventDefault();
+        const form = event.target;
+        if (!form.matches('[data-reflection-form]')) return;
+        const episodeId = form.dataset.episode;
+        const definition = videoReflectionDefinitions[episodeId];
+        const selected = form.querySelector('input[type="radio"]:checked');
+        const feedback = form.querySelector('.reflection-feedback');
+        if (!selected) {
+          feedback.className = 'reflection-feedback is-incorrect';
+          feedback.textContent = 'AかBのどちらかを選んでください。';
+          return;
+        }
+        const correct = selected.value === definition.correct;
+        videoReflectionAnswers.set(episodeId,{value:selected.value,correct});
+        feedback.className = `reflection-feedback ${correct ? 'is-correct' : 'is-incorrect'}`;
+        feedback.textContent = `${correct ? '正解です。' : 'もう一度選んでみましょう。'}${definition.explanation}`;
+      };
+      lectureReflection.addEventListener('submit',handleReflectionSubmit);
+      finalDayReflection.addEventListener('submit',handleReflectionSubmit);
+      const unlockVideoReflection = (container, episodeId) => {
+        completedVideoReflections.add(episodeId);
+        renderVideoReflection(container,episodeId);
+      };
+      const resetVideoReflections = () => {
+        completedVideoReflections.clear();
+        videoReflectionAnswers.clear();
+        selectedLectureEpisode = '';
+        lectureReflection.hidden = true;
+        lectureReflection.innerHTML = '';
+        renderVideoReflection(finalDayReflection,'V10');
+      };
+      renderVideoReflection(finalDayReflection,'V10');
+
+      const days = [
+        ['Day 1','説明と目標','安全説明、役割の理解、2週間で確認したいことを整理します。'],
+        ['Day 2','生活リズム','起床・就寝・日中活動を記録し、短い模擬作業を試します。'],
+        ['Day 3','作業と休憩','作業時間、休憩、終了時の疲労を分けて記録します。'],
+        ['Day 4','疾病理解①','うつ病に関する一般教育。診断や治療の助言は行いません。'],
+        ['Day 5','通勤①','混雑を避けた時間帯で経路を確認する例です。無理な実施はしません。'],
+        ['Day 6','週末・休息','朝夕の短い記録のみ。模擬業務は行いません。'],
+        ['Day 7','週末振り返り','Week 1のAI要約を本人が確認・修正します。'],
+        ['Day 8','疾病理解②','ストレス反応と不安の一般教育、60～90分の模擬作業例。'],
+        ['Day 9','勤務時間帯','午前・午後に分けて活動を試し、休憩と疲労を記録します。'],
+        ['Day 10','早期サイン','身体・気分・考え・行動の変化を本人の言葉で整理します。'],
+        ['Day 11','通勤②','想定出勤時間帯の通勤例。安全と主治医等の方針を優先します。'],
+        ['Day 12','配慮と相談','配慮候補、相談相手、面談で聞きたいことを整理します。'],
+        ['Day 13','週末・休息','朝夕の短い記録と相談先の再確認。'],
+        ['Day 14','本人確認と修了','レポートを修正し、共有する項目を本人が選びます。確認を終えたら、最後に修了・産業医面談準備動画を視聴します。']
+      ];
+      const calendar = document.getElementById('calendar');
+      const detail = document.getElementById('dayDetail');
+      const finalDayVideoBlock = document.getElementById('finalDayVideoBlock');
+      const finalDayPlayer = document.getElementById('finalDayPlayer');
+      const finalDayVideo = document.getElementById('finalDayVideo');
+      const finalDayVideoStatus = document.getElementById('finalDayVideoStatus');
+      const unlockFinalVideo = document.getElementById('unlockFinalVideo');
+      const resetFinalDayVideo = () => {
+        finalDayVideo.pause();
+        finalDayVideo.removeAttribute('src');
+        finalDayVideo.load();
+        finalDayPlayer.hidden = true;
+        unlockFinalVideo.hidden = false;
+        finalDayVideoStatus.textContent = 'ボタンを押すまで動画は読み込みません。';
+      };
+      const selectDay = (i) => {
+        [...calendar.children].forEach((b, j) => b.classList.toggle('active', i === j));
+        detail.innerHTML = `<p><strong>${days[i][0]}｜${days[i][1]}</strong><br>${days[i][2]}</p>`;
+        const isFinalDay = i === days.length - 1;
+        finalDayVideoBlock.hidden = !isFinalDay;
+        if (!isFinalDay) resetFinalDayVideo();
+      };
+      days.forEach((d, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'day' + ([5,6,12].includes(i) ? ' weekend' : '');
+        b.innerHTML = `<strong>${d[0]}</strong><span>${d[1]}</span>`;
+        b.addEventListener('click', () => selectDay(i));
+        calendar.appendChild(b);
+      });
+      selectDay(0);
+      unlockFinalVideo.addEventListener('click', () => {
+        finalDayVideo.src = finalDayVideo.dataset.src;
+        finalDayVideo.load();
+        finalDayPlayer.hidden = false;
+        unlockFinalVideo.hidden = true;
+        finalDayVideoStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
+        finalDayPlayer.scrollIntoView({behavior:'smooth', block:'center'});
+      });
+      finalDayVideo.addEventListener('ended', () => {
+        if (episodeIdFromVideoPath(finalDayVideo.currentSrc) !== 'V10') return;
+        unlockVideoReflection(finalDayReflection,'V10');
+        finalDayVideoStatus.textContent = '視聴が完了しました。下の振り返りテストを開きました。';
+      });
+
+      const HYB_CHECKIN_HISTORY_KEY = 'fukushokuAiReadyHybDailyLogsV1';
+      const checkinSteps = [
+        { key:'wakeTime', type:'time', prompt:'今朝、何時ごろ起きましたか？' },
+        { key:'sleepMinutes', type:'duration', prompt:'昨夜は合計で何時間くらい眠れたと思いますか？ だいたいで構いません。' },
+        { key:'sleepQuality', type:'choice', prompt:'眠りについて、ご本人の感じ方に近いものを選んでください。', options:['よく眠れた','まずまず','あまり眠れなかった','わからない'] },
+        { key:'condition', type:'choice', prompt:'今朝の体調はどれに近いですか？ 医学的な評価ではなく、ご本人の記録です。', options:['良い','まずまず','少しつらい','かなりつらい'] },
+        { key:'plan', type:'text', prompt:'今日試したい活動を一つ教えてください。まだ決めなくても大丈夫です。' },
+        { key:'pace', type:'choice', prompt:'今日はどの進め方にしますか？', options:['予定どおり試す','短縮して試す','今日は休む','主治医等へ相談してから決める'] }
+      ];
+      const checkinChatLog = document.getElementById('checkinChatLog');
+      const aiCheckinForm = document.getElementById('aiCheckinForm');
+      const checkinInputHost = document.getElementById('checkinInputHost');
+      const checkinSubmit = document.getElementById('checkinSubmit');
+      const checkinSkip = document.getElementById('checkinSkip');
+      const checkinStop = document.getElementById('checkinStop');
+      const checkinRestart = document.getElementById('checkinRestart');
+      const checkinInputError = document.getElementById('checkinInputError');
+      const checkinProgress = document.getElementById('checkinProgress');
+      const checkinOutput = document.getElementById('checkinOutput');
+      const checkinSummaryEmpty = document.getElementById('checkinSummaryEmpty');
+      const checkinSummaryEdit = document.getElementById('checkinSummaryEdit');
+      const checkinSaveStatus = document.getElementById('checkinSaveStatus');
+      let checkinStepIndex = 0;
+      let checkinDraft = {};
+      let checkinHistory = [];
+      let checkinStorageAvailable = false;
+      let checkinHistoryRecovered = false;
+
+      const appendCheckinMessage = (role, message) => {
+        const bubble = document.createElement('div');
+        bubble.className = `checkin-message ${role}`;
+        const speaker = document.createElement('span');
+        speaker.className = 'speaker';
+        speaker.textContent = role === 'ai' ? 'AI' : 'あなた';
+        const textNode = document.createElement('span');
+        textNode.textContent = message;
+        bubble.append(speaker, textNode);
+        checkinChatLog.appendChild(bubble);
+        checkinChatLog.scrollTop = checkinChatLog.scrollHeight;
+        return bubble;
+      };
+
+      const formatSleepDuration = minutes => {
+        if (!Number.isFinite(minutes)) return '記録なし';
+        const hours = Math.floor(minutes / 60);
+        const rest = minutes % 60;
+        if (!hours) return `${rest}分`;
+        return rest ? `${hours}時間${rest}分` : `${hours}時間`;
+      };
+
+      const formatCheckinAnswer = (step, value) => {
+        if (value === null) return '記録しない';
+        if (step.type === 'time') return `${value}ごろ`;
+        if (step.type === 'duration') return `約${formatSleepDuration(value)}`;
+        return value;
+      };
+
+      const addSafetyLinkToMessage = bubble => {
+        const link = document.createElement('a');
+        link.className = 'checkin-safety-link';
+        link.href = '#safety';
+        link.textContent = '体調変化時の安全導線を見る';
+        bubble.append(document.createElement('br'), link);
+      };
+
+      const acknowledgeCheckinAnswer = (step, value) => {
+        if (value === null) {
+          appendCheckinMessage('ai', 'この項目は「記録しない」として進めます。');
+          return;
+        }
+        if (step.key === 'wakeTime') appendCheckinMessage('ai', `${value}ごろの起床として記録します。`);
+        if (step.key === 'sleepMinutes') appendCheckinMessage('ai', `睡眠は約${formatSleepDuration(value)}というご本人の見積もりで記録します。`);
+        if (step.key === 'sleepQuality') appendCheckinMessage('ai', `眠りの本人評価は「${value}」ですね。良し悪しの判定は加えません。`);
+        if (step.key === 'condition' && value !== 'かなりつらい') appendCheckinMessage('ai', `今朝の体調は「${value}」として記録します。`);
+        if (step.key === 'condition' && value === 'かなりつらい') {
+          const bubble = appendCheckinMessage('ai', '「かなりつらい」として記録します。今日は課題を短縮・延期・休むことも選べます。体調の悪化が気になる場合は、主治医または指定された相談先へご連絡ください。');
+          addSafetyLinkToMessage(bubble);
+        }
+        if (step.key === 'plan') appendCheckinMessage('ai', `今日試したい活動は「${value}」ですね。`);
+        if (step.key === 'pace') appendCheckinMessage('ai', `進め方は「${value}」として整理します。`);
+      };
+
+      const buildCheckinSummary = () => [
+        `起床：${checkinDraft.wakeTime ? `${checkinDraft.wakeTime}ごろ` : '記録なし'}`,
+        `睡眠：${Number.isFinite(checkinDraft.sleepMinutes) ? `約${formatSleepDuration(checkinDraft.sleepMinutes)}` : '記録なし'}／眠りの本人評価：${checkinDraft.sleepQuality || '記録なし'}`,
+        `今朝の体調：${checkinDraft.condition || '記録なし'}`,
+        `今日試したい活動：${checkinDraft.plan || '記録なし'}`,
+        `今日の進め方：${checkinDraft.pace || '記録なし'}`
+      ].join('\n');
+
+      const finishCheckinConversation = () => {
+        checkinProgress.textContent = '本人確認';
+        appendCheckinMessage('ai', 'ありがとうございます。お答えいただいた内容を右側の記録案にまとめました。内容を確認し、修正したい場合は会話をやり直せます。');
+        aiCheckinForm.hidden = true;
+        checkinRestart.hidden = false;
+        checkinSummaryEdit.value = buildCheckinSummary();
+        checkinSummaryEmpty.hidden = true;
+        checkinOutput.hidden = false;
+        document.getElementById('confirmCheckin').disabled = false;
+        checkinSaveStatus.textContent = 'まだ保存していません。内容を確認してください。';
+        checkinSummaryEdit.focus();
+      };
+
+      const acceptCheckinAnswer = (value, displayValue = value) => {
+        const step = checkinSteps[checkinStepIndex];
+        checkinDraft[step.key] = value;
+        appendCheckinMessage('user', displayValue === null ? '記録しない' : String(displayValue));
+        acknowledgeCheckinAnswer(step, value);
+        checkinStepIndex += 1;
+        if (checkinStepIndex >= checkinSteps.length) finishCheckinConversation();
+        else renderCheckinStep();
+      };
+
+      const renderCheckinStep = (moveFocus = true) => {
+        const step = checkinSteps[checkinStepIndex];
+        checkinProgress.textContent = `${checkinStepIndex + 1} / ${checkinSteps.length}`;
+        appendCheckinMessage('ai', step.prompt);
+        checkinInputHost.textContent = '';
+        checkinInputError.textContent = '';
+        checkinSubmit.hidden = step.type === 'choice';
+        checkinSkip.hidden = false;
+        checkinStop.hidden = false;
+
+        if (step.type === 'time') {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('label');
+          label.htmlFor = 'hybWakeTime';
+          label.textContent = '起床時刻';
+          const input = document.createElement('input');
+          input.id = 'hybWakeTime';
+          input.type = 'time';
+          input.value = checkinDraft.wakeTime || '07:00';
+          field.append(label, input);
+          checkinInputHost.appendChild(field);
+        }
+
+        if (step.type === 'duration') {
+          const wrap = document.createElement('fieldset');
+          const legend = document.createElement('legend');
+          legend.textContent = 'おおよその睡眠時間';
+          const grid = document.createElement('div');
+          grid.className = 'checkin-input-grid';
+          const values = Number.isFinite(checkinDraft.sleepMinutes) ? checkinDraft.sleepMinutes : 420;
+          const hourField = document.createElement('div');
+          hourField.className = 'field';
+          hourField.innerHTML = '<label for="hybSleepHours">時間</label>';
+          const hourInput = document.createElement('input');
+          hourInput.id = 'hybSleepHours';
+          hourInput.type = 'number';
+          hourInput.min = '0';
+          hourInput.max = '24';
+          hourInput.inputMode = 'numeric';
+          hourInput.value = String(Math.floor(values / 60));
+          hourField.appendChild(hourInput);
+          const minuteField = document.createElement('div');
+          minuteField.className = 'field';
+          const minuteLabel = document.createElement('label');
+          minuteLabel.htmlFor = 'hybSleepMinutes';
+          minuteLabel.textContent = '分';
+          const minuteSelect = document.createElement('select');
+          minuteSelect.id = 'hybSleepMinutes';
+          [0,15,30,45].forEach(minute => {
+            const option = document.createElement('option');
+            option.value = String(minute);
+            option.textContent = `${minute}分`;
+            option.selected = minute === values % 60;
+            minuteSelect.appendChild(option);
+          });
+          minuteField.append(minuteLabel, minuteSelect);
+          grid.append(hourField, minuteField);
+          wrap.append(legend, grid);
+          checkinInputHost.appendChild(wrap);
+        }
+
+        if (step.type === 'choice') {
+          const fieldset = document.createElement('fieldset');
+          const legend = document.createElement('legend');
+          legend.textContent = 'もっとも近いものを選択';
+          const choices = document.createElement('div');
+          choices.className = 'checkin-choice-grid';
+          step.options.forEach(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'checkin-choice';
+            button.textContent = option;
+            button.addEventListener('click', () => acceptCheckinAnswer(option, option));
+            choices.appendChild(button);
+          });
+          fieldset.append(legend, choices);
+          checkinInputHost.appendChild(fieldset);
+        }
+
+        if (step.type === 'text') {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('label');
+          label.htmlFor = 'hybPlan';
+          label.textContent = '今日試したい活動';
+          const input = document.createElement('input');
+          input.id = 'hybPlan';
+          input.value = checkinDraft.plan || '午前にPCで業務メールの要約を45分試す';
+          input.placeholder = '例：読書30分、散歩、PC作業';
+          field.append(label, input);
+          checkinInputHost.appendChild(field);
+        }
+
+        if (moveFocus !== false) {
+          setTimeout(() => checkinInputHost.querySelector('input, select, button')?.focus(), 0);
+        }
+      };
+
+      const startCheckinConversation = (moveFocus = true) => {
+        checkinStepIndex = 0;
+        checkinDraft = {};
+        checkinChatLog.textContent = '';
+        checkinOutput.hidden = true;
+        checkinSummaryEmpty.hidden = false;
+        checkinSummaryEmpty.textContent = '会話が終わると、ここに記録案が表示されます。';
+        checkinSummaryEdit.value = '';
+        checkinSaveStatus.textContent = '';
+        aiCheckinForm.hidden = false;
+        checkinRestart.hidden = true;
+        appendCheckinMessage('ai', 'おはようございます。朝のチェックインを始めます。1〜2分ほどです。答えたくない項目は「記録しない」を選べます。');
+        renderCheckinStep(moveFocus);
+      };
+
+      aiCheckinForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const step = checkinSteps[checkinStepIndex];
+        checkinInputError.textContent = '';
+        if (step.type === 'time') {
+          const value = document.getElementById('hybWakeTime').value;
+          if (!value) { checkinInputError.textContent = '時刻を入力するか、「記録しない」を選んでください。'; return; }
+          acceptCheckinAnswer(value, formatCheckinAnswer(step, value));
+        }
+        if (step.type === 'duration') {
+          const hours = Number.parseInt(document.getElementById('hybSleepHours').value, 10);
+          const minutes = Number.parseInt(document.getElementById('hybSleepMinutes').value, 10);
+          if (!Number.isInteger(hours) || hours < 0 || hours > 24) { checkinInputError.textContent = '0〜24の範囲で時間を入力してください。'; return; }
+          if (hours === 24 && minutes > 0) { checkinInputError.textContent = '睡眠時間は24時間以内で入力してください。'; return; }
+          const total = hours * 60 + minutes;
+          acceptCheckinAnswer(total, formatCheckinAnswer(step, total));
+        }
+        if (step.type === 'text') {
+          const value = document.getElementById('hybPlan').value.trim();
+          if (!value) { checkinInputError.textContent = '活動を入力するか、「記録しない」を選んでください。'; return; }
+          acceptCheckinAnswer(value, value);
+        }
+      });
+
+      checkinSkip.addEventListener('click', () => acceptCheckinAnswer(null, '記録しない'));
+      checkinStop.addEventListener('click', () => {
+        appendCheckinMessage('user', '今日はここで終了');
+        appendCheckinMessage('ai', 'ここまでの内容は保存していません。休むことや、別の時間にやり直すこともできます。');
+        aiCheckinForm.hidden = true;
+        checkinRestart.hidden = false;
+        checkinProgress.textContent = '中断';
+        checkinSummaryEmpty.textContent = '今回は記録案を作成・保存していません。';
+      });
+      checkinRestart.addEventListener('click', startCheckinConversation);
+      document.getElementById('reviseCheckin').addEventListener('click', startCheckinConversation);
+      document.getElementById('discardCheckin').addEventListener('click', () => {
+        checkinOutput.hidden = true;
+        checkinSummaryEmpty.hidden = false;
+        checkinSummaryEmpty.textContent = '今回は保存せず終了しました。会話をやり直すことができます。';
+        checkinSaveStatus.textContent = '記録は保存していません。';
+      });
+
+      const localDateKey = date => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      const initializeCheckinStorage = () => {
+        const probeKey = `${HYB_CHECKIN_HISTORY_KEY}__probe`;
+        try {
+          localStorage.setItem(probeKey, '1');
+          localStorage.removeItem(probeKey);
+          checkinStorageAvailable = true;
+        } catch (error) {
+          checkinStorageAvailable = false;
+          checkinHistory = [];
+          return;
+        }
+        try {
+          const raw = localStorage.getItem(HYB_CHECKIN_HISTORY_KEY);
+          if (!raw) { checkinHistory = []; return; }
+          const parsed = JSON.parse(raw);
+          if (!parsed || parsed.version !== 1 || !Array.isArray(parsed.records)) throw new Error('invalid check-in history');
+          checkinHistory = parsed.records.filter(record => record && typeof record.dateKey === 'string' && typeof record.summary === 'string').slice(0, 30);
+        } catch (error) {
+          checkinHistoryRecovered = true;
+          checkinHistory = [];
+          try { localStorage.removeItem(HYB_CHECKIN_HISTORY_KEY); } catch (removeError) { /* no-op */ }
+        }
+      };
+
+      const saveCheckinHistory = () => {
+        if (!checkinStorageAvailable) return false;
+        try {
+          localStorage.setItem(HYB_CHECKIN_HISTORY_KEY, JSON.stringify({version:1, records:checkinHistory.slice(0, 30)}));
+          return true;
+        } catch (error) {
+          checkinStorageAvailable = false;
+          return false;
+        }
+      };
+
+      const timeToMinutes = value => {
+        const match = /^(\d{2}):(\d{2})$/.exec(value || '');
+        return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+      };
+      const minutesToTime = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+      const shortDate = dateKey => {
+        const parts = dateKey.split('-');
+        return parts.length === 3 ? `${Number(parts[1])}/${Number(parts[2])}` : dateKey;
+      };
+
+      const renderCheckinHistory = () => {
+        const ordered = [...checkinHistory].sort((a, b) => String(b.recordedAt).localeCompare(String(a.recordedAt)));
+        document.getElementById('checkinHistoryCount').textContent = `${ordered.length}回`;
+        const recordedSleep = ordered.map(record => record.sleepMinutes).filter(Number.isFinite);
+        document.getElementById('checkinAverageSleep').textContent = recordedSleep.length
+          ? formatSleepDuration(Math.round(recordedSleep.reduce((sum, value) => sum + value, 0) / recordedSleep.length))
+          : '—';
+        document.getElementById('checkinLatestPace').textContent = ordered[0]?.pace || '—';
+
+        const body = document.getElementById('checkinHistoryBody');
+        body.textContent = '';
+        if (!ordered.length) {
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.colSpan = 6;
+          cell.textContent = '保存済みの記録はありません。';
+          row.appendChild(cell);
+          body.appendChild(row);
+        } else {
+          ordered.slice(0, 7).forEach(record => {
+            const row = document.createElement('tr');
+            [
+              shortDate(record.dateKey),
+              record.wakeTime || '記録なし',
+              Number.isFinite(record.sleepMinutes) ? formatSleepDuration(record.sleepMinutes) : '記録なし',
+              record.sleepQuality || '記録なし',
+              record.condition || '記録なし',
+              record.pace || '記録なし'
+            ].forEach(value => {
+              const cell = document.createElement('td');
+              cell.textContent = value;
+              row.appendChild(cell);
+            });
+            body.appendChild(row);
+          });
+        }
+
+        const recentWakeTimes = ordered.slice(0, 7).map(record => timeToMinutes(record.wakeTime)).filter(Number.isFinite);
+        const trend = document.getElementById('checkinTrendText');
+        if (recentWakeTimes.length >= 3) {
+          trend.textContent = `直近${Math.min(ordered.length, 7)}回のうち${recentWakeTimes.length}回に起床時刻があり、${minutesToTime(Math.min(...recentWakeTimes))}〜${minutesToTime(Math.max(...recentWakeTimes))}の範囲でした。これは本人申告の整理であり、医学的な評価ではありません。`;
+        } else if (recentWakeTimes.length) {
+          trend.textContent = `起床時刻の範囲を整理するには、あと${3 - recentWakeTimes.length}回の記録が必要です。データが足りないため傾向は表示しません。`;
+        } else {
+          trend.textContent = '傾向を整理するための記録はまだありません。';
+        }
+      };
+
+      document.getElementById('confirmCheckin').addEventListener('click', () => {
+        const summary = checkinSummaryEdit.value.trim();
+        if (!summary) { checkinSaveStatus.textContent = '記録案が空です。内容を入力してください。'; return; }
+        const now = new Date();
+        const record = {
+          id: `${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`,
+          dateKey: localDateKey(now),
+          recordedAt: now.toISOString(),
+          wakeTime: checkinDraft.wakeTime || null,
+          sleepMinutes: Number.isFinite(checkinDraft.sleepMinutes) ? checkinDraft.sleepMinutes : null,
+          sleepQuality: checkinDraft.sleepQuality || null,
+          condition: checkinDraft.condition || null,
+          plan: checkinDraft.plan || null,
+          pace: checkinDraft.pace || null,
+          summary
+        };
+        const existingIndex = checkinHistory.findIndex(item => item.dateKey === record.dateKey);
+        if (existingIndex >= 0) checkinHistory.splice(existingIndex, 1, record);
+        else checkinHistory.unshift(record);
+        checkinHistory = checkinHistory.slice(0, 30);
+        const persisted = saveCheckinHistory();
+        renderCheckinHistory();
+        checkinSaveStatus.textContent = persisted
+          ? '本人確認済みの記録を、このブラウザ内だけに保存しました。外部には送信していません。'
+          : 'この環境ではブラウザ保存を利用できないため、ページを閉じるまでの一時表示です。';
+        document.getElementById('confirmCheckin').disabled = true;
+      });
+
+      document.getElementById('clearCheckinHistory').addEventListener('click', () => {
+        if (!checkinHistory.length) { checkinSaveStatus.textContent = '消去する体調・睡眠記録はありません。'; return; }
+        if (!window.confirm('このブラウザに保存したHyb版の体調・睡眠記録を消去します。ゲーム履歴は消去しません。よろしいですか？')) return;
+        checkinHistory = [];
+        if (checkinStorageAvailable) {
+          try { localStorage.removeItem(HYB_CHECKIN_HISTORY_KEY); } catch (error) { /* no-op */ }
+        }
+        renderCheckinHistory();
+        checkinSaveStatus.textContent = 'このブラウザのHyb版体調・睡眠記録を消去しました。';
+      });
+
+      initializeCheckinStorage();
+      renderCheckinHistory();
+      startCheckinConversation();
+      checkinSaveStatus.textContent = checkinHistoryRecovered
+        ? '読み込めない古い体調・睡眠記録を消去し、新しい履歴へ切り替えました。'
+        : checkinStorageAvailable
+        ? '確認済み記録は、このブラウザ内だけに保存できます。'
+        : 'この環境ではブラウザ保存を利用できないため、記録はページを閉じるまでの一時表示です。';
+
+      let latestCommonWorkRecord = null;
+      const HYB_CHECKOUT_HISTORY_KEY = 'fukushokuAiReadyHybCheckoutLogsV1';
+      const checkoutSteps = [
+        { key:'activity', type:'text' },
+        { key:'status', type:'choice', options:['予定した範囲まで実施','途中まで実施','中断','未実施'] },
+        { key:'durationMinutes', type:'duration' },
+        { key:'breaks', type:'choice', options:['なし','1回','2回以上'] },
+        { key:'fatigue', type:'choice', options:['1：ほとんどない','2：軽い','3：中程度','4：強い','5：非常に強い'] },
+        { key:'note', type:'textarea' }
+      ];
+      const checkoutChatLog = document.getElementById('checkoutChatLog');
+      const aiCheckoutForm = document.getElementById('aiCheckoutForm');
+      const checkoutInputHost = document.getElementById('checkoutInputHost');
+      const checkoutSubmit = document.getElementById('checkoutSubmit');
+      const checkoutSkip = document.getElementById('checkoutSkip');
+      const checkoutStop = document.getElementById('checkoutStop');
+      const checkoutRestart = document.getElementById('checkoutRestart');
+      const checkoutInputError = document.getElementById('checkoutInputError');
+      const checkoutProgress = document.getElementById('checkoutProgress');
+      const checkoutOutput = document.getElementById('checkoutOutput');
+      const checkoutSummaryEmpty = document.getElementById('checkoutSummaryEmpty');
+      const checkoutSummaryEdit = document.getElementById('checkoutSummaryEdit');
+      const checkoutSaveStatus = document.getElementById('checkoutSaveStatus');
+      let checkoutStepIndex = 0;
+      let checkoutDraft = {};
+      let checkoutPrefill = {};
+      let checkoutHistory = [];
+      let checkoutStorageAvailable = false;
+      let checkoutHistoryRecovered = false;
+      let checkoutHistoryRecoveryRemovalFailed = false;
+      let checkoutSafetyLinkToFocus = null;
+
+      const appendCheckoutMessage = (role, message) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'checkin-message ' + role;
+        const speaker = document.createElement('span');
+        speaker.className = 'speaker';
+        speaker.textContent = role === 'ai' ? 'AI' : 'あなた';
+        const textNode = document.createElement('span');
+        textNode.textContent = message;
+        bubble.append(speaker, textNode);
+        checkoutChatLog.appendChild(bubble);
+        checkoutChatLog.scrollTop = checkoutChatLog.scrollHeight;
+        return bubble;
+      };
+
+      const addCheckoutSafetyLink = bubble => {
+        const link = document.createElement('a');
+        link.className = 'checkin-safety-link';
+        link.href = '#safety';
+        link.textContent = '体調変化時の安全導線を見る';
+        bubble.append(document.createElement('br'), link);
+        return link;
+      };
+
+      const formatCheckoutDuration = minutes => {
+        if (!Number.isFinite(minutes)) return '記録なし';
+        if (minutes < 60) return String(minutes) + '分';
+        const hours = Math.floor(minutes / 60);
+        const rest = minutes % 60;
+        return rest ? String(hours) + '時間' + String(rest) + '分' : String(hours) + '時間';
+      };
+
+      const checkoutPromptFor = step => {
+        if (step.key === 'activity') {
+          return checkoutPrefill.morningPlan
+            ? '朝は「' + checkoutPrefill.morningPlan + '」を試す予定でした。今日、主に取り組んだ活動は何ですか？予定と違っていても問題ありません。'
+            : '今日、主に取り組んだ活動を一つ教えてください。朝のチェックインをしていなくても記録できます。';
+        }
+        if (step.key === 'status') return '今日の実施状況は、どれに近いですか？';
+        if (step.key === 'durationMinutes') return 'その活動に取り組んだ時間は、合計でどのくらいでしたか？だいたいで構いません。';
+        if (step.key === 'breaks') return '活動中の休憩は何回とりましたか？';
+        if (step.key === 'fatigue') {
+          return checkoutDraft.status === '未実施'
+            ? '今の疲れはどれに近いですか？ご本人の感じ方を1〜5で選んでください。'
+            : '活動を終えた時点の疲れはどれに近いですか？ご本人の感じ方を1〜5で選んでください。';
+        }
+        return '今日の気づきや、次回調整したいことがあれば教えてください。';
+      };
+
+      const acknowledgeCheckoutAnswer = (step, value) => {
+        if (value === null) {
+          appendCheckoutMessage('ai', 'この項目は「記録しない」として進めます。');
+          return;
+        }
+        if (step.key === 'activity') appendCheckoutMessage('ai', '今日の主な活動は「' + value + '」として記録します。');
+        if (step.key === 'status' && value === '予定した範囲まで実施') {
+          appendCheckoutMessage('ai', '「予定した範囲まで実施」として記録します。できた量の採点は行いません。');
+        }
+        if (step.key === 'status' && value === '途中まで実施') {
+          appendCheckoutMessage('ai', '途中まで実施したことを記録します。できた量の良し悪しは判定しません。');
+        }
+        if (step.key === 'status' && value === '中断') {
+          appendCheckoutMessage('ai', '途中で中断したことを記録します。中断は失敗ではありません。');
+        }
+        if (step.key === 'status' && value === '未実施') {
+          appendCheckoutMessage('ai', '今日は実施しなかったことを記録します。休む選択も記録の一部です。');
+        }
+        if (step.key === 'durationMinutes') {
+          appendCheckoutMessage('ai', '実施時間は約' + formatCheckoutDuration(value) + 'というご本人の見積もりで記録します。');
+        }
+        if (step.key === 'breaks') appendCheckoutMessage('ai', '休憩は「' + value + '」として記録します。');
+        if (step.key === 'fatigue') {
+          const fatigueLabel = checkoutDraft.status === '未実施' ? '現在の疲れ' : '終了時の疲れ';
+          const bubble = appendCheckoutMessage(
+            'ai',
+            fatigueLabel + 'は「' + value + '」として記録します。' +
+            (value.startsWith('4：') || value.startsWith('5：')
+              ? '疲れが強いときは、追加の課題を行わず休息を優先してください。AIは原因や危険度を判定しません。体調の悪化が気になる場合は、主治医または指定された相談先へご連絡ください。'
+              : '')
+          );
+          if (value.startsWith('4：') || value.startsWith('5：')) {
+            checkoutSafetyLinkToFocus = addCheckoutSafetyLink(bubble);
+          }
+        }
+        if (step.key === 'note') appendCheckoutMessage('ai', '今日の気づきとして記録します。');
+      };
+
+      const buildCheckoutSummary = () => [
+        '主な活動：' + (checkoutDraft.activity || '記録なし'),
+        '実施状況：' + (checkoutDraft.status || '記録なし'),
+        '実施時間：' + (checkoutDraft.status === '未実施'
+          ? '該当なし'
+          : Number.isFinite(checkoutDraft.durationMinutes)
+          ? '約' + formatCheckoutDuration(checkoutDraft.durationMinutes)
+          : '記録なし'),
+        '休憩：' + (checkoutDraft.status === '未実施' ? '該当なし' : checkoutDraft.breaks || '記録なし'),
+        (checkoutDraft.status === '未実施' ? '現在の疲れ' : '終了時の疲れ') + '（本人評価）：' + (checkoutDraft.fatigue || '記録なし'),
+        '本人の気づき：' + (checkoutDraft.note || '記録なし')
+      ].join('\n');
+
+      const finishCheckoutConversation = () => {
+        checkoutProgress.textContent = '本人確認';
+        appendCheckoutMessage('ai', 'おつかれさまでした。今日の内容を振り返り案にまとめました。保存前に確認してください。AIは達成度や就労能力を採点しません。');
+        aiCheckoutForm.hidden = true;
+        checkoutRestart.hidden = false;
+        checkoutSummaryEdit.value = buildCheckoutSummary();
+        checkoutSummaryEmpty.hidden = true;
+        checkoutOutput.hidden = false;
+        document.getElementById('confirmCheckout').disabled = false;
+        checkoutSaveStatus.textContent = 'まだ保存していません。内容を確認してください。';
+        checkoutSummaryEdit.focus();
+      };
+
+      const acceptCheckoutAnswer = (value, displayValue = value) => {
+        const step = checkoutSteps[checkoutStepIndex];
+        checkoutDraft[step.key] = value;
+        appendCheckoutMessage('user', displayValue === null ? '記録しない' : String(displayValue));
+        acknowledgeCheckoutAnswer(step, value);
+        if (step.key === 'status' && value === '未実施') {
+          checkoutDraft.durationMinutes = null;
+          checkoutDraft.breaks = '該当なし';
+          appendCheckoutMessage('ai', '活動時間と休憩の質問は省略し、「該当なし」として今の疲れを伺います。');
+          checkoutStepIndex = 4;
+        } else {
+          checkoutStepIndex += 1;
+        }
+        if (checkoutStepIndex >= checkoutSteps.length) finishCheckoutConversation();
+        else renderCheckoutStep();
+      };
+
+      const checkoutSuggestedValue = step => {
+        if (step.key === 'status') return checkoutPrefill.status;
+        if (step.key === 'breaks') return checkoutPrefill.breaks;
+        if (step.key === 'fatigue') return checkoutPrefill.fatigue;
+        return null;
+      };
+
+      const renderCheckoutStep = (moveFocus = true) => {
+        const step = checkoutSteps[checkoutStepIndex];
+        checkoutProgress.textContent = String(checkoutStepIndex + 1) + ' / ' + String(checkoutSteps.length);
+        appendCheckoutMessage('ai', checkoutPromptFor(step));
+        checkoutInputHost.textContent = '';
+        checkoutInputError.textContent = '';
+        checkoutSubmit.hidden = step.type === 'choice';
+        checkoutSkip.hidden = false;
+        checkoutStop.hidden = false;
+
+        if (step.type === 'text') {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('label');
+          label.htmlFor = 'hybCheckoutActivity';
+          label.textContent = '今日の主な活動';
+          const input = document.createElement('input');
+          input.id = 'hybCheckoutActivity';
+          input.setAttribute('aria-describedby', 'checkoutInputError');
+          input.value = checkoutDraft.activity ?? checkoutPrefill.activity ?? '';
+          input.placeholder = '例：業務メールの要約、読書、休養';
+          field.append(label, input);
+          checkoutInputHost.appendChild(field);
+        }
+
+        if (step.type === 'duration') {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('label');
+          label.htmlFor = 'hybCheckoutDuration';
+          label.textContent = '合計の活動時間（分）';
+          const input = document.createElement('input');
+          input.id = 'hybCheckoutDuration';
+          input.type = 'number';
+          input.min = '1';
+          input.max = '1440';
+          input.inputMode = 'numeric';
+          input.setAttribute('aria-describedby', 'checkoutInputError');
+          const defaultMinutes = Number.isFinite(checkoutDraft.durationMinutes)
+            ? checkoutDraft.durationMinutes
+            : Number.isFinite(checkoutPrefill.durationMinutes)
+            ? checkoutPrefill.durationMinutes
+            : null;
+          input.value = Number.isFinite(defaultMinutes) ? String(defaultMinutes) : '';
+          input.placeholder = '例：45';
+          field.append(label, input);
+          checkoutInputHost.appendChild(field);
+        }
+
+        if (step.type === 'choice') {
+          const fieldset = document.createElement('fieldset');
+          const legend = document.createElement('legend');
+          legend.textContent = checkoutPromptFor(step);
+          const choices = document.createElement('div');
+          choices.className = 'checkin-choice-grid';
+          const suggested = checkoutSuggestedValue(step);
+          step.options.forEach(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'checkin-choice';
+            button.textContent = option + (suggested === option ? '（共通記録の値）' : '');
+            button.addEventListener('click', () => acceptCheckoutAnswer(option, option));
+            choices.appendChild(button);
+          });
+          fieldset.append(legend, choices);
+          checkoutInputHost.appendChild(fieldset);
+        }
+
+        if (step.type === 'textarea') {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('label');
+          label.htmlFor = 'hybCheckoutNote';
+          label.textContent = '気づき・次回調整したいこと';
+          const input = document.createElement('textarea');
+          input.id = 'hybCheckoutNote';
+          input.setAttribute('aria-describedby', 'checkoutInputError');
+          input.value = checkoutDraft.note ?? checkoutPrefill.note ?? '';
+          input.placeholder = '例：30分を過ぎた頃から集中しづらくなった';
+          field.append(label, input);
+          checkoutInputHost.appendChild(field);
+        }
+
+        if (moveFocus !== false) {
+          setTimeout(() => {
+            const target = checkoutSafetyLinkToFocus || checkoutInputHost.querySelector('input, textarea, button');
+            checkoutSafetyLinkToFocus = null;
+            target?.focus();
+          }, 0);
+        } else {
+          checkoutSafetyLinkToFocus = null;
+        }
+      };
+
+      const getCheckoutPrefill = () => {
+        const todayKey = localDateKey(new Date());
+        const morning = checkinHistory.find(record => record.dateKey === todayKey);
+        const commonRecord = latestCommonWorkRecord;
+        return {
+          morningPlan: morning?.plan || '',
+          activity: commonRecord?.activity || morning?.plan || '',
+          status: commonRecord?.status || '',
+          durationMinutes: Number.isFinite(commonRecord?.durationMinutes) ? commonRecord.durationMinutes : null,
+          breaks: commonRecord?.breaks || '',
+          fatigue: commonRecord?.fatigue || '',
+          note: commonRecord?.note || ''
+        };
+      };
+
+      const startCheckoutConversation = (moveFocus = true) => {
+        checkoutStepIndex = 0;
+        checkoutDraft = {};
+        checkoutSafetyLinkToFocus = null;
+        checkoutPrefill = getCheckoutPrefill();
+        checkoutChatLog.textContent = '';
+        checkoutOutput.hidden = true;
+        checkoutSummaryEmpty.hidden = false;
+        checkoutSummaryEmpty.textContent = '会話が終わると、ここに振り返り案が表示されます。';
+        checkoutSummaryEdit.value = '';
+        checkoutSaveStatus.textContent = '';
+        aiCheckoutForm.hidden = false;
+        checkoutRestart.hidden = true;
+        appendCheckoutMessage('ai', 'おつかれさまでした。夕方のチェックアウトを始めます。1〜2分ほどです。休んだことや中断したことも、そのまま記録できます。答えたくない項目は「記録しない」を選べます。');
+        if (checkoutPrefill.morningPlan) {
+          appendCheckoutMessage('ai', '朝のチェックインの内容を参照して進めます。朝の予定と違っていても問題ありません。');
+        }
+        renderCheckoutStep(moveFocus);
+      };
+
+      aiCheckoutForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const step = checkoutSteps[checkoutStepIndex];
+        checkoutInputError.textContent = '';
+        if (step.type === 'text') {
+          const value = document.getElementById('hybCheckoutActivity').value.trim();
+          if (!value) {
+            checkoutInputError.textContent = '活動を入力するか、「記録しない」を選んでください。';
+            return;
+          }
+          acceptCheckoutAnswer(value, value);
+        }
+        if (step.type === 'duration') {
+          const value = Number(document.getElementById('hybCheckoutDuration').value);
+          if (!Number.isInteger(value) || value < 1 || value > 1440) {
+            checkoutInputError.textContent = '1〜1440分の範囲で入力するか、「記録しない」を選んでください。';
+            return;
+          }
+          acceptCheckoutAnswer(value, '約' + formatCheckoutDuration(value));
+        }
+        if (step.type === 'textarea') {
+          const value = document.getElementById('hybCheckoutNote').value.trim();
+          if (!value) {
+            checkoutInputError.textContent = '気づきを入力するか、「記録しない」を選んでください。';
+            return;
+          }
+          acceptCheckoutAnswer(value, value);
+        }
+      });
+
+      checkoutSkip.addEventListener('click', () => acceptCheckoutAnswer(null, '記録しない'));
+      checkoutStop.addEventListener('click', () => {
+        appendCheckoutMessage('user', '今日はここで終了');
+        appendCheckoutMessage('ai', 'ここまでの会話は保存していません。休んでから、別の時間に最初からやり直すことができます。');
+        aiCheckoutForm.hidden = true;
+        checkoutRestart.hidden = false;
+        checkoutProgress.textContent = '中断';
+        checkoutOutput.hidden = true;
+        checkoutSummaryEmpty.hidden = false;
+        checkoutSummaryEmpty.textContent = '今回は振り返り案を作成・保存していません。';
+        checkoutSaveStatus.textContent = '夕方記録は保存していません。';
+        checkoutRestart.focus();
+      });
+      checkoutRestart.addEventListener('click', startCheckoutConversation);
+      document.getElementById('reviseCheckout').addEventListener('click', startCheckoutConversation);
+      document.getElementById('discardCheckout').addEventListener('click', () => {
+        checkoutOutput.hidden = true;
+        checkoutSummaryEmpty.hidden = false;
+        checkoutSummaryEmpty.textContent = '今回は保存せず終了しました。会話をやり直すことができます。';
+        checkoutSaveStatus.textContent = '夕方記録は保存していません。';
+        document.getElementById('confirmCheckout').disabled = true;
+        checkoutRestart.focus();
+      });
+
+      const initializeCheckoutStorage = () => {
+        const probeKey = HYB_CHECKOUT_HISTORY_KEY + '__probe';
+        try {
+          localStorage.setItem(probeKey, '1');
+          localStorage.removeItem(probeKey);
+          checkoutStorageAvailable = true;
+        } catch (error) {
+          checkoutStorageAvailable = false;
+          checkoutHistory = [];
+          return;
+        }
+        try {
+          const raw = localStorage.getItem(HYB_CHECKOUT_HISTORY_KEY);
+          if (!raw) {
+            checkoutHistory = [];
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if (!parsed || parsed.version !== 1 || !Array.isArray(parsed.records)) throw new Error('invalid checkout history');
+          checkoutHistory = parsed.records
+            .filter(record => record && typeof record.dateKey === 'string' && typeof record.summary === 'string')
+            .slice(0, 30);
+        } catch (error) {
+          checkoutHistoryRecovered = true;
+          checkoutHistory = [];
+          try {
+            localStorage.removeItem(HYB_CHECKOUT_HISTORY_KEY);
+          } catch (removeError) {
+            checkoutHistoryRecoveryRemovalFailed = true;
+          }
+        }
+      };
+
+      const saveCheckoutHistory = () => {
+        if (!checkoutStorageAvailable) return false;
+        try {
+          localStorage.setItem(HYB_CHECKOUT_HISTORY_KEY, JSON.stringify({version:1, records:checkoutHistory.slice(0, 30)}));
+          return true;
+        } catch (error) {
+          checkoutStorageAvailable = false;
+          return false;
+        }
+      };
+
+      const renderCheckoutHistory = () => {
+        const ordered = [...checkoutHistory].sort((a, b) => String(b.recordedAt).localeCompare(String(a.recordedAt)));
+        document.getElementById('checkoutHistoryCount').textContent = String(ordered.length) + '回';
+        const durations = ordered
+          .map(record => record.durationMinutes)
+          .filter(value => Number.isFinite(value) && value > 0);
+        document.getElementById('checkoutAverageDuration').textContent = durations.length
+          ? formatCheckoutDuration(Math.round(durations.reduce((sum, value) => sum + value, 0) / durations.length))
+          : '—';
+        document.getElementById('checkoutLatestFatigue').textContent = ordered[0]?.fatigue || '—';
+
+        const body = document.getElementById('checkoutHistoryBody');
+        body.textContent = '';
+        if (!ordered.length) {
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.colSpan = 6;
+          cell.textContent = '保存済みの夕方記録はありません。';
+          row.appendChild(cell);
+          body.appendChild(row);
+        } else {
+          ordered.slice(0, 7).forEach(record => {
+            const row = document.createElement('tr');
+            [
+              shortDate(record.dateKey),
+              record.activity || '記録なし',
+              record.status || '記録なし',
+              record.status === '未実施'
+                ? '該当なし'
+                : Number.isFinite(record.durationMinutes)
+                ? formatCheckoutDuration(record.durationMinutes)
+                : '記録なし',
+              record.status === '未実施' ? '該当なし' : record.breaks || '記録なし',
+              record.fatigue || '記録なし'
+            ].forEach(value => {
+              const cell = document.createElement('td');
+              cell.textContent = value;
+              row.appendChild(cell);
+            });
+            body.appendChild(row);
+          });
+        }
+
+        const recent = ordered.slice(0, 7).filter(record => record.status);
+        const trend = document.getElementById('checkoutTrendText');
+        if (!recent.length) {
+          trend.textContent = '実施状況を整理するための記録はまだありません。';
+          return;
+        }
+        const statusOrder = ['予定した範囲まで実施','途中まで実施','中断','未実施'];
+        const breakdown = statusOrder
+          .map(status => status + ' ' + String(recent.filter(record => record.status === status).length) + '回')
+          .join('／');
+        trend.textContent = '直近' + String(recent.length) + '回：' + breakdown + '。これは本人申告の整理で、達成度評価ではありません。';
+      };
+
+      document.getElementById('confirmCheckout').addEventListener('click', () => {
+        const summary = checkoutSummaryEdit.value.trim();
+        if (!summary) {
+          checkoutSaveStatus.textContent = '振り返り案が空です。会話をやり直してください。';
+          return;
+        }
+        const now = new Date();
+        const record = {
+          id: String(now.getTime()) + '-' + Math.random().toString(36).slice(2, 8),
+          dateKey: localDateKey(now),
+          recordedAt: now.toISOString(),
+          activity: checkoutDraft.activity || null,
+          status: checkoutDraft.status || null,
+          durationMinutes: Number.isFinite(checkoutDraft.durationMinutes) ? checkoutDraft.durationMinutes : null,
+          breaks: checkoutDraft.status === '未実施' ? '該当なし' : checkoutDraft.breaks || null,
+          fatigue: checkoutDraft.fatigue || null,
+          note: checkoutDraft.note || null,
+          summary
+        };
+        const existingIndex = checkoutHistory.findIndex(item => item.dateKey === record.dateKey);
+        if (existingIndex >= 0) checkoutHistory.splice(existingIndex, 1, record);
+        else checkoutHistory.unshift(record);
+        checkoutHistory = checkoutHistory.slice(0, 30);
+        const persisted = saveCheckoutHistory();
+        renderCheckoutHistory();
+        checkoutSaveStatus.textContent = persisted
+          ? '本人確認済みの夕方記録を、このブラウザ内だけに保存しました。外部には送信していません。'
+          : 'この環境ではブラウザ保存を利用できないため、ページを閉じるまでの一時表示です。';
+        document.getElementById('confirmCheckout').disabled = true;
+      });
+
+      document.getElementById('clearCheckoutHistory').addEventListener('click', () => {
+        if (!checkoutHistory.length) {
+          checkoutSaveStatus.textContent = '消去する夕方記録はありません。';
+          return;
+        }
+        if (!window.confirm('このブラウザに保存したHyb版のチェックアウト記録を消去します。朝のチェックイン記録とゲーム履歴は消去しません。よろしいですか？')) return;
+        checkoutHistory = [];
+        let checkoutHistoryRemoved = true;
+        try { localStorage.removeItem(HYB_CHECKOUT_HISTORY_KEY); } catch (error) { checkoutHistoryRemoved = false; }
+        renderCheckoutHistory();
+        checkoutSaveStatus.textContent = checkoutHistoryRemoved
+          ? 'このブラウザのHyb版チェックアウト記録を消去しました。朝のチェックイン記録とゲーム履歴は保持しています。'
+          : '画面上の夕方記録は消去しましたが、ブラウザ保存データの消去を確認できませんでした。ブラウザ設定のサイトデータから、このページの保存データを消去してください。';
+      });
+
+      initializeCheckoutStorage();
+      renderCheckoutHistory();
+      startCheckoutConversation();
+      checkoutSaveStatus.textContent = checkoutHistoryRecovered
+        ? checkoutHistoryRecoveryRemovalFailed
+          ? '読み込めない夕方記録を画面から除外しましたが、ブラウザ保存データの消去を確認できませんでした。ブラウザ設定のサイトデータから、このページの保存データを消去してください。朝のチェックイン記録には触れていません。'
+          : '読み込めない古い夕方記録を消去し、新しい履歴へ切り替えました。朝のチェックイン記録には触れていません。'
+        : checkoutStorageAvailable
+        ? '確認済みの夕方記録は、このブラウザ内だけに保存できます。'
+        : 'この環境ではブラウザ保存を利用できないため、夕方記録はページを閉じるまでの一時表示です。';
+
+      const lectureButtons = [...document.querySelectorAll('.episode-button[data-video]')];
+      const lectureVideo = document.getElementById('lectureVideo');
+      const lectureTitle = document.getElementById('lectureTitle');
+      const lectureStatus = document.getElementById('lectureStatus');
+      lectureButtons.forEach(button => button.addEventListener('click', () => {
+        lectureButtons.forEach(b => b.classList.toggle('active', b === button));
+        selectedLectureEpisode = episodeIdFromVideoPath(button.dataset.video);
+        lectureTitle.textContent = button.dataset.title;
+        lectureStatus.textContent = '動画を読み込みました。再生・一時停止は本人のペースで操作できます。';
+        lectureVideo.src = button.dataset.video;
+        lectureVideo.load();
+        renderVideoReflection(lectureReflection,selectedLectureEpisode);
+        document.querySelector('.lecture-player').scrollIntoView({behavior:'smooth', block:'center'});
+      }));
+      lectureVideo.addEventListener('ended', () => {
+        const endedEpisode = episodeIdFromVideoPath(lectureVideo.currentSrc);
+        if (!selectedLectureEpisode || endedEpisode !== selectedLectureEpisode) return;
+        unlockVideoReflection(lectureReflection,selectedLectureEpisode);
+        lectureStatus.textContent = '視聴が完了しました。下の振り返りテストを開きました。';
+      });
+
+      const workLabels = {
+        summary:'一般業務メールの要約', data:'データ入力', memo:'読書とメモ（任意）', email:'架空のメール整理', cbt:'認知行動療法（CBT）の基礎', assertion:'アサーションスキルの練習'
+      };
+      const workTabs = [...document.querySelectorAll('.work-tab')];
+      const workPanels = [...document.querySelectorAll('[data-work-panel]')];
+      const selectWork = name => {
+        workTabs.forEach(button => {
+          const active = button.dataset.work === name;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-selected', String(active));
+        });
+        workPanels.forEach(panel => panel.hidden = panel.dataset.workPanel !== name);
+        document.getElementById('taskType').value = workLabels[name];
+      };
+      workTabs.forEach(button => button.addEventListener('click', () => selectWork(button.dataset.work)));
+
+      document.querySelectorAll('.demo-action').forEach(button => button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        if (action === 'summary') {
+          const text = document.getElementById('summaryText').value.trim();
+          const out = document.getElementById('summaryResult');
+          out.hidden = false;
+          out.innerHTML = text ? `<p><strong>本人のメール要約（${[...text].length}字）</strong></p><p>${escapeHtml(text)}</p><p>元のメールと照らし、依頼内容や期限の意味が変わっていないか本人が確認します。AIは能力評価をしません。</p>` : '<p>メールの要約を入力してください。未実施・中断を選んでも不合格にはなりません。</p>';
+        }
+        if (action === 'data') {
+          const values = {
+            date:document.getElementById('entryDate').value.trim(),
+            code:document.getElementById('entryCode').value.trim().toUpperCase(),
+            type:document.getElementById('entryType').value,
+            amount:document.getElementById('entryAmount').value.replace(/[,，\s]/g,'')
+          };
+          const matched = [values.date === '7/10' || values.date === '07/10', values.code === 'A-104', values.type === '交通費', values.amount === '1280'];
+          const out = document.getElementById('dataResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>照合結果：</strong>4項目中${matched.filter(Boolean).length}項目が入力元と一致しました。</p><p>これは操作デモの一致確認であり、就労能力の検査ではありません。必要なら休憩して再確認できます。</p>`;
+        }
+        if (action === 'memo') {
+          const book1 = document.getElementById('memoBook1').value.trim();
+          const book2 = document.getElementById('memoBook2').value.trim();
+          const point = document.getElementById('memoPoint').value.trim();
+          const next = document.getElementById('memoAction').value.trim();
+          const out = document.getElementById('memoResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>本のタイトル（任意）</strong></p><p>1冊目：${escapeHtml(book1 || '未入力')}<br>2冊目：${escapeHtml(book2 || '未入力')}</p><p><strong>要点・印象：</strong>${escapeHtml(point || '未記入')}</p><p><strong>次に試すこと：</strong>${escapeHtml(next || '未記入')}</p><p>本人の任意メモとして保存する想定です。未入力でも問題なく、内容の良し悪しを採点しません。</p>`;
+        }
+        if (action === 'email') {
+          const categories = [...document.querySelectorAll('.email-category')].map((s,i) => `${i+1}通目：${s.value}`);
+          const out = document.getElementById('emailResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>本人が選んだ分類</strong></p><p>${categories.join('／')}</p><p>分類方法は一例です。速度や正解数から復職可否を判断しません。</p>`;
+        }
+        if (action === 'cbt') {
+          const eventText = document.getElementById('cbtEvent').value.trim();
+          const thought = document.getElementById('cbtThought').value.trim();
+          const response = document.getElementById('cbtResponse').value.trim();
+          const actionText = document.getElementById('cbtAction').value.trim();
+          const alternative = document.getElementById('cbtAlternative').value.trim();
+          const out = document.getElementById('cbtResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>CBT基礎・整理メモ</strong></p><p><strong>出来事：</strong>${escapeHtml(eventText || '未記入')}</p><p><strong>考え：</strong>${escapeHtml(thought || '未記入')}</p><p><strong>気分・身体：</strong>${escapeHtml(response || '未記入')}</p><p><strong>行動：</strong>${escapeHtml(actionText || '未記入')}</p><p><strong>別の見方・次に試すこと：</strong>${escapeHtml(alternative || '未記入')}</p><p>内容を本人が確認・修正します。AIは診断や心理療法、考え方の正誤判定を行いません。</p>`;
+        }
+        if (action === 'assertion') {
+          const fact = document.getElementById('assertFact').value.trim();
+          const impact = document.getElementById('assertImpact').value.trim();
+          const wish = document.getElementById('assertWish').value.trim();
+          const option = document.getElementById('assertOption').value.trim();
+          const out = document.getElementById('assertionResult');
+          out.hidden = false;
+          out.innerHTML = `<p><strong>相談文の練習案</strong></p><p>${escapeHtml(fact)}。${escapeHtml(impact)}。${escapeHtml(wish)}。${escapeHtml(option)}。</p><p><strong>確認：</strong>相手を責める表現になっていないか、自分の希望が具体的か、相手と調整できる余地があるかを振り返ります。</p>`;
+        }
+      }));
+
+      document.getElementById('workForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const durationMinutes = Number.parseInt(document.getElementById('duration').value, 10);
+        latestCommonWorkRecord = {
+          activity: document.getElementById('taskType').value,
+          durationMinutes: Number.isFinite(durationMinutes) ? durationMinutes : null,
+          breaks: document.getElementById('breaks').value,
+          status: document.getElementById('completion').value,
+          fatigue: document.getElementById('fatigue').value,
+          note: document.getElementById('workNote').value.trim()
+        };
+        const out = document.getElementById('workOutput');
+        out.hidden = false;
+        out.innerHTML = `<p><strong>課題実施記録</strong></p><p>${document.getElementById('taskType').value}を${document.getElementById('duration').value}、休憩${document.getElementById('breaks').value}で実施。</p><p>実施状況：${document.getElementById('completion').value}／終了時の疲労：${document.getElementById('fatigue').value}</p><p><span class="data-label">本人記載</span>${escapeHtml(document.getElementById('workNote').value)}</p><p><strong>AIは、この記録から就労能力や復職可否を判断しません。</strong></p>`;
+        if (checkoutStepIndex === 0 && !aiCheckoutForm.hidden && !Object.keys(checkoutDraft).length) {
+          startCheckoutConversation();
+          checkoutSaveStatus.textContent = '確認した共通記録を、夕方チェックアウトの入力候補に反映しました。';
+        } else {
+          checkoutSaveStatus.textContent = '共通記録を更新しました。現在の会話は変更せず、次にやり直したとき入力候補へ反映します。';
+        }
+      });
+
+      const gameDefinitions = {
+        mail: {
+          label: '依頼メール仕分け',
+          questions: [
+            { title:'件名：明日10時の会議確認', detail:'出席可否を本日17時までに返信してください。', options:['今日対応','今週対応','参考'], correct:0, explanation:'返信期限が本日17時なので「今日対応」です。' },
+            { title:'件名：来月の社内研修', detail:'参加希望者は今週金曜日までに申し込んでください。', options:['今日対応','今週対応','参考'], correct:1, explanation:'期限が今週金曜日なので「今週対応」です。' },
+            { title:'件名：社内報8月号', detail:'新しい福利厚生制度の紹介です。返信や申込みは不要です。', options:['今日対応','今週対応','参考'], correct:2, explanation:'対応期限や返信がないため「参考」です。' },
+            { title:'件名：請求書の金額修正', detail:'本日14時までに金額を修正し、経理担当へ再提出してください。', options:['今日対応','今週対応','参考'], correct:0, explanation:'再提出期限が本日14時なので「今日対応」です。' },
+            { title:'件名：備品棚卸しのお願い', detail:'来週水曜日の集計に向け、担当分を今週中に入力してください。', options:['今日対応','今週対応','参考'], correct:1, explanation:'担当分の入力期限が今週中なので「今週対応」です。' }
+          ]
+        },
+        check: {
+          label: 'データ照合チェック',
+          questions: [
+            { title:'伝票1｜交通費', detail:'入力元：7/10・A-104・交通費・1,280円\n登録値：7/10・A-104・交通費・1,280円', options:['一致','要確認'], correct:0, explanation:'4項目すべて一致しています。' },
+            { title:'伝票2｜書籍費', detail:'入力元：7/11・B-208・書籍費・2,640円\n登録値：7/11・B-208・書籍費・2,460円', options:['一致','要確認'], correct:1, explanation:'金額が2,640円と2,460円で異なります。' },
+            { title:'伝票3｜郵送費', detail:'入力元：7/12・C-315・郵送費・840円\n登録値：7/12・C-351・郵送費・840円', options:['一致','要確認'], correct:1, explanation:'社員コードがC-315とC-351で異なります。' },
+            { title:'伝票4｜消耗品費', detail:'入力元：7/13・D-402・消耗品費・980円\n登録値：7/13・D-402・消耗品費・980円', options:['一致','要確認'], correct:0, explanation:'4項目すべて一致しています。' },
+            { title:'伝票5｜書籍費', detail:'入力元：7/14・E-507・書籍費・1,500円\n登録値：7/14・E-507・郵送費・1,500円', options:['一致','要確認'], correct:1, explanation:'区分が書籍費と郵送費で異なります。' }
+          ]
+        },
+        order: {
+          label: '今日の段取りパズル',
+          questions: [
+            { title:'会議資料を作り始める前', detail:'依頼メールには、提出期限と指定テンプレートが書かれています。最初に行うことは？', options:['すぐ本文を書く','依頼内容と期限を確認する','翌日に回す'], correct:1, explanation:'作業前に依頼内容・期限・指定形式を確認します。' },
+            { title:'数値が資料と合わない', detail:'売上表の数値と元データが一致せず、どちらが正しいか判断できません。次に行うことは？', options:['推測で入力する','数値を空欄で提出する','担当者へ確認する'], correct:2, explanation:'判断できない数値は推測せず、担当者へ確認します。' },
+            { title:'資料の更新が終わった', detail:'指定は「共有フォルダへ保存し、完了後に返信」です。次に行うことは？', options:['保存先とファイル名を確認して保存・返信する','自分のPCだけに保存する','返信せず終了する'], correct:0, explanation:'指定された保存先とファイル名を確認し、保存後に完了返信します。' },
+            { title:'2つの依頼が届いた', detail:'Aは本日16時までの修正、Bは来週水曜日までの資料整理です。先に確認するのは？', options:['Bの資料整理','Aの本日締切の修正','どちらも翌日にする'], correct:1, explanation:'画面上の期限では、本日締切のAを先に確認します。' },
+            { title:'社外メールを送る前', detail:'宛先と添付ファイルを指定して送信する作業です。送信直前に行うことは？', options:['宛先・添付・本文を再確認する','件名だけ確認する','確認せず送信する'], correct:0, explanation:'誤送信を防ぐため、宛先・添付・本文を送信前に確認します。' }
+          ]
+        }
+      };
+
+      const gameKeys = Object.keys(gameDefinitions);
+      const gameTabs = [...document.querySelectorAll('[data-game-tab]')];
+      const gamePanels = [...document.querySelectorAll('[data-game-panel]')];
+      const gameStates = {};
+      const GAME_HISTORY_KEY = 'fukushokuAiReadyGameHistoryV1';
+      let gameStorageAvailable = false;
+      let gameHistoryRecovered = false;
+      let gameHistory = {};
+
+      const todayKey = () => {
+        const now = new Date();
+        const pad = value => String(value).padStart(2, '0');
+        return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      };
+      const cleanGameScore = value => Number.isFinite(Number(value)) ? Math.max(0, Math.min(100, Math.round(Number(value)))) : null;
+
+      try {
+        const probeKey = `${GAME_HISTORY_KEY}-probe`;
+        localStorage.setItem(probeKey, '1');
+        localStorage.removeItem(probeKey);
+        gameStorageAvailable = true;
+        const stored = JSON.parse(localStorage.getItem(GAME_HISTORY_KEY) || '{}');
+        if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+          Object.entries(stored).forEach(([date, scores]) => {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !scores || typeof scores !== 'object') return;
+            const cleanDay = {};
+            gameKeys.forEach(key => {
+              const score = cleanGameScore(scores[key]);
+              if (score !== null) cleanDay[key] = score;
+            });
+            if (Object.keys(cleanDay).length) gameHistory[date] = cleanDay;
+          });
+        }
+      } catch (error) {
+        gameHistory = {};
+        try {
+          localStorage.removeItem(GAME_HISTORY_KEY);
+          gameStorageAvailable = true;
+          gameHistoryRecovered = true;
+        } catch (storageError) {
+          gameStorageAvailable = false;
+        }
+      }
+
+      const persistGameHistory = () => {
+        if (!gameStorageAvailable) return;
+        try {
+          localStorage.setItem(GAME_HISTORY_KEY, JSON.stringify(gameHistory));
+        } catch (error) {
+          gameStorageAvailable = false;
+          document.getElementById('gameStorageStatus').textContent = 'ブラウザ内へ保存できなかったため、このページを閉じるまでの一時表示に切り替えました。';
+        }
+      };
+
+      const sampleGameRows = [
+        { label:'Day 1', mail:40, check:40, order:40, total:120, cumulative:150 },
+        { label:'Day 2', mail:60, check:40, order:60, total:160, cumulative:340 },
+        { label:'Day 3', mail:60, check:60, order:60, total:180, cumulative:550 },
+        { label:'Day 4', mail:80, check:60, order:60, total:200, cumulative:780 },
+        { label:'Day 5', mail:80, check:80, order:80, total:240, cumulative:1050 }
+      ];
+
+      const renderGameHistory = () => {
+        const dates = Object.keys(gameHistory).sort();
+        let cumulative = 0;
+        const actualRows = dates.map(date => {
+          const scores = gameHistory[date];
+          const completed = gameKeys.filter(key => Number.isFinite(scores[key])).length;
+          const total = gameKeys.reduce((sum, key) => sum + (scores[key] || 0), 0);
+          cumulative += total + completed * 10;
+          return {
+            label: date.slice(5).replace('-', '/'),
+            mail: scores.mail,
+            check: scores.check,
+            order: scores.order,
+            total,
+            cumulative
+          };
+        });
+        const hasActual = actualRows.length > 0;
+        const displayRows = (hasActual ? actualRows : sampleGameRows).slice(-7);
+        const todayScores = gameHistory[todayKey()] || {};
+        const todayTotal = gameKeys.reduce((sum, key) => sum + (todayScores[key] || 0), 0);
+
+        document.getElementById('gamePracticeDays').textContent = `${dates.length}日`;
+        document.getElementById('gameTodayTotal').textContent = Object.keys(todayScores).length ? `${todayTotal} / 300` : '— / 300';
+        document.getElementById('gameCumulativeScore').textContent = String(cumulative);
+        document.getElementById('gameHistoryCaption').textContent = hasActual
+          ? 'このブラウザに保存された直近7日分です。累積練習ポイントは、各ゲームのその日の最高点と1日1回の継続10ポイントを積み上げます。'
+          : 'まだ記録がないため、累積練習ポイントが上がる表示例（サンプル）を示しています。';
+
+        const chart = document.getElementById('gameScoreChart');
+        chart.replaceChildren();
+        const maxValue = Math.max(...displayRows.map(row => row.cumulative), 1);
+        displayRows.forEach(row => {
+          const column = document.createElement('div');
+          column.className = 'game-score-column';
+          const value = document.createElement('strong');
+          value.textContent = String(row.cumulative);
+          const track = document.createElement('div');
+          track.className = 'game-score-track';
+          const fill = document.createElement('div');
+          fill.className = 'game-score-fill';
+          fill.style.height = `${Math.max(4, Math.round(row.cumulative / maxValue * 100))}%`;
+          track.appendChild(fill);
+          const label = document.createElement('span');
+          label.textContent = row.label;
+          column.append(value, track, label);
+          chart.appendChild(column);
+        });
+        chart.setAttribute('aria-label', `${hasActual ? 'このブラウザの記録' : 'サンプル表示'}。累積練習ポイント：${displayRows.map(row => `${row.label} ${row.cumulative}`).join('、')}`);
+
+        const rows = document.getElementById('gameScoreRows');
+        rows.replaceChildren();
+        displayRows.forEach(row => {
+          const tr = document.createElement('tr');
+          [row.label, row.mail, row.check, row.order, row.total, row.cumulative].forEach((value, index) => {
+            const cell = document.createElement(index === 0 ? 'th' : 'td');
+            if (index === 0) cell.setAttribute('scope', 'row');
+            cell.textContent = value === undefined ? '—' : String(value);
+            tr.appendChild(cell);
+          });
+          rows.appendChild(tr);
+        });
+
+        const status = document.getElementById('gameStorageStatus');
+        if (!status.textContent) {
+          status.textContent = gameHistoryRecovered
+            ? '読み込めない古いゲーム履歴を消去し、新しい履歴へ切り替えました。'
+            : gameStorageAvailable
+            ? 'ゲーム終了時の今日の最高点を、このブラウザ内だけに保存します。'
+            : 'この環境ではブラウザ保存を利用できないため、履歴はページを閉じるまでの一時表示です。';
+        }
+      };
+
+      const selectGameTab = key => {
+        gameTabs.forEach(tab => {
+          const active = tab.dataset.gameTab === key;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+        });
+        gamePanels.forEach(panel => panel.hidden = panel.dataset.gamePanel !== key);
+      };
+
+      gameTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectGameTab(tab.dataset.gameTab));
+        tab.addEventListener('keydown', event => {
+          let nextIndex = null;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % gameTabs.length;
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + gameTabs.length) % gameTabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = gameTabs.length - 1;
+          if (nextIndex === null) return;
+          event.preventDefault();
+          selectGameTab(gameTabs[nextIndex].dataset.gameTab);
+          gameTabs[nextIndex].focus();
+        });
+      });
+
+      const panelPart = (key, attribute) => document.querySelector(`[data-game-panel="${key}"] [${attribute}="${key}"]`);
+
+      const resetGameSession = key => {
+        gameStates[key] = { index:0, correct:0, answered:false, active:false };
+        const start = panelPart(key, 'data-game-start');
+        const stop = panelPart(key, 'data-game-stop');
+        const play = panelPart(key, 'data-game-play');
+        const result = panelPart(key, 'data-game-result');
+        const choices = panelPart(key, 'data-game-choices');
+        const feedback = panelPart(key, 'data-game-feedback');
+        const next = panelPart(key, 'data-game-next');
+        start.hidden = false;
+        start.textContent = 'ゲームを開始';
+        stop.hidden = true;
+        play.hidden = true;
+        result.hidden = true;
+        result.replaceChildren();
+        choices.replaceChildren();
+        feedback.textContent = '';
+        next.hidden = true;
+      };
+
+      const renderGameQuestion = key => {
+        const definition = gameDefinitions[key];
+        const state = gameStates[key];
+        const question = definition.questions[state.index];
+        panelPart(key, 'data-game-progress').textContent = `問題 ${state.index + 1} / ${definition.questions.length}｜1問20点・速度点なし`;
+        panelPart(key, 'data-game-question-title').textContent = question.title;
+        panelPart(key, 'data-game-question-detail').textContent = question.detail;
+        panelPart(key, 'data-game-feedback').textContent = '';
+        panelPart(key, 'data-game-stop').hidden = false;
+        const next = panelPart(key, 'data-game-next');
+        next.hidden = true;
+        next.textContent = state.index === definition.questions.length - 1 ? '結果を見る' : '次の問題へ';
+
+        const choices = panelPart(key, 'data-game-choices');
+        choices.replaceChildren();
+        question.options.forEach((option, optionIndex) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'game-choice';
+          button.textContent = option;
+          button.addEventListener('click', () => {
+            if (state.answered) return;
+            state.answered = true;
+            const correct = optionIndex === question.correct;
+            if (correct) state.correct += 1;
+            [...choices.children].forEach((choiceButton, index) => {
+              choiceButton.disabled = true;
+              if (index === question.correct) {
+                choiceButton.classList.add('correct');
+                choiceButton.textContent = `✓ ${question.options[index]}`;
+              }
+              if (index === optionIndex && !correct) {
+                choiceButton.classList.add('incorrect');
+                choiceButton.textContent = `選択：${question.options[index]}`;
+              }
+            });
+            panelPart(key, 'data-game-feedback').textContent = `${correct ? '確認できました。' : '今回は別の選択でした。'} ${question.explanation}`;
+            if (state.index === definition.questions.length - 1) panelPart(key, 'data-game-stop').hidden = true;
+            next.hidden = false;
+            next.focus();
+          });
+          choices.appendChild(button);
+        });
+        choices.querySelector('button')?.focus();
+      };
+
+      const recordGameScore = (key, score) => {
+        const date = todayKey();
+        const day = gameHistory[date] || {};
+        const previous = Number.isFinite(day[key]) ? day[key] : null;
+        day[key] = previous === null ? score : Math.max(previous, score);
+        gameHistory[date] = day;
+        persistGameHistory();
+        renderGameHistory();
+        return { best:day[key], updated:previous === null || score > previous };
+      };
+
+      const finishGame = (key, completed) => {
+        const definition = gameDefinitions[key];
+        const state = gameStates[key];
+        const answered = state.index + (state.answered ? 1 : 0);
+        const start = panelPart(key, 'data-game-start');
+        const stop = panelPart(key, 'data-game-stop');
+        const play = panelPart(key, 'data-game-play');
+        const result = panelPart(key, 'data-game-result');
+        state.active = false;
+        start.hidden = false;
+        start.textContent = 'もう一度プレイ';
+        stop.hidden = true;
+        play.hidden = true;
+        result.hidden = false;
+        result.setAttribute('tabindex', '-1');
+
+        if (completed) {
+          const score = state.correct * 20;
+          const saved = recordGameScore(key, score);
+          result.innerHTML = `<p><strong>今回のゲームスコア：${score} / 100</strong></p><p>確認できた問題：${state.correct} / ${definition.questions.length}。今日の最高点：${saved.best} / 100${saved.updated ? '（更新）' : ''}</p><p>速度や休憩は採点していません。この点数はゲーム内の記録であり、回復度・就労能力・復職可否を示しません。</p>`;
+        } else {
+          result.innerHTML = `<p><strong>今日はここで終了しました。</strong></p><p>${answered} / ${definition.questions.length}問まで取り組みました。途中終了は失敗ではなく、スコア履歴にも加えません。</p><p>休憩する、別の日に行う、1ゲームだけにする、のいずれでも構いません。</p>`;
+        }
+        result.focus();
+      };
+
+      const startGame = key => {
+        resetGameSession(key);
+        const state = gameStates[key];
+        state.active = true;
+        panelPart(key, 'data-game-start').hidden = true;
+        panelPart(key, 'data-game-stop').hidden = false;
+        panelPart(key, 'data-game-play').hidden = false;
+        renderGameQuestion(key);
+      };
+
+      document.querySelectorAll('[data-game-start]').forEach(button => button.addEventListener('click', () => startGame(button.dataset.gameStart)));
+      document.querySelectorAll('[data-game-stop]').forEach(button => button.addEventListener('click', () => finishGame(button.dataset.gameStop, false)));
+      document.querySelectorAll('[data-game-next]').forEach(button => button.addEventListener('click', () => {
+        const key = button.dataset.gameNext;
+        const state = gameStates[key];
+        if (!state.answered) return;
+        if (state.index >= gameDefinitions[key].questions.length - 1) {
+          finishGame(key, true);
+        } else {
+          state.index += 1;
+          state.answered = false;
+          renderGameQuestion(key);
+        }
+      }));
+
+      const resetGameSessions = () => gameKeys.forEach(resetGameSession);
+      document.getElementById('clearGameHistory').addEventListener('click', () => {
+        if (!Object.keys(gameHistory).length) {
+          document.getElementById('gameStorageStatus').textContent = '消去するゲーム履歴はまだありません。下のグラフと表はサンプル表示です。';
+          return;
+        }
+        if (!window.confirm('このブラウザに保存されたゲーム履歴を消去しますか？')) return;
+        gameHistory = {};
+        let removedFromStorage = gameStorageAvailable;
+        if (gameStorageAvailable) {
+          try {
+            localStorage.removeItem(GAME_HISTORY_KEY);
+          } catch (error) {
+            gameStorageAvailable = false;
+            removedFromStorage = false;
+          }
+        }
+        resetGameSessions();
+        selectGameTab('mail');
+        document.getElementById('gameStorageStatus').textContent = removedFromStorage
+          ? 'このブラウザのゲーム履歴を消去しました。下のグラフと表はサンプル表示に戻りました。'
+          : 'このページ内の履歴は消去しましたが、ブラウザ保存を消去できませんでした。ブラウザのサイトデータ設定から削除してください。';
+        renderGameHistory();
+      });
+
+      resetGameSessions();
+      selectGameTab('mail');
+      renderGameHistory();
+
+      document.querySelectorAll('[data-route]').forEach(button => {
+        button.addEventListener('click', () => {
+          const level = button.dataset.route;
+          const result = document.getElementById('routeResult');
+          result.dataset.level = level;
+          if (level === '1') result.innerHTML = '<p><strong>課題を調整できます。</strong><br>短縮・延期・今日は休む、から選べます。未実施を失敗扱いしません。</p>';
+          if (level === '2') result.innerHTML = '<p><strong>通常プログラムを一時停止します。</strong><br>主治医、産業医、または会社から指定された相談窓口へ連絡してください。AIとの自由対話は続けず、安全案内画面へ切り替えます。</p>';
+          if (level === '3') result.innerHTML = '<p><strong>画面操作より、今の安全確保を優先してください。</strong><br>一人にならず、身近な人や緊急機関へ助けを求めてください。日本国内で直ちに救急対応が必要な場合は119へ。AIは危険度の診断や説得を続けません。</p>';
+        });
+      });
+
+      document.querySelectorAll('.share-toggle').forEach(toggle => {
+        toggle.addEventListener('change', () => {
+          const target = document.getElementById(toggle.dataset.target);
+          target.hidden = !toggle.checked;
+        });
+      });
+
+      const certButtons = [...document.querySelectorAll('.level-button')];
+      const setCertLevel = level => {
+        certButtons.forEach(button => button.classList.toggle('active', Number(button.dataset.certLevel) === level));
+        document.querySelectorAll('.cert-l2').forEach(row => row.hidden = level < 2);
+        document.querySelectorAll('.cert-l3').forEach(row => row.hidden = level < 3);
+        document.getElementById('certScope').textContent = [
+          'レベル1：受講した事実のみ',
+          'レベル2：受講コースと期間まで',
+          'レベル3：本人が選んだ実施記録まで'
+        ][level - 1];
+        document.getElementById('certVerifyResult').textContent = '';
+      };
+      certButtons.forEach(button => button.addEventListener('click', () => setCertLevel(Number(button.dataset.certLevel))));
+      document.getElementById('verifyCert').addEventListener('click', () => {
+        document.getElementById('certVerifyResult').textContent = '✓ 検証成功（デモ）：発行者情報と改ざんがないことを確認した想定です。';
+      });
+
+      document.getElementById('disclosureForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const recipient = document.getElementById('disclosureRecipient').value;
+        const selected = [...document.querySelectorAll('.disclosure-field:checked')].map(x => x.dataset.label);
+        const out = document.getElementById('disclosureOutput');
+        out.hidden = false;
+        out.innerHTML = `<p><strong>提示先：</strong>${escapeHtml(recipient)}</p><p><strong>開示する項目：</strong>${selected.length ? selected.map(escapeHtml).join('／') : 'なし'}</p><p>共有前に本人が最終確認し、送信操作を行う想定です。このデモから外部へは送信されません。</p>`;
+      });
+
+      document.getElementById('resetDemo').addEventListener('click', () => {
+        document.querySelectorAll('form').forEach(f => f.reset());
+        document.querySelectorAll('#demo-summary textarea, #demo-memo input, #demo-memo textarea').forEach(field => field.value = '');
+        consents.forEach(c => c.checked = false);
+        document.querySelectorAll('.share-toggle').forEach(t => { t.checked = true; document.getElementById(t.dataset.target).hidden = false; });
+        latestCommonWorkRecord = null;
+        document.getElementById('workOutput').hidden = true;
+        startCheckinConversation(false);
+        checkinSaveStatus.textContent = '画面入力を初期化しました。保存済みの体調・睡眠記録は保持しています。';
+        startCheckoutConversation(false);
+        checkoutSaveStatus.textContent = '画面入力を初期化しました。保存済みの夕方記録は保持しています。';
+        document.querySelectorAll('.demo-output').forEach(out => out.hidden = true);
+        resetGameSessions();
+        selectGameTab('mail');
+        document.getElementById('disclosureOutput').hidden = true;
+        document.getElementById('routeResult').dataset.level = '1';
+        document.getElementById('routeResult').innerHTML = '<p>上の申告例を選ぶと、安全画面の内容が表示されます。</p>';
+        updateConsent();
+        slideIndex = 0;
+        renderSlide();
+        selectDay(0);
+        selectWork('summary');
+        setCertLevel(1);
+        lectureButtons.forEach(button => button.classList.remove('active'));
+        lectureVideo.pause();
+        lectureVideo.removeAttribute('src');
+        lectureVideo.load();
+        lectureTitle.textContent = '動画を選択してください';
+        lectureStatus.textContent = 'V00～V09の10本を選択できます。再生ボタンを押すまで自動再生しません。';
+        resetVideoReflections();
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+      }
+    })();
+  </script>
+</body>
+</html>
