@@ -450,7 +450,7 @@
     .game-choice:disabled { cursor: default; opacity: 1; }
     .game-feedback { min-height: 1.7em; margin: 10px 0 0; color: var(--muted); font-weight: 700; }
     .breaker-shell { max-width: 430px; margin: 18px auto 0; }
-    .breaker-scorebar { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+    .breaker-scorebar { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
     .breaker-scorebar div { padding: 9px 6px; border: 1px solid var(--line); border-radius: 10px; background: white; text-align: center; }
     .breaker-scorebar span { display: block; color: var(--muted); font-size: .72rem; font-weight: 750; }
     .breaker-scorebar strong { color: var(--navy); font-size: 1.1rem; }
@@ -463,8 +463,10 @@
     .breaker-control { min-height: 58px; border: 1px solid #9eb4c8; border-radius: 12px; color: var(--navy); background: white; font-size: 1.2rem; font-weight: 850; touch-action: manipulation; }
     .breaker-control:active { color: white; background: var(--navy); }
     .breaker-note { margin: 12px 0 0; color: var(--muted); font-size: .86rem; }
+    .special-game-tools { display: flex; justify-content: flex-end; margin: 10px 0; }
+    .game-sound-toggle[aria-pressed="false"] { color: var(--muted); background: #f3f5f7; }
     .number-game-shell { max-width: 620px; margin: 18px auto 0; }
-    .number-game-status { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-bottom: 14px; }
+    .number-game-status { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; margin-bottom: 14px; }
     .number-game-status div { padding: 10px 6px; border: 1px solid var(--line); border-radius: 10px; background: white; text-align: center; }
     .number-game-status span { display: block; color: var(--muted); font-size: .72rem; font-weight: 750; }
     .number-game-status strong { color: var(--navy); font-size: 1.08rem; }
@@ -474,7 +476,7 @@
     .number-choice:hover:not(:disabled) { border-color: var(--teal); background: #f2fbfb; }
     .number-choice:disabled { opacity: .6; }
     .number-feedback { min-height: 1.7em; margin: 10px 0 0; color: var(--teal); font-weight: 800; text-align: center; }
-    @media (max-width: 480px) { .number-game-status { grid-template-columns: 1fr 1fr; } .number-choice { min-height: 96px; } }
+    @media (max-width: 560px) { .breaker-scorebar, .number-game-status { grid-template-columns: 1fr 1fr; } .number-choice { min-height: 96px; } }
 
     .certificate-shell { display: grid; grid-template-columns: .75fr 1.25fr; gap: 18px; }
     .cert-qr { width: 86px; height: 86px; border: 6px solid white; border-radius: 8px; background: repeating-conic-gradient(#18324f 0 25%,#fff 0 50%) 0 0/12px 12px; box-shadow: 0 0 0 1px var(--line); }
@@ -647,7 +649,7 @@
           <li>利用開始時の安全説明と本人同意</li>
           <li>14日間の標準プログラム</li>
           <li>朝チェックインと模擬ワーク記録</li>
-          <li>約10分で楽しめる作業ゲーム3種類と、スマホ対応のブロック崩し練習</li>
+          <li>作業ゲーム3種類と、効果音付きのスマホ練習2種類</li>
           <li>認知行動療法（CBT）の基礎とアサーション練習</li>
           <li>体調変化時の安全ルーティング</li>
           <li>本人が共有項目を選ぶ復職準備レポート</li>
@@ -936,17 +938,17 @@
     <section id="games">
       <div class="section-head">
         <div class="kicker">DAILY WORK GAMES</div>
-        <h2>3つの作業ゲームとブロック崩し練習</h2>
-        <p class="lead">一般業務をイメージした3つの短いゲームに、スマホで遊べるブロック崩し練習を加えました。無理のない範囲で楽しみ、ブラウザ内の記録を確認できます。</p>
+        <h2>3つの作業ゲームと2つのスマホ練習</h2>
+        <p class="lead">一般業務をイメージした3つの短いゲームに、スマホで遊べるブロック崩しと数字くらべを加えました。無理のない範囲で楽しみ、ブラウザ内の記録を確認できます。</p>
       </div>
 
       <div class="game-guidance">
         <div class="callout callout-warning">
-          <p><strong>時間の注意：</strong>1日1ゲームにつき約10分、5～15分の範囲を目安にしてください。3つの作業ゲームとブロック崩し練習から選び、合計1時間を超えないようにします。疲れた日は1ゲームだけ、または途中終了で構いません。作業ゲームではカウントダウンや時間切れによる減点を設けません。</p>
+          <p><strong>時間と回数の注意：</strong>1日1ゲームにつき約10分、5～15分の範囲を目安にしてください。疲れた日は1ゲームだけ、または途中終了で構いません。ブロック崩しと数字くらべは、やりすぎによる疲れと慣れの影響を抑えるため、それぞれ1日3回までです。開始した時点で1回と数え、その日の最高成績だけを保存します。</p>
           <p class="helper">時間設計の参考：<a href="https://www.mhlw.go.jp/web/t_doc_keyword?dataId=00tc4418&amp;dataType=1&amp;keyword=%E6%83%85%E5%A0%B1%E6%A9%9F%E5%99%A8%E4%BD%9C%E6%A5%AD&amp;mode=0&amp;pageNo=1" target="_blank" rel="noopener">厚生労働省「情報機器作業における労働衛生管理のためのガイドライン」</a></p>
         </div>
         <div class="callout">
-          <p><strong>スコアの見方：</strong>各ゲームは5問・100点満点で、速度点や休憩による減点はありません。ゲームスコアとは別に、各ゲームのその日の最高点へ1日1回10ポイントを加えた「累積練習ポイント」を表示し、続けた分が積み上がるようにします。繰り返しによる慣れでも得点は上がるため、回復度、就労能力、復職可否、再休職リスクの評価には使いません。日ごとの変動も自然なものとして扱います。</p>
+          <p><strong>スコアの見方：</strong>3つの作業ゲームは5問・100点満点で、速度点や休憩による減点はありません。ブロック崩しは消したブロック数、数字くらべは正解数を記録します。いずれも繰り返しによる慣れで得点が上がるため、回復度、就労能力、復職可否、再休職リスクの評価には使いません。日ごとの変動も自然なものとして扱います。</p>
           <p class="helper">履歴はデモとしてこのブラウザ内だけに保存し、外部送信や会社・支援者への自動共有は行いません。ブラウザのデータを消去すると履歴も消えます。</p>
         </div>
       </div>
@@ -957,7 +959,7 @@
             <h3>日別スコアと累積練習ポイント</h3>
             <p id="gameHistoryCaption">まだ記録がないため、累積練習ポイントが上がる表示例を示しています。</p>
           </div>
-          <button class="btn btn-outline btn-small" id="clearGameHistory" type="button">このブラウザのゲーム履歴を消去</button>
+          <button class="btn btn-outline btn-small" id="clearGameHistory" type="button">3つの作業ゲーム履歴を消去</button>
         </div>
         <div class="game-score-summary">
           <div class="game-score-metric"><span>練習日数</span><strong id="gamePracticeDays">0日</strong></div>
@@ -1043,14 +1045,16 @@
         <div class="game-panel" id="game-panel-breaker" role="tabpanel" aria-labelledby="game-tab-breaker" data-game-panel="breaker" tabindex="0" hidden>
           <div class="game-panel-head">
             <div><h3>ブロック崩し練習</h3><p>バーを左右に動かしてボールを返し、3機がなくなるまでに消したブロック数を記録します。ボールは少しずつ速くなります。</p></div>
-            <span class="game-time-chip">スマホ対応｜3機</span>
+            <span class="game-time-chip">スマホ対応｜3機｜1日3回</span>
           </div>
           <div class="breaker-shell">
             <div class="breaker-scorebar" aria-live="polite">
               <div><span>消した数</span><strong id="breakerScore">0</strong></div>
               <div><span>残り</span><strong id="breakerLives">3機</strong></div>
-              <div><span>自己ベスト</span><strong id="breakerBest">0</strong></div>
+              <div><span>今日の最高</span><strong id="breakerBest">0</strong></div>
+              <div><span>今日の回数</span><strong id="breakerAttempts">0 / 3</strong></div>
             </div>
+            <div class="special-game-tools"><button class="btn btn-outline btn-small game-sound-toggle" type="button" data-game-sound-toggle aria-pressed="true">効果音：オン</button></div>
             <div class="breaker-stage" id="breakerStage">
               <canvas id="breakerCanvas" width="360" height="560" aria-label="ブロック崩しのゲーム画面"></canvas>
               <div class="breaker-overlay" id="breakerOverlay"><strong>ブロック崩し練習</strong><span>3機で何個消せるか挑戦します</span><button class="btn btn-teal" id="breakerStart" type="button">練習を開始</button></div>
@@ -1059,22 +1063,24 @@
               <button class="breaker-control" id="breakerLeft" type="button" aria-label="バーを左へ動かす">◀ 左へ</button>
               <button class="breaker-control" id="breakerRight" type="button" aria-label="バーを右へ動かす">右へ ▶</button>
             </div>
-            <p class="breaker-note">画面を指で左右になぞるか、下の左右ボタンで操作します。パソコンでは左右の矢印キーも使えます。速さや得点は回復度・就労能力を示すものではありません。疲れたらいつでも中断してください。</p>
-            <p class="status-line" id="breakerRecord" role="status" aria-live="polite">このブラウザ内だけにプレイ記録を保存します。</p>
+            <p class="breaker-note">画面を指で左右になぞるか、下の左右ボタンで操作します。パソコンでは左右の矢印キーも使えます。開始時点で今日の1回として数え、中断も1回に含みます。速さや得点は回復度・就労能力を示しません。</p>
+            <p class="status-line" id="breakerRecord" role="status" aria-live="polite">1日3回まで。その日の最高成績をこのブラウザ内だけに保存します。</p>
           </div>
         </div>
         <div class="game-panel" id="game-panel-numbers" role="tabpanel" aria-labelledby="game-tab-numbers" data-game-panel="numbers" tabindex="0" hidden>
           <div class="game-panel-head">
             <div><h3>数字くらべ練習</h3><p>毎回表示される「大きい方」または「小さい方」に合う左右の数字を選びます。正解が増えると四則演算へ進みます。</p></div>
-            <span class="game-time-chip">60秒｜3回ミスで終了</span>
+            <span class="game-time-chip">60秒｜3回ミス｜1日3回</span>
           </div>
           <div class="number-game-shell">
             <div class="number-game-status" aria-live="polite">
               <div><span>残り時間</span><strong id="numberTime">60秒</strong></div>
               <div><span>正解</span><strong id="numberCorrect">0回</strong></div>
               <div><span>ミス</span><strong id="numberMisses">0 / 3</strong></div>
-              <div><span>自己ベスト</span><strong id="numberBest">0回</strong></div>
+              <div><span>今日の最高</span><strong id="numberBest">0回</strong></div>
+              <div><span>今日の回数</span><strong id="numberAttempts">0 / 3</strong></div>
             </div>
+            <div class="special-game-tools"><button class="btn btn-outline btn-small game-sound-toggle" type="button" data-game-sound-toggle aria-pressed="true">効果音：オン</button></div>
             <div class="number-target" id="numberTarget">開始すると、選ぶ方がここに表示されます</div>
             <div class="number-choices" role="group" aria-labelledby="numberTarget">
               <button class="number-choice" id="numberLeft" type="button" disabled>—</button>
@@ -1082,8 +1088,8 @@
             </div>
             <p class="number-feedback" id="numberFeedback" role="status" aria-live="polite"></p>
             <div class="game-actions"><button class="btn btn-teal" id="numberStart" type="button">練習を開始</button></div>
-            <p class="breaker-note">割り算は割り切れる問題だけが出ます。暗算の速さや正解数は、回復度・就労能力を示すものではありません。疲れたら途中でやめて構いません。</p>
-            <p class="status-line" id="numberRecord" role="status" aria-live="polite">このブラウザ内だけにプレイ記録を保存します。</p>
+            <p class="breaker-note">割り算は割り切れる問題だけが出ます。開始時点で今日の1回として数え、中断も1回に含みます。暗算の速さや正解数は、回復度・就労能力を示しません。</p>
+            <p class="status-line" id="numberRecord" role="status" aria-live="polite">1日3回まで。その日の最高成績をこのブラウザ内だけに保存します。</p>
           </div>
         </div>
       </div>
@@ -1942,25 +1948,151 @@
       selectGameTab('mail');
       renderGameHistory();
 
-      const NUMBER_RECORD_KEY = 'fukushokuAiReadyNumberCompareV1';
-      const numberGame = { running:false, correct:0, misses:0, remaining:60, target:'large', values:[0,0], timer:0 };
-      let numberStats = { best:0, latest:0, plays:0 };
+      const DAILY_SPECIAL_GAME_LIMIT = 3;
+      const GAME_SOUND_KEY = 'fukushokuAiReadyGameSoundV1';
+      const NUMBER_RECORD_KEY = 'fukushokuAiReadyNumberCompareV2';
+      const BREAKER_RECORD_KEY = 'fukushokuAiReadyBreakerV2';
+      let dailyGameStorageAvailable = true;
+      let gameSoundEnabled = true;
+      let gameAudioContext = null;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
       try {
-        const stored = JSON.parse(localStorage.getItem(NUMBER_RECORD_KEY) || '{}');
-        numberStats = { best:Math.max(0,Math.round(Number(stored.best)||0)), latest:Math.max(0,Math.round(Number(stored.latest)||0)), plays:Math.max(0,Math.round(Number(stored.plays)||0)) };
-      } catch (error) {}
+        const probeKey = 'fukushokuAiReadyDailyGameProbe';
+        localStorage.setItem(probeKey,'1');
+        localStorage.removeItem(probeKey);
+        gameSoundEnabled = localStorage.getItem(GAME_SOUND_KEY) !== 'off';
+      } catch (error) {
+        dailyGameStorageAvailable = false;
+      }
+
+      const updateSoundToggles = () => {
+        document.querySelectorAll('[data-game-sound-toggle]').forEach(button => {
+          button.disabled = !AudioContextClass;
+          button.setAttribute('aria-pressed',String(gameSoundEnabled && Boolean(AudioContextClass)));
+          button.textContent = !AudioContextClass ? '効果音：非対応' : `効果音：${gameSoundEnabled ? 'オン' : 'オフ'}`;
+        });
+      };
+
+      const ensureGameAudio = () => {
+        if (!gameSoundEnabled || !AudioContextClass) return null;
+        try {
+          if (!gameAudioContext) gameAudioContext = new AudioContextClass();
+          if (gameAudioContext.state === 'suspended') gameAudioContext.resume().catch(() => {});
+          return gameAudioContext;
+        } catch (error) {
+          return null;
+        }
+      };
+
+      const playGameTone = (frequency,duration=.055,volume=.035,type='sine',endFrequency=null,delay=0) => {
+        const context = ensureGameAudio();
+        if (!context) return;
+        try {
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          const start = context.currentTime + delay;
+          oscillator.type = type;
+          oscillator.frequency.setValueAtTime(Math.max(40,frequency),start);
+          if (endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(40,endFrequency),start + duration);
+          gain.gain.setValueAtTime(.0001,start);
+          gain.gain.exponentialRampToValueAtTime(volume,start + .006);
+          gain.gain.exponentialRampToValueAtTime(.0001,start + duration);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start(start);
+          oscillator.stop(start + duration + .02);
+        } catch (error) {}
+      };
+
+      document.querySelectorAll('[data-game-sound-toggle]').forEach(button => button.addEventListener('click',() => {
+        gameSoundEnabled = !gameSoundEnabled;
+        try { localStorage.setItem(GAME_SOUND_KEY,gameSoundEnabled ? 'on' : 'off'); } catch (error) {}
+        updateSoundToggles();
+        if (gameSoundEnabled) playGameTone(520,.07,.03,'sine',660);
+      }));
+      updateSoundToggles();
+
+      const loadDailyGameRecord = (storageKey,maxScore) => {
+        const record = { days:{} };
+        if (!dailyGameStorageAvailable) return record;
+        try {
+          const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+          const days = stored && typeof stored === 'object' && stored.days && typeof stored.days === 'object' ? stored.days : {};
+          Object.keys(days).sort().slice(-90).forEach(date => {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+            record.days[date] = {
+              attempts:Math.max(0,Math.min(DAILY_SPECIAL_GAME_LIMIT,Math.round(Number(days[date]?.attempts)||0))),
+              best:Math.max(0,Math.min(maxScore,Math.round(Number(days[date]?.best)||0)))
+            };
+          });
+        } catch (error) {
+          try { localStorage.removeItem(storageKey); } catch (storageError) { dailyGameStorageAvailable=false; }
+        }
+        return record;
+      };
+
+      const getDailyGameEntry = (record,date=todayKey()) => {
+        if (!record.days[date]) record.days[date] = { attempts:0,best:0 };
+        return record.days[date];
+      };
+
+      const persistDailyGameRecordUnlocked = (storageKey,record) => {
+        if (!dailyGameStorageAvailable) return false;
+        try {
+          const maxScore=storageKey===BREAKER_RECORD_KEY?80:999;
+          const latest=loadDailyGameRecord(storageKey,maxScore);
+          Object.entries(record.days).forEach(([date,entry])=>{
+            const latestEntry=getDailyGameEntry(latest,date);
+            latestEntry.attempts=Math.max(latestEntry.attempts,entry.attempts);
+            latestEntry.best=Math.max(latestEntry.best,entry.best);
+          });
+          record.days=latest.days;
+          localStorage.setItem(storageKey,JSON.stringify(record));
+          return true;
+        } catch (error) {
+          dailyGameStorageAvailable=false;
+          return false;
+        }
+      };
+
+      const withDailyGameLock = (storageKey,operation) => {
+        if (navigator.locks && typeof navigator.locks.request==='function') {
+          return navigator.locks.request(`fukushoku-ready-${storageKey}`,{mode:'exclusive'},operation);
+        }
+        return Promise.resolve(operation());
+      };
+
+      const persistDailyGameRecord = (storageKey,record) => withDailyGameLock(storageKey,()=>persistDailyGameRecordUnlocked(storageKey,record));
+
+      const reserveDailyGameAttempt = async (storageKey,maxScore) => {
+        const reserve=()=>{
+          const record=loadDailyGameRecord(storageKey,maxScore);
+          const date=todayKey();
+          const entry=getDailyGameEntry(record,date);
+          if (!dailyGameStorageAvailable || entry.attempts>=DAILY_SPECIAL_GAME_LIMIT) return {ok:false,record,date};
+          entry.attempts+=1;
+          return {ok:persistDailyGameRecordUnlocked(storageKey,record),record,date};
+        };
+        return withDailyGameLock(storageKey,reserve);
+      };
+
+      const numberGame = { running:false,reserving:false,answerLocked:false,correct:0,misses:0,remaining:60,target:'large',values:[0,0],timer:0,nextTimer:0,dayKey:'' };
+      let numberDailyRecord = loadDailyGameRecord(NUMBER_RECORD_KEY,999);
       const numberTime = document.getElementById('numberTime');
       const numberCorrect = document.getElementById('numberCorrect');
       const numberMisses = document.getElementById('numberMisses');
       const numberBest = document.getElementById('numberBest');
+      const numberAttempts = document.getElementById('numberAttempts');
       const numberTarget = document.getElementById('numberTarget');
       const numberFeedback = document.getElementById('numberFeedback');
       const numberRecord = document.getElementById('numberRecord');
+      const numberStart = document.getElementById('numberStart');
       const numberButtons = [document.getElementById('numberLeft'),document.getElementById('numberRight')];
       const randomInt = (min,max) => Math.floor(Math.random() * (max-min+1)) + min;
 
       const makeNumberExpression = level => {
-        if (level === 0) { const value=randomInt(1,99); return { text:String(value), value }; }
+        if (level === 0) { const value=randomInt(1,99); return { text:String(value),value }; }
         if (level === 1) { const a=randomInt(2,45),b=randomInt(1,30); return { text:`${a} ＋ ${b}`,value:a+b }; }
         if (level === 2) { const b=randomInt(1,35),value=randomInt(1,60); return { text:`${value+b} － ${b}`,value }; }
         if (level === 3) { const a=randomInt(2,12),b=randomInt(2,12); return { text:`${a} × ${b}`,value:a*b }; }
@@ -1968,73 +2100,119 @@
       };
 
       const updateNumberLabels = () => {
+        const today = getDailyGameEntry(numberDailyRecord);
         numberTime.textContent = `${numberGame.remaining}秒`;
         numberCorrect.textContent = `${numberGame.correct}回`;
         numberMisses.textContent = `${numberGame.misses} / 3`;
-        numberBest.textContent = `${numberStats.best}回`;
+        numberBest.textContent = `${today.best}回`;
+        numberAttempts.textContent = `${today.attempts} / 3`;
       };
 
-      const nextNumberQuestion = () => {
-        const level = Math.min(4,Math.floor(numberGame.correct / 5));
-        let left = makeNumberExpression(level), right = makeNumberExpression(level), retries=0;
-        while (left.value === right.value && retries < 20) { right=makeNumberExpression(level); retries+=1; }
-        if (left.value === right.value) right={ text:String(right.value+1),value:right.value+1 };
+      const refreshNumberAvailability = () => {
+        const today = getDailyGameEntry(numberDailyRecord);
+        if (!dailyGameStorageAvailable) {
+          numberStart.hidden=false;
+          numberStart.disabled=true;
+          numberStart.textContent='ブラウザ保存が必要です';
+          numberRecord.textContent='回数と日別最高成績を保存できないため、この環境では開始できません。ブラウザのサイトデータ保存を有効にしてください。';
+          return;
+        }
+        const limited = today.attempts >= DAILY_SPECIAL_GAME_LIMIT;
+        numberStart.hidden=numberGame.running;
+        numberStart.disabled=limited || numberGame.running || numberGame.reserving;
+        numberStart.textContent=limited ? '本日は3回実施済み' : today.attempts ? 'もう一度練習する' : '練習を開始';
+        if (limited && !numberGame.running) numberRecord.textContent=`本日は3 / 3回実施済み｜今日の最高 ${today.best}回。続きは明日行えます。`;
+      };
+
+      const saveNumberBest = () => {
+        const entry = getDailyGameEntry(numberDailyRecord,numberGame.dayKey || todayKey());
+        if (numberGame.correct > entry.best) {
+          entry.best=numberGame.correct;
+          persistDailyGameRecord(NUMBER_RECORD_KEY,numberDailyRecord);
+        }
+      };
+
+      const nextNumberQuestion = (message='') => {
+        const level=Math.min(4,Math.floor(numberGame.correct/5));
+        let left=makeNumberExpression(level),right=makeNumberExpression(level),retries=0;
+        while (left.value===right.value && retries<20) { right=makeNumberExpression(level); retries+=1; }
+        if (left.value===right.value) right={ text:String(right.value+1),value:right.value+1 };
         numberGame.values=[left.value,right.value];
         numberGame.target=Math.random()<.5?'large':'small';
         numberTarget.textContent=`${numberGame.target==='large'?'大きい方':'小さい方'}を選んでください`;
         numberTarget.style.background=numberGame.target==='large'?'var(--navy)':'var(--teal)';
         numberButtons[0].textContent=left.text;
         numberButtons[1].textContent=right.text;
-        numberFeedback.textContent=`レベル ${level+1} / 5`;
+        numberButtons.forEach(button=>button.disabled=false);
+        numberGame.answerLocked=false;
+        numberFeedback.textContent=`${message ? `${message}｜` : ''}レベル ${level+1} / 5`;
       };
 
       const finishNumberGame = reason => {
         if (!numberGame.running) return;
         numberGame.running=false;
         clearInterval(numberGame.timer);
+        clearTimeout(numberGame.nextTimer);
+        saveNumberBest();
+        persistDailyGameRecord(NUMBER_RECORD_KEY,numberDailyRecord);
         numberButtons.forEach(button=>button.disabled=true);
-        numberStats.latest=numberGame.correct;
-        numberStats.best=Math.max(numberStats.best,numberGame.correct);
-        numberStats.plays+=1;
-        try { localStorage.setItem(NUMBER_RECORD_KEY,JSON.stringify(numberStats)); } catch (error) {}
         updateNumberLabels();
+        const entry=getDailyGameEntry(numberDailyRecord,numberGame.dayKey);
         numberTarget.textContent=reason==='time'?'60秒が経過しました':reason==='misses'?'3回ミスで終了しました':'途中で終了しました';
-        numberFeedback.textContent=`今回の正解は ${numberGame.correct}回です。`;
-        numberRecord.textContent=`今回 ${numberGame.correct}回｜自己ベスト ${numberStats.best}回｜プレイ ${numberStats.plays}回（このブラウザ内の記録）`;
-        document.getElementById('numberStart').hidden=false;
-        document.getElementById('numberStart').textContent='もう一度練習する';
+        numberFeedback.textContent=`今回 ${numberGame.correct}回正解｜今日の最高 ${entry.best}回`;
+        numberRecord.textContent=`本日 ${entry.attempts} / 3回｜今日の最高 ${entry.best}回（このブラウザ内の記録）`;
+        refreshNumberAvailability();
       };
 
       const answerNumberQuestion = index => {
-        if (!numberGame.running) return;
+        if (!numberGame.running || numberGame.answerLocked) return;
+        numberGame.answerLocked=true;
+        numberButtons.forEach(button=>button.disabled=true);
         const [left,right]=numberGame.values;
         const correctIndex=numberGame.target==='large'?(left>right?0:1):(left<right?0:1);
-        if (index===correctIndex) { numberGame.correct+=1; numberFeedback.textContent='正解です'; }
-        else { numberGame.misses+=1; numberFeedback.textContent=`ミス ${numberGame.misses}回目。次の問題です`; }
+        const correct=index===correctIndex;
+        if (correct) {
+          numberGame.correct+=1;
+          playGameTone(520,.07,.035,'sine',690);
+          playGameTone(690,.065,.025,'sine',820,.065);
+          saveNumberBest();
+        } else {
+          numberGame.misses+=1;
+          playGameTone(210,.13,.04,'triangle',105);
+        }
         updateNumberLabels();
+        const message=correct?'正解です':`不正解です（ミス ${numberGame.misses}回目）`;
+        numberFeedback.textContent=message;
         if (numberGame.misses>=3) { finishNumberGame('misses'); return; }
-        nextNumberQuestion();
+        numberGame.nextTimer=setTimeout(()=>{ if (numberGame.running) nextNumberQuestion(message); },170);
       };
 
-      const startNumberGame = () => {
+      const startNumberGame = async () => {
+        if (numberGame.running || numberGame.reserving) return;
+        ensureGameAudio();
+        numberGame.reserving=true;
+        numberStart.disabled=true;
+        const reservation=await reserveDailyGameAttempt(NUMBER_RECORD_KEY,999);
+        numberGame.reserving=false;
+        numberDailyRecord=reservation.record;
+        if (!reservation.ok) { updateNumberLabels(); refreshNumberAvailability(); return; }
         clearInterval(numberGame.timer);
-        Object.assign(numberGame,{ running:true,correct:0,misses:0,remaining:60 });
-        numberButtons.forEach(button=>button.disabled=false);
-        document.getElementById('numberStart').hidden=true;
+        clearTimeout(numberGame.nextTimer);
+        Object.assign(numberGame,{ running:true,answerLocked:false,correct:0,misses:0,remaining:60,dayKey:reservation.date });
+        numberStart.hidden=true;
         updateNumberLabels();
         nextNumberQuestion();
+        playGameTone(360,.06,.025,'sine',450);
         numberGame.timer=setInterval(()=>{
           numberGame.remaining-=1;
           updateNumberLabels();
           if (numberGame.remaining<=0) finishNumberGame('time');
         },1000);
       };
+
       numberButtons.forEach((button,index)=>button.addEventListener('click',()=>answerNumberQuestion(index)));
-      document.getElementById('numberStart').addEventListener('click',startNumberGame);
+      numberStart.addEventListener('click',startNumberGame);
       new MutationObserver(()=>{ if (document.getElementById('game-panel-numbers').hidden && numberGame.running) finishNumberGame('stopped'); }).observe(document.getElementById('game-panel-numbers'),{ attributes:true,attributeFilter:['hidden'] });
-      document.addEventListener('visibilitychange',()=>{ if(document.hidden&&numberGame.running) finishNumberGame('stopped'); });
-      numberBest.textContent=`${numberStats.best}回`;
-      if(numberStats.plays) numberRecord.textContent=`前回 ${numberStats.latest}回｜自己ベスト ${numberStats.best}回｜プレイ ${numberStats.plays}回（このブラウザ内の記録）`;
 
       const breakerCanvas = document.getElementById('breakerCanvas');
       const breakerContext = breakerCanvas.getContext('2d');
@@ -2043,179 +2221,237 @@
       const breakerScore = document.getElementById('breakerScore');
       const breakerLives = document.getElementById('breakerLives');
       const breakerBest = document.getElementById('breakerBest');
+      const breakerAttempts = document.getElementById('breakerAttempts');
       const breakerRecord = document.getElementById('breakerRecord');
-      const BREAKER_RECORD_KEY = 'fukushokuAiReadyBreakerV1';
-      const breaker = { running:false, score:0, lives:3, paddleX:144, move:0, ball:null, bricks:[], frame:0, lastTime:0 };
-      let breakerStats = { best:0, latest:0, plays:0 };
-
-      try {
-        const stored = JSON.parse(localStorage.getItem(BREAKER_RECORD_KEY) || '{}');
-        breakerStats = {
-          best: Math.max(0, Math.min(80, Math.round(Number(stored.best) || 0))),
-          latest: Math.max(0, Math.min(80, Math.round(Number(stored.latest) || 0))),
-          plays: Math.max(0, Math.round(Number(stored.plays) || 0))
-        };
-      } catch (error) {
-        breakerRecord.textContent = '記録を読み込めなかったため、今回は一時記録で遊べます。';
-      }
+      const breakerStart = document.getElementById('breakerStart');
+      const breaker = { running:false,reserving:false,score:0,lives:3,paddleX:144,move:0,ball:null,bricks:[],frame:0,lastTime:0,dayKey:'' };
+      let breakerDailyRecord = loadDailyGameRecord(BREAKER_RECORD_KEY,80);
 
       const createBreakerBricks = () => {
-        const colors = ['#ff766f','#ff9f43','#ffd166','#6ed6a8','#55c7d9','#73a5ff','#a88bf2','#dc7bd4'];
-        return Array.from({ length:8 }, (_, row) => Array.from({ length:10 }, (_, col) => ({
-          x:7 + col * 35, y:48 + row * 25, width:31, height:17, color:colors[row], alive:true
-        }))).flat();
+        const colors=['#ff766f','#ff9f43','#ffd166','#6ed6a8','#55c7d9','#73a5ff','#a88bf2','#dc7bd4'];
+        return Array.from({length:8},(_,row)=>Array.from({length:10},(_,col)=>({x:7+col*35,y:48+row*25,width:31,height:17,color:colors[row],alive:true}))).flat();
       };
 
       const resetBreakerBall = () => {
-        const direction = Math.random() < .5 ? -1 : 1;
-        breaker.paddleX = 144;
-        breaker.ball = { x:180, y:475, dx:direction * 2.7, dy:-3.1, radius:6 };
+        const direction=Math.random()<.5?-1:1;
+        breaker.paddleX=144;
+        breaker.ball={x:180,y:475,dx:direction*2.7,dy:-3.1,radius:6};
       };
 
       const updateBreakerLabels = () => {
-        breakerScore.textContent = String(breaker.score);
-        breakerLives.textContent = `${breaker.lives}機`;
-        breakerBest.textContent = String(breakerStats.best);
+        const today=getDailyGameEntry(breakerDailyRecord);
+        breakerScore.textContent=String(breaker.score);
+        breakerLives.textContent=`${breaker.lives}機`;
+        breakerBest.textContent=String(today.best);
+        breakerAttempts.textContent=`${today.attempts} / 3`;
       };
 
-      const drawBreaker = () => {
-        const ctx = breakerContext;
-        const gradient = ctx.createLinearGradient(0,0,0,560);
-        gradient.addColorStop(0,'#102d50');
-        gradient.addColorStop(1,'#061323');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0,0,360,560);
-        ctx.fillStyle = 'rgba(255,255,255,.12)';
-        for (let i=0;i<18;i+=1) ctx.fillRect((i * 71) % 360, (i * 97) % 540, 2, 2);
-        breaker.bricks.forEach(brick => {
-          if (!brick.alive) return;
-          ctx.fillStyle = brick.color;
-          ctx.fillRect(brick.x,brick.y,brick.width,brick.height);
-          ctx.fillStyle = 'rgba(255,255,255,.25)';
-          ctx.fillRect(brick.x + 2,brick.y + 2,brick.width - 4,3);
-        });
-        ctx.fillStyle = '#f5fbff';
-        ctx.fillRect(breaker.paddleX,510,72,10);
-        ctx.fillStyle = '#55c7d9';
-        ctx.fillRect(breaker.paddleX + 6,507,60,4);
-        if (breaker.ball) {
-          ctx.beginPath();
-          ctx.arc(breaker.ball.x,breaker.ball.y,breaker.ball.radius,0,Math.PI * 2);
-          ctx.fillStyle = '#fff';
-          ctx.shadowColor = '#8eeaff';
-          ctx.shadowBlur = 9;
-          ctx.fill();
-          ctx.shadowBlur = 0;
+      const refreshBreakerAvailability = () => {
+        const today=getDailyGameEntry(breakerDailyRecord);
+        if (!dailyGameStorageAvailable) {
+          breakerStart.disabled=true;
+          breakerStart.textContent='ブラウザ保存が必要です';
+          breakerRecord.textContent='回数と日別最高成績を保存できないため、この環境では開始できません。ブラウザのサイトデータ保存を有効にしてください。';
+          return;
+        }
+        const limited=today.attempts>=DAILY_SPECIAL_GAME_LIMIT;
+        breakerStart.disabled=limited || breaker.running || breaker.reserving;
+        breakerStart.textContent=limited?'本日は3回実施済み':today.attempts?'もう一度練習する':'練習を開始';
+        if (limited && !breaker.running) breakerRecord.textContent=`本日は3 / 3回実施済み｜今日の最高 ${today.best}個。続きは明日行えます。`;
+      };
+
+      const saveBreakerBest = () => {
+        const entry=getDailyGameEntry(breakerDailyRecord,breaker.dayKey || todayKey());
+        if (breaker.score>entry.best) {
+          entry.best=breaker.score;
+          persistDailyGameRecord(BREAKER_RECORD_KEY,breakerDailyRecord);
         }
       };
 
-      const saveBreakerResult = () => {
-        breakerStats.latest = breaker.score;
-        breakerStats.best = Math.max(breakerStats.best, breaker.score);
-        breakerStats.plays += 1;
-        try { localStorage.setItem(BREAKER_RECORD_KEY, JSON.stringify(breakerStats)); } catch (error) {}
-        updateBreakerLabels();
-        breakerRecord.textContent = `今回 ${breaker.score}個｜自己ベスト ${breakerStats.best}個｜プレイ ${breakerStats.plays}回（このブラウザ内の記録）`;
+      const drawBreaker = () => {
+        const ctx=breakerContext;
+        const gradient=ctx.createLinearGradient(0,0,0,560);
+        gradient.addColorStop(0,'#102d50');
+        gradient.addColorStop(1,'#061323');
+        ctx.fillStyle=gradient;
+        ctx.fillRect(0,0,360,560);
+        ctx.fillStyle='rgba(255,255,255,.12)';
+        for (let i=0;i<18;i+=1) ctx.fillRect((i*71)%360,(i*97)%540,2,2);
+        breaker.bricks.forEach(brick=>{
+          if (!brick.alive) return;
+          ctx.fillStyle=brick.color;
+          ctx.fillRect(brick.x,brick.y,brick.width,brick.height);
+          ctx.fillStyle='rgba(255,255,255,.25)';
+          ctx.fillRect(brick.x+2,brick.y+2,brick.width-4,3);
+        });
+        ctx.fillStyle='#f5fbff';
+        ctx.fillRect(breaker.paddleX,510,72,10);
+        ctx.fillStyle='#55c7d9';
+        ctx.fillRect(breaker.paddleX+6,507,60,4);
+        if (breaker.ball) {
+          ctx.beginPath();
+          ctx.arc(breaker.ball.x,breaker.ball.y,breaker.ball.radius,0,Math.PI*2);
+          ctx.fillStyle='#fff';
+          ctx.shadowColor='#8eeaff';
+          ctx.shadowBlur=9;
+          ctx.fill();
+          ctx.shadowBlur=0;
+        }
       };
 
-      const finishBreaker = cleared => {
+      const finishBreaker = (cleared,reason='ended') => {
         if (!breaker.running) return;
-        breaker.running = false;
+        breaker.running=false;
         cancelAnimationFrame(breaker.frame);
-        saveBreakerResult();
-        breakerOverlay.hidden = false;
-        breakerOverlay.querySelector('strong').textContent = cleared ? '全ブロッククリア！' : '3機の練習終了';
-        breakerOverlay.querySelector('span').textContent = `${breaker.score}個のブロックを消しました`;
-        document.getElementById('breakerStart').textContent = 'もう一度練習する';
+        saveBreakerBest();
+        persistDailyGameRecord(BREAKER_RECORD_KEY,breakerDailyRecord);
+        updateBreakerLabels();
+        const entry=getDailyGameEntry(breakerDailyRecord,breaker.dayKey);
+        breakerOverlay.hidden=false;
+        breakerOverlay.querySelector('strong').textContent=cleared?'全ブロッククリア！':reason==='stopped'?'途中で終了しました':'3機の練習終了';
+        breakerOverlay.querySelector('span').textContent=`今回 ${breaker.score}個｜今日の最高 ${entry.best}個`;
+        breakerRecord.textContent=`本日 ${entry.attempts} / 3回｜今日の最高 ${entry.best}個（このブラウザ内の記録）`;
+        if (cleared) {
+          playGameTone(520,.09,.035,'sine',660);
+          playGameTone(660,.09,.03,'sine',820,.08);
+        }
+        refreshBreakerAvailability();
       };
 
       const speedUpBreakerBall = amount => {
-        const ball = breaker.ball;
-        const speed = Math.min(8.4, Math.hypot(ball.dx,ball.dy) + amount);
-        const angle = Math.atan2(ball.dy,ball.dx);
-        ball.dx = Math.cos(angle) * speed;
-        ball.dy = Math.sin(angle) * speed;
+        const ball=breaker.ball;
+        const speed=Math.min(8.4,Math.hypot(ball.dx,ball.dy)+amount);
+        const angle=Math.atan2(ball.dy,ball.dx);
+        ball.dx=Math.cos(angle)*speed;
+        ball.dy=Math.sin(angle)*speed;
       };
 
       const runBreakerFrame = time => {
         if (!breaker.running) return;
-        const steps = Math.max(1, Math.min(3, Math.round((time - breaker.lastTime) / 16.67) || 1));
-        breaker.lastTime = time;
-        for (let step=0; step<steps; step+=1) {
-          breaker.paddleX = Math.max(0, Math.min(288, breaker.paddleX + breaker.move * 6));
-          const ball = breaker.ball;
-          ball.x += ball.dx;
-          ball.y += ball.dy;
-          if (ball.x <= ball.radius || ball.x >= 360 - ball.radius) { ball.dx *= -1; ball.x = Math.max(ball.radius,Math.min(360-ball.radius,ball.x)); }
-          if (ball.y <= ball.radius) { ball.dy = Math.abs(ball.dy); ball.y = ball.radius; }
-          if (ball.dy > 0 && ball.y + ball.radius >= 507 && ball.y - ball.radius <= 523 && ball.x >= breaker.paddleX - 4 && ball.x <= breaker.paddleX + 76) {
-            const offset = (ball.x - (breaker.paddleX + 36)) / 36;
-            const speed = Math.min(8.4, Math.hypot(ball.dx,ball.dy) + .08);
-            ball.dx = offset * speed * .85;
-            ball.dy = -Math.sqrt(Math.max(4, speed * speed - ball.dx * ball.dx));
-            ball.y = 500;
+        const steps=Math.max(1,Math.min(3,Math.round((time-breaker.lastTime)/16.67)||1));
+        breaker.lastTime=time;
+        for (let step=0;step<steps;step+=1) {
+          breaker.paddleX=Math.max(0,Math.min(288,breaker.paddleX+breaker.move*6));
+          const ball=breaker.ball;
+          ball.x+=ball.dx;
+          ball.y+=ball.dy;
+          if (ball.x<=ball.radius || ball.x>=360-ball.radius) {
+            ball.dx*=-1;
+            ball.x=Math.max(ball.radius,Math.min(360-ball.radius,ball.x));
+            playGameTone(185,.035,.018,'square');
+          }
+          if (ball.y<=ball.radius) {
+            ball.dy=Math.abs(ball.dy);
+            ball.y=ball.radius;
+            playGameTone(205,.035,.018,'square');
+          }
+          if (ball.dy>0 && ball.y+ball.radius>=507 && ball.y-ball.radius<=523 && ball.x>=breaker.paddleX-4 && ball.x<=breaker.paddleX+76) {
+            const offset=(ball.x-(breaker.paddleX+36))/36;
+            const speed=Math.min(8.4,Math.hypot(ball.dx,ball.dy)+.08);
+            ball.dx=offset*speed*.85;
+            ball.dy=-Math.sqrt(Math.max(4,speed*speed-ball.dx*ball.dx));
+            ball.y=500;
+            playGameTone(285,.045,.025,'triangle',340);
           }
           for (const brick of breaker.bricks) {
-            if (!brick.alive || ball.x + ball.radius < brick.x || ball.x - ball.radius > brick.x + brick.width || ball.y + ball.radius < brick.y || ball.y - ball.radius > brick.y + brick.height) continue;
-            brick.alive = false;
-            breaker.score += 1;
-            ball.dy *= -1;
+            if (!brick.alive || ball.x+ball.radius<brick.x || ball.x-ball.radius>brick.x+brick.width || ball.y+ball.radius<brick.y || ball.y-ball.radius>brick.y+brick.height) continue;
+            brick.alive=false;
+            breaker.score+=1;
+            ball.dy*=-1;
             speedUpBreakerBall(.055);
+            saveBreakerBest();
             updateBreakerLabels();
-            if (breaker.score === breaker.bricks.length) { finishBreaker(true); return; }
+            playGameTone(420+(breaker.score%7)*34,.045,.026,'triangle',500+(breaker.score%7)*34);
+            if (breaker.score===breaker.bricks.length) { finishBreaker(true); return; }
             break;
           }
-          if (ball.y - ball.radius > 560) {
-            breaker.lives -= 1;
+          if (ball.y-ball.radius>560) {
+            breaker.lives-=1;
             updateBreakerLabels();
-            if (breaker.lives <= 0) { finishBreaker(false); return; }
+            playGameTone(190,.18,.04,'triangle',80);
+            if (breaker.lives<=0) { finishBreaker(false); return; }
             resetBreakerBall();
           }
         }
         drawBreaker();
-        breaker.frame = requestAnimationFrame(runBreakerFrame);
+        breaker.frame=requestAnimationFrame(runBreakerFrame);
       };
 
-      const startBreaker = () => {
+      const startBreaker = async () => {
+        if (breaker.running || breaker.reserving) return;
+        ensureGameAudio();
+        breaker.reserving=true;
+        breakerStart.disabled=true;
+        const reservation=await reserveDailyGameAttempt(BREAKER_RECORD_KEY,80);
+        breaker.reserving=false;
+        breakerDailyRecord=reservation.record;
+        if (!reservation.ok) { updateBreakerLabels(); refreshBreakerAvailability(); return; }
         cancelAnimationFrame(breaker.frame);
-        breaker.running = true;
-        breaker.score = 0;
-        breaker.lives = 3;
-        breaker.move = 0;
-        breaker.bricks = createBreakerBricks();
+        Object.assign(breaker,{running:true,score:0,lives:3,move:0,dayKey:reservation.date});
+        breaker.bricks=createBreakerBricks();
         resetBreakerBall();
         updateBreakerLabels();
-        breakerOverlay.hidden = true;
-        breaker.lastTime = performance.now();
+        breakerStart.disabled=true;
+        breakerOverlay.hidden=true;
+        breaker.lastTime=performance.now();
         drawBreaker();
-        breaker.frame = requestAnimationFrame(runBreakerFrame);
+        playGameTone(330,.06,.025,'sine',440);
+        breaker.frame=requestAnimationFrame(runBreakerFrame);
       };
 
       const setBreakerFromPointer = event => {
-        const rect = breakerStage.getBoundingClientRect();
-        breaker.paddleX = Math.max(0,Math.min(288,(event.clientX - rect.left) / rect.width * 360 - 36));
+        const rect=breakerStage.getBoundingClientRect();
+        breaker.paddleX=Math.max(0,Math.min(288,(event.clientX-rect.left)/rect.width*360-36));
       };
-      breakerStage.addEventListener('pointerdown', event => { if (breaker.running) { breakerStage.setPointerCapture(event.pointerId); setBreakerFromPointer(event); } });
-      breakerStage.addEventListener('pointermove', event => { if (breaker.running && breakerStage.hasPointerCapture(event.pointerId)) setBreakerFromPointer(event); });
+      breakerStage.addEventListener('pointerdown',event=>{ if (breaker.running) { breakerStage.setPointerCapture(event.pointerId); setBreakerFromPointer(event); } });
+      breakerStage.addEventListener('pointermove',event=>{ if (breaker.running && breakerStage.hasPointerCapture(event.pointerId)) setBreakerFromPointer(event); });
       const bindBreakerControl = (id,direction) => {
-        const control = document.getElementById(id);
-        control.addEventListener('pointerdown', event => { event.preventDefault(); breaker.move = direction; control.setPointerCapture(event.pointerId); });
-        ['pointerup','pointercancel','lostpointercapture'].forEach(name => control.addEventListener(name, () => { if (breaker.move === direction) breaker.move = 0; }));
+        const control=document.getElementById(id);
+        control.addEventListener('pointerdown',event=>{ event.preventDefault(); breaker.move=direction; control.setPointerCapture(event.pointerId); });
+        ['pointerup','pointercancel','lostpointercapture'].forEach(name=>control.addEventListener(name,()=>{ if (breaker.move===direction) breaker.move=0; }));
       };
       bindBreakerControl('breakerLeft',-1);
       bindBreakerControl('breakerRight',1);
-      document.addEventListener('keydown', event => {
+      document.addEventListener('keydown',event=>{
         if (!breaker.running || document.getElementById('game-panel-breaker').hidden) return;
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); breaker.move = event.key === 'ArrowLeft' ? -1 : 1; }
+        if (event.key==='ArrowLeft' || event.key==='ArrowRight') { event.preventDefault(); breaker.move=event.key==='ArrowLeft'?-1:1; }
       });
-      document.addEventListener('keyup', event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') breaker.move = 0; });
-      document.getElementById('breakerStart').addEventListener('click', startBreaker);
-      document.addEventListener('visibilitychange', () => { if (document.hidden && breaker.running) finishBreaker(false); });
-      new MutationObserver(() => { if (document.getElementById('game-panel-breaker').hidden && breaker.running) finishBreaker(false); }).observe(document.getElementById('game-panel-breaker'), { attributes:true, attributeFilter:['hidden'] });
-      breaker.bricks = createBreakerBricks();
+      document.addEventListener('keyup',event=>{ if (event.key==='ArrowLeft' || event.key==='ArrowRight') breaker.move=0; });
+      breakerStart.addEventListener('click',startBreaker);
+      new MutationObserver(()=>{ if (document.getElementById('game-panel-breaker').hidden && breaker.running) finishBreaker(false,'stopped'); }).observe(document.getElementById('game-panel-breaker'),{attributes:true,attributeFilter:['hidden']});
+
+      document.addEventListener('visibilitychange',()=>{
+        if (!document.hidden) return;
+        if (numberGame.running) finishNumberGame('stopped');
+        if (breaker.running) finishBreaker(false,'stopped');
+      });
+      window.addEventListener('pagehide',()=>{
+        if (numberGame.running) finishNumberGame('stopped');
+        if (breaker.running) finishBreaker(false,'stopped');
+      });
+      window.addEventListener('storage',event=>{
+        if (event.key===NUMBER_RECORD_KEY && !numberGame.running && !numberGame.reserving) {
+          numberDailyRecord=loadDailyGameRecord(NUMBER_RECORD_KEY,999);
+          updateNumberLabels();
+          refreshNumberAvailability();
+        }
+        if (event.key===BREAKER_RECORD_KEY && !breaker.running && !breaker.reserving) {
+          breakerDailyRecord=loadDailyGameRecord(BREAKER_RECORD_KEY,80);
+          updateBreakerLabels();
+          refreshBreakerAvailability();
+        }
+        if (event.key===GAME_SOUND_KEY) {
+          gameSoundEnabled=event.newValue!=='off';
+          updateSoundToggles();
+        }
+      });
+
+      breaker.bricks=createBreakerBricks();
       resetBreakerBall();
+      updateNumberLabels();
+      refreshNumberAvailability();
       updateBreakerLabels();
-      if (breakerStats.plays) breakerRecord.textContent = `前回 ${breakerStats.latest}個｜自己ベスト ${breakerStats.best}個｜プレイ ${breakerStats.plays}回（このブラウザ内の記録）`;
+      refreshBreakerAvailability();
       drawBreaker();
 
       document.querySelectorAll('[data-route]').forEach(button => {
