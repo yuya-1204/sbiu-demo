@@ -241,7 +241,7 @@ a { color: var(--blue-dark); }
   line-height: 1.2;
 }
 
-.brand strong { display: block; font-size: 1.06rem; }
+.brand strong { display: block; font-size: clamp(0.92rem, 2vw, 1.06rem); }
 .brand small { display: block; margin-top: 3px; color: var(--gray-500); font-size: 0.72rem; }
 
 .global-nav { display: flex; align-items: center; gap: 8px; }
@@ -969,6 +969,7 @@ dialog::backdrop { background: rgba(12, 33, 52, 0.62); backdrop-filter: blur(3px
   .access-input-row { grid-template-columns: 1fr; }
   .access-input-row .button { width: 100%; }
   .site-header { min-height: 68px; padding-inline: 16px; }
+  .brand strong { max-width: 230px; font-size: 0.88rem; line-height: 1.25; }
   .brand small { display: none; }
   .demo-ribbon { align-items: center; flex-direction: column; gap: 3px; }
   .demo-controls { padding-inline: 16px; }

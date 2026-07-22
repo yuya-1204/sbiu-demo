@@ -25,7 +25,7 @@
   ];
 
   const VIDEOS = [
-    { id: 1, title: "復職AI Readyの目的と注意点", available: true },
+    { id: 1, title: "復職 AI Ready（アイレディ）の目的と注意点", available: true },
     { id: 2, title: "生活リズムと睡眠", available: false },
     { id: 3, title: "通勤練習と疲労の確認", available: false },
     { id: 4, title: "仕事量・休憩・余力の考え方", available: false },
@@ -70,14 +70,14 @@
       holder: "佐藤みらい",
       completedAt: "2026年7月22日",
       validUntil: "2028年1月21日",
-      title: "復職AI Ready 復職準備コース修了証明書",
+      title: "復職 AI Ready（アイレディ） 復職準備コース修了証明書",
     },
     "RA-20240115-0007": {
       status: "expired",
       holder: "架空 太郎",
       completedAt: "2024年1月15日",
       validUntil: "2025年7月14日",
-      title: "復職AI Ready 復職準備コース修了証明書",
+      title: "復職 AI Ready（アイレディ） 復職準備コース修了証明書",
     },
   };
 

@@ -38,7 +38,7 @@
 
   const LESSONS = {
     1: {
-      title: "復職AI Readyの目的と注意点",
+      title: "復職 AI Ready（アイレディ）の目的と注意点",
       duration: "約5分",
       pages: [
         ["このプログラムの役割", "産業医面談の前に、生活リズム、通勤練習、職場へ相談したいことを14日間で整理します。復職できるかどうかを判定するものではありません。"],
@@ -180,7 +180,7 @@
         <div class="hero-grid">
           <div>
             <span class="eyebrow">企業向け操作デモ</span>
-            <h1>復職AI Ready<span>産業医面談前の14日間を、本人と会社の共通準備に。</span></h1>
+            <h1>復職 AI Ready（アイレディ）<span>産業医面談前の14日間を、本人と会社の共通準備に。</span></h1>
             <p class="hero-copy">生活リズムの記録、通勤練習、自己学習、面談準備を一つの流れにまとめたデモです。復職可否の判定ではなく、本人の準備と最終意思確認を支えます。</p>
             <div class="hero-actions">
               <a class="button primary" href="#consent">本人用デモを始める</a>
@@ -466,7 +466,7 @@
     const status = Logic.participantStatus(state);
     const summary = Logic.summaryForCompany(state);
     let resultNote = '<div class="info-note"><strong>修了結果はまだ確定していません。</strong><p>修了条件を確認し、最後に産業医面談の正式申込みを登録します。</p></div>';
-    if (progress.complete) resultNote = '<div class="success-note"><strong>復職AI Ready 復職準備コースを修了しました。</strong><p>プログラムへの取組みと正式申込みを確認しました。これは復職可能性や医学的回復を証明するものではありません。</p></div>';
+    if (progress.complete) resultNote = '<div class="success-note"><strong>復職 AI Ready（アイレディ） 復職準備コースを修了しました。</strong><p>プログラムへの取組みと正式申込みを確認しました。これは復職可能性や医学的回復を証明するものではありません。</p></div>';
     else if (state.decision === "formal") resultNote = '<div class="warning-note"><strong>未修了での産業医面談の申し込みを登録しました。</strong><p>会社への申込みは登録されていますが、修了条件を満たしていないため修了証明書は発行しません。</p></div>';
     else if (state.decision === "postpone") resultNote = '<div class="warning-note"><strong>産業医面談を延期しました。</strong><p>延期を選んだため、現時点では未修了です。</p></div>';
     else if (state.decision === "cancel") resultNote = '<div class="warning-note"><strong>利用を中止しました。</strong><p>準備コースは未修了です。全従業員向けの任意動画へ戻る想定です。</p><p><a class="button secondary small" href="#open-learning">任意の情報提供動画を見る</a></p></div>';
@@ -537,10 +537,10 @@
   }
 
   function certificateMarkup() {
-    return `<article class="certificate" aria-label="復職AI Ready 復職準備コース修了証明書">
-      <p class="certificate-kicker">CERTIFICATE OF COMPLETION</p><h2>復職AI Ready<br>復職準備コース修了証明書</h2><p class="certificate-name">佐藤みらい 様</p><p class="certificate-body">上記の者が、復職AI Ready 復職準備コースの所定の取組みを完了し、産業医面談の正式申込みを登録したことを証明します。</p>
-      <dl class="certificate-meta"><dt>修了日</dt><dd>2026年7月22日</dd><dt>研修有効期限</dt><dd>2028年1月21日</dd><dt>証明書番号</dt><dd>RA-20260722-0001</dd><dt>発行者</dt><dd>復職AI Ready運営事務局</dd></dl>
-      <p class="certificate-issuer">復職AI Ready運営事務局</p><a class="qr-demo" href="#verify" data-action="verify-certificate-link" data-number="RA-20260722-0001" aria-label="この証明書を確認ページで開く（確認用コードのデモ）"><span>DEMO</span></a><p class="certificate-disclaimer">本証明書はプログラム修了の事実を示すものであり、復職可能性、医学的回復、就業上の安全性を証明するものではありません。TuringCerts連携予定。</p>
+    return `<article class="certificate" aria-label="復職 AI Ready（アイレディ） 復職準備コース修了証明書">
+      <p class="certificate-kicker">CERTIFICATE OF COMPLETION</p><h2>復職 AI Ready（アイレディ）<br>復職準備コース修了証明書</h2><p class="certificate-name">佐藤みらい 様</p><p class="certificate-body">上記の者が、復職 AI Ready（アイレディ） 復職準備コースの所定の取組みを完了し、産業医面談の正式申込みを登録したことを証明します。</p>
+      <dl class="certificate-meta"><dt>修了日</dt><dd>2026年7月22日</dd><dt>研修有効期限</dt><dd>2028年1月21日</dd><dt>証明書番号</dt><dd>RA-20260722-0001</dd><dt>発行者</dt><dd>復職 AI Ready（アイレディ）運営事務局</dd></dl>
+      <p class="certificate-issuer">復職 AI Ready（アイレディ）運営事務局</p><a class="qr-demo" href="#verify" data-action="verify-certificate-link" data-number="RA-20260722-0001" aria-label="この証明書を確認ページで開く（確認用コードのデモ）"><span>DEMO</span></a><p class="certificate-disclaimer">本証明書はプログラム修了の事実を示すものであり、復職可能性、医学的回復、就業上の安全性を証明するものではありません。TuringCerts連携予定。</p>
     </article>`;
   }
 
@@ -555,7 +555,7 @@
     if (result.status === "format-error") return '<div class="warning-note"><strong>番号の形式を確認してください。</strong><p>例：RA-20260722-0001</p></div>';
     if (result.status === "not-found") return `<div class="warning-note"><strong>該当する証明書が見つかりません。</strong><p>${escapeHtml(result.number)} はデモ用確認データに登録されていません。</p></div>`;
     const valid = result.status === "valid";
-    return `<article class="verification-card"><div><span class="status-chip ${valid ? "valid" : "expired"}">${valid ? "有効期間内" : "研修有効期限 経過"}</span><h2>${valid ? "修了証明書を確認しました" : "過去の修了事実を確認しました"}</h2>${valid ? '<p>現在、研修の有効期間内です。</p>' : '<div class="warning-note"><strong>有効期限は過ぎています。</strong><p>ただし、この方が過去にプログラムを修了した事実は引き続き確認できます。</p></div>'}<dl><dt>証明書番号</dt><dd>${escapeHtml(result.number)}</dd><dt>氏名</dt><dd>${escapeHtml(result.holder)}</dd><dt>証明書名</dt><dd>${escapeHtml(result.title)}</dd><dt>修了日</dt><dd>${escapeHtml(result.completedAt)}</dd><dt>研修有効期限</dt><dd>${escapeHtml(result.validUntil)}</dd><dt>発行者</dt><dd>復職AI Ready運営事務局</dd></dl><p class="muted small">この確認はプログラム修了の事実を示し、復職可否や医学的回復を示すものではありません。</p></div><div class="qr-demo" aria-label="確認済みコードのデモ"><span>${valid ? "VALID" : "PAST"}</span></div></article>`;
+    return `<article class="verification-card"><div><span class="status-chip ${valid ? "valid" : "expired"}">${valid ? "有効期間内" : "研修有効期限 経過"}</span><h2>${valid ? "修了証明書を確認しました" : "過去の修了事実を確認しました"}</h2>${valid ? '<p>現在、研修の有効期間内です。</p>' : '<div class="warning-note"><strong>有効期限は過ぎています。</strong><p>ただし、この方が過去にプログラムを修了した事実は引き続き確認できます。</p></div>'}<dl><dt>証明書番号</dt><dd>${escapeHtml(result.number)}</dd><dt>氏名</dt><dd>${escapeHtml(result.holder)}</dd><dt>証明書名</dt><dd>${escapeHtml(result.title)}</dd><dt>修了日</dt><dd>${escapeHtml(result.completedAt)}</dd><dt>研修有効期限</dt><dd>${escapeHtml(result.validUntil)}</dd><dt>発行者</dt><dd>復職 AI Ready（アイレディ）運営事務局</dd></dl><p class="muted small">この確認はプログラム修了の事実を示し、復職可否や医学的回復を示すものではありません。</p></div><div class="qr-demo" aria-label="確認済みコードのデモ"><span>${valid ? "VALID" : "PAST"}</span></div></article>`;
   }
 
   function renderVerify() {
@@ -568,7 +568,7 @@
 
   function renderOpenLearning() {
     const publicLessons = [
-      { id: 1, title: "復職AI Readyの目的と安全な使い方", available: true },
+      { id: 1, title: "復職 AI Ready（アイレディ）の目的と安全な使い方", available: true },
       { id: 2, title: "生活リズムと睡眠の基本", available: false },
       { id: 5, title: "困ったときの相談とコミュニケーション", available: false },
       { id: 7, title: "面談前に整理しておくこと", available: true },
@@ -606,7 +606,7 @@
     if (!state.consented && protectedRoutes.has(route)) route = "consent";
     if (state.decision === "cancel" && closedCourseRoutes.has(route)) route = "result";
     main.innerHTML = renderRoute(route);
-    document.title = `${ROUTE_TITLES[route]}｜復職AI Ready 操作デモ`;
+    document.title = `${ROUTE_TITLES[route]}｜復職 AI Ready（アイレディ） 操作デモ`;
     routeAnnouncement.textContent = `${ROUTE_TITLES[route]}を表示しました`;
     updateDemoStateLabel();
     mobileMenu.hidden = true;
@@ -669,7 +669,7 @@
 
   function showInvite() {
     activeLesson = { kind: "invite" };
-    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職AI Ready 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職AI Ready」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤練習、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
+    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職 AI Ready（アイレディ） 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職 AI Ready（アイレディ）」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤練習、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
     completeLessonButton.textContent = "案内内容を確認して閉じる";
     lessonDialog.showModal();
   }
