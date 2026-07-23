@@ -56,7 +56,6 @@
   ];
 
   const RECOMMENDATIONS = [
-    "通勤練習",
     "身の回りの整理・整頓・掃除",
     "適度な運動",
     "図書館やカフェでの読書・自習",
@@ -168,6 +167,7 @@
   }
 
   function fillDay(day, index) {
+    const commuteTraining = index === 4;
     day.morningDone = true;
     day.eveningDone = true;
     day.morning = {
@@ -178,22 +178,22 @@
       medication: "朝食後に服用（架空データ）",
       condition: index < 3 ? "3" : "4",
       mood: "3",
-      plan: index % 2 === 0 ? "図書館で1時間読書" : "生活リズムの確認",
-      commutePlan: index > 3 ? "あり" : "なし",
+      plan: commuteTraining ? "午前中に通勤訓練を行い、帰りに図書館で読書" : index % 2 === 0 ? "図書館で1時間読書" : "生活リズムの確認",
+      commutePlan: commuteTraining ? "あり" : "なし",
       concern: "",
     };
     day.evening = {
-      accomplished: index > 3 ? "午前中に外出し、予定どおり帰宅できた" : "起床時間をそろえられた",
+      accomplished: commuteTraining ? "職場で総務・上司と15分程度話し、帰りに図書館で読書してから帰宅できた" : index > 3 ? "午前中に外出し、予定どおり帰宅できた" : "起床時間をそろえられた",
       fatigue: index > 5 ? "3" : "4",
       moodChange: "少し落ち着いた",
-      commuteResult: index > 3 ? "実施した" : "実施していない",
-      outing: index > 3 ? "通勤経路の一部を練習" : "近所を散歩",
+      commuteResult: commuteTraining ? "実施した" : "実施していない",
+      outing: commuteTraining ? "午前中に職場へ行き、総務・上司と約15分話した後、図書館で読書" : index > 3 ? "午前中に外出" : "近所を散歩",
       learning: index % 2 === 0 ? "動画" : "ゲーム",
       challenge: index === 2 ? "午後に少し疲れた" : "",
       tomorrow: "無理をせず同じ時間に起きる",
       consult: "",
     };
-    day.recommendations = index > 3 ? ["通勤練習", "適度な運動"] : ["身の回りの整理・整頓・掃除"];
+    day.recommendations = index > 3 ? ["図書館やカフェでの読書・自習", "適度な運動"] : ["身の回りの整理・整頓・掃除"];
   }
 
   function createProfile(profile) {
@@ -228,7 +228,7 @@
     state.finalReflectionSaved = true;
     state.interviewPrep = {
       conditionSummary: "午前中の活動は安定しています。午後は休憩を入れると予定を続けられます。",
-      commuteSummary: "通勤経路を3回練習し、混雑する時間帯も確認しました。",
+      commuteSummary: "午前中に通勤訓練を1回実施し、総務・上司と約15分話した後、図書館で読書しました。",
       accommodations: "復職後2週間は残業を避け、昼休みに静かな場所で休憩したいです。",
       questions: "復職初週の業務量と、困ったときの相談先を確認したいです。",
       medication: "朝食後に服用（架空データ）",
@@ -268,10 +268,12 @@
 
   function completion(state) {
     const completedDays = DAYS.filter((day) => !day.weekend && state.days[day.id].morningDone && state.days[day.id].eveningDone).length;
+    const commuteDays = DAYS.filter((day) => state.days[day.id].eveningDone && state.days[day.id].evening.commuteResult === "実施した").length;
     const videosDone = VIDEOS.filter((video) => state.videos[video.id]).length;
     const gamesDone = GAMES.filter((game) => state.games[game.id]).length;
     const items = [
       { id: "records", label: "平日8日以上の朝・夕記録", done: completedDays >= 8, value: `${completedDays}/8日` },
+      { id: "commute", label: "通勤訓練を1回以上実施", done: commuteDays >= 1, value: `${commuteDays}/1回以上` },
       { id: "videos", label: "自己学習動画7本", done: videosDone === VIDEOS.length, value: `${videosDone}/7本` },
       { id: "games", label: "必須ゲーム3種", done: gamesDone === GAMES.length, value: `${gamesDone}/3種` },
       { id: "reflection", label: "最終振り返り", done: Boolean(state.finalReflectionSaved), value: state.finalReflectionSaved ? "保存済み" : "未完了" },
@@ -280,10 +282,11 @@
     ];
     return {
       completedDays,
+      commuteDays,
       videosDone,
       gamesDone,
       items,
-      readyBeforeDecision: items.slice(0, 5).every((item) => item.done),
+      readyBeforeDecision: items.slice(0, -1).every((item) => item.done),
       complete: items.every((item) => item.done),
       unmet: items.filter((item) => !item.done),
     };
@@ -318,11 +321,11 @@
     const wakeText = roundedWake === null
       ? "記録なし"
       : `${String(Math.floor(roundedWake / 60) % 24).padStart(2, "0")}:${String(roundedWake % 60).padStart(2, "0")}前後`;
-    const commuteCount = recorded.filter((day) => state.days[day.id].evening.commuteResult === "実施した" || state.days[day.id].recommendations.includes("通勤練習")).length;
+    const commuteCount = DAYS.filter((day) => state.days[day.id].eveningDone && state.days[day.id].evening.commuteResult === "実施した").length;
     return {
       recordDays: completion(state).completedDays,
       routine: avgWake === null ? "記録がまだありません" : `起床は${wakeText}。平日の朝・夕記録から自動作成した要約です。`,
-      commute: commuteCount ? `通勤練習または通勤経路確認の記録：${commuteCount}日` : "通勤練習の記録はまだありません",
+      commute: commuteCount ? `通勤訓練の実施記録：${commuteCount}回` : "通勤訓練の記録はまだありません",
       status: participantStatus(state),
     };
   }

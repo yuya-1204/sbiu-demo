@@ -41,7 +41,7 @@
       title: "復職 AI Ready（アイレディ）の目的と注意点",
       duration: "約5分",
       pages: [
-        ["このプログラムの役割", "産業医面談の前に、生活リズム、通勤練習、職場へ相談したいことを14日間で整理します。復職できるかどうかを判定するものではありません。"],
+        ["このプログラムの役割", "産業医面談の前に、生活リズム、通勤訓練、職場へ相談したいことを14日間で整理します。通勤訓練は1回以上の実施が修了条件です。復職できるかどうかを判定するものではありません。"],
         ["記録の扱い", "本人はすべての記録を確認できます。会社には、実施日数などの必須要約と、本人が個別に共有を選んだ内容だけを表示します。"],
         ["安全に関する注意", "入力内容はリアルタイムで確認されません。体調の急変や危険を感じるときは、主治医、登録した連絡先、119・110などへ直接連絡してください。"],
       ],
@@ -50,7 +50,7 @@
       title: "産業医面談の準備と最終意思確認",
       duration: "約7分",
       pages: [
-        ["面談前にそろえること", "記録、通勤練習、配慮してほしい事項、確認したい質問を短い言葉でまとめます。病名のアプリ入力は必須ではありません。"],
+        ["面談前にそろえること", "記録、1回以上の通勤訓練、配慮してほしい事項、確認したい質問を短い言葉でまとめます。病名のアプリ入力は必須ではありません。"],
         ["最終意思を選ぶ", "産業医面談予定日の5～3日前を目安に、正式申込み、延期、中止のいずれかを本人が選びます。日数は当面、カレンダー上の日数で扱います。"],
         ["正式申込みの流れ", "アプリで会社へ申込みを登録し、会社から産業医へ最終依頼する想定です。申込み後に実際の面談や復職ができたかどうかは、プログラム修了の条件に含みません。"],
       ],
@@ -181,7 +181,7 @@
           <div>
             <span class="eyebrow">企業向け操作デモ</span>
             <h1>復職 AI Ready（アイレディ）<span>産業医面談前の14日間を、本人と会社の共通準備に。</span></h1>
-            <p class="hero-copy">生活リズムの記録、通勤練習、自己学習、面談準備を一つの流れにまとめたデモです。復職可否の判定ではなく、本人の準備と最終意思確認を支えます。</p>
+            <p class="hero-copy">生活リズムの記録、1回以上の通勤訓練、自己学習、面談準備を一つの流れにまとめたデモです。復職可否の判定ではなく、本人の準備と最終意思確認を支えます。</p>
             <div class="hero-actions">
               <a class="button primary" href="#consent">本人用デモを始める</a>
               <a class="button secondary" href="#company">企業担当者用デモを見る</a>
@@ -212,7 +212,7 @@
         <div class="flow" aria-label="利用の流れ">
           <div class="flow-step"><span class="flow-dot"></span><strong>会社から案内</strong><small>診断書提出済みを確認</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>本人が開始</strong><small>説明・同意後に記録</small></div>
-          <div class="flow-step highlight"><span class="flow-dot"></span><strong>14日間の準備</strong><small>記録・動画・ゲーム</small></div>
+          <div class="flow-step highlight"><span class="flow-dot"></span><strong>14日間の準備</strong><small>記録・通勤訓練・動画・ゲーム</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>最終意思確認</strong><small>予定日の5～3日前</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>会社へ申込み</strong><small>会社から産業医へ依頼</small></div>
         </div>
@@ -229,7 +229,8 @@
             <h2 id="scopeTitle">準備の見える化</h2>
             <ul class="summary-list">
               <li>朝・夕の記録と生活リズムの要約</li>
-              <li>通勤練習と日中のおすすめ事項</li>
+              <li>修了条件となる通勤訓練を1回以上</li>
+              <li>日中の任意のおすすめ事項</li>
               <li>必須動画7本、必須ゲーム3種</li>
               <li>面談準備、共有範囲、最終意思確認</li>
               <li>修了証明書と企業向け確認ページ</li>
@@ -260,7 +261,7 @@
         <div class="stack consent-list">
           <label class="check-card"><input type="checkbox" name="consent_medical"${agreed ? " checked" : ""}><span><strong>医療的な判断を行わない</strong><small>復職可否、回復の程度、治療方針をこのサービスが判定することはありません。</small></span></label>
           <label class="check-card"><input type="checkbox" name="consent_monitoring"${agreed ? " checked" : ""}><span><strong>リアルタイムで確認されない</strong><small>入力は緊急連絡ではありません。危険を感じるときは主治医、連絡先、119・110へ直接連絡します。</small></span></label>
-          <label class="check-card"><input type="checkbox" name="consent_sharing"${agreed ? " checked" : ""}><span><strong>会社へ必須要約を共有する</strong><small>実施日数、生活リズム要約、通勤練習、修了・面談申込状況は会社へ共有されます。</small></span></label>
+          <label class="check-card"><input type="checkbox" name="consent_sharing"${agreed ? " checked" : ""}><span><strong>会社へ必須要約を共有する</strong><small>実施日数、生活リズム要約、通勤訓練、修了・面談申込状況は会社へ共有されます。</small></span></label>
           <label class="check-card"><input type="checkbox" name="consent_stop"${agreed ? " checked" : ""}><span><strong>いつでも中断・中止できる</strong><small>開始後も本人の意思で止められます。中断・中止だけを理由に復職可否を決めるものではありません。</small></span></label>
         </div>
         <div class="warning-note top-gap"><strong>体調の急変・生命の危険があるとき</strong><p>この画面への入力を待たず、主治医や医療機関、事前に決めた連絡先へ連絡してください。緊急時は119・110を利用してください。</p></div>
@@ -273,20 +274,21 @@
     const progress = Logic.completion(state);
     const status = Logic.participantStatus(state);
     const doneCount = progress.items.filter((item) => item.done).length;
-    const nextRoute = !state.consented ? "consent" : state.decision === "cancel" ? "open-learning" : progress.complete ? "result" : progress.completedDays < 8 ? "daily" : progress.videosDone < 7 ? "learning" : progress.gamesDone < 3 ? "games" : (!state.finalReflectionSaved || !state.interviewPrepSaved) ? "reflection" : "decision";
+    const nextRoute = !state.consented ? "consent" : state.decision === "cancel" ? "open-learning" : progress.complete ? "result" : progress.completedDays < 8 || progress.commuteDays < 1 ? "daily" : progress.videosDone < 7 ? "learning" : progress.gamesDone < 3 ? "games" : (!state.finalReflectionSaved || !state.interviewPrepSaved) ? "reflection" : "decision";
     const nextLabel = !state.consented ? "説明・同意を確認する" : state.decision === "cancel" ? "任意動画を見る" : progress.complete ? "修了結果を見る" : progress.readyBeforeDecision ? "最終意思を登録する" : "次の準備へ進む";
     return participantPage("participant-dashboard", `
       <div class="page-head"><div><span class="eyebrow">本人用デモ</span><h1 class="page-title">おはようございます、佐藤みらいさん</h1><p class="lead">30代・事務職｜復職可能の診断書を会社へ提出済み（架空データ）</p></div><div class="page-head-actions"><span class="status-chip ${statusClass(status)}">${escapeHtml(status)}</span></div></div>
       ${!state.consented ? '<div class="important-note bottom-gap"><strong>まず、利用開始前の説明・同意が必要です。</strong><p>デモ用プロフィールの切替では、途中や修了時点へ直接移動することもできます。</p></div>' : ""}
       <div class="metric-grid">
         <div class="metric"><span class="metric-label">朝・夕を記録した平日</span><span class="metric-value">${progress.completedDays}<small>/10日</small></span><span class="metric-help">修了条件は8日以上</span></div>
+        <div class="metric"><span class="metric-label">通勤訓練</span><span class="metric-value">${progress.commuteDays}<small>/1回以上</small></span><span class="metric-help">修了条件</span></div>
         <div class="metric"><span class="metric-label">自己学習動画</span><span class="metric-value">${progress.videosDone}<small>/7本</small></span><span class="metric-help">7種類を1回ずつ</span></div>
         <div class="metric"><span class="metric-label">必須ゲーム</span><span class="metric-value">${progress.gamesDone}<small>/3種</small></span><span class="metric-help">点数・成績は不問</span></div>
-        <div class="metric"><span class="metric-label">修了条件</span><span class="metric-value">${doneCount}<small>/6項目</small></span><span class="metric-help">正式申込みまで</span></div>
+        <div class="metric"><span class="metric-label">修了条件</span><span class="metric-value">${doneCount}<small>/${progress.items.length}項目</small></span><span class="metric-help">正式申込みまで</span></div>
       </div>
       <div class="panel top-gap">
         <div class="two-column">
-          <div><span class="eyebrow">現在の進捗</span><h2>修了までの確認</h2><div class="progress-track" aria-label="修了条件の進捗"><div class="progress-bar green" style="width:${Math.round(doneCount / 6 * 100)}%"></div></div>${completionList(progress)}</div>
+          <div><span class="eyebrow">現在の進捗</span><h2>修了までの確認</h2><div class="progress-track" aria-label="修了条件の進捗"><div class="progress-bar green" style="width:${Math.round(doneCount / progress.items.length * 100)}%"></div></div>${completionList(progress)}</div>
           <div><span class="eyebrow">面談予定</span><h2>産業医面談予定日</h2><p class="schedule-date">デモ開始時点で あと14日</p><p>予定日の5～3日前を目安に、正式申込み・延期・中止を選びます。日付切替は操作説明用の疑似日付です。</p><a class="button primary" href="#${nextRoute}">${nextLabel}</a></div>
         </div>
       </div>
@@ -311,10 +313,16 @@
   function renderDaily() {
     const dayInfo = Logic.DAYS.find((day) => day.id === Number(state.currentDay)) || Logic.DAYS[0];
     const record = state.days[dayInfo.id];
+    const progress = Logic.completion(state);
     const checkedRecommendations = new Set(record.recommendations || []);
     return participantPage("daily", `
       <div class="page-head"><div><span class="eyebrow">本人用デモ｜毎日の記録</span><h1 class="page-title">${escapeHtml(dayInfo.label)}（${escapeHtml(dayInfo.weekday)}）のチェックイン・アウト</h1><p class="lead">上の日付を自由に切り替えられます。朝と夕方の両方を保存すると、平日1日分として数えます。</p></div><div class="page-head-actions"><a class="button secondary" href="#participant-dashboard">進捗へ戻る</a></div></div>
       <div class="panel bottom-gap"><span class="field-label">デモ用日付切替</span>${dayTabs()}<p class="muted small">この疑似日付では月～金を「平日」とし、祝日設定は省略しています。</p>${dayInfo.weekend ? '<div class="info-note"><strong>土日の記録は任意です。</strong><p>保存しても修了条件の「平日8日以上」には加算されません。</p></div>' : ""}</div>
+      <section class="panel form-section">
+        <div class="section-heading"><div><span class="eyebrow">REQUIRED COMMUTE TRAINING</span><h2>修了条件：通勤訓練を1回以上</h2></div><span class="status-chip ${progress.commuteDays >= 1 ? "complete" : "active"}">${progress.commuteDays >= 1 ? `${progress.commuteDays}回 実施済み` : "未実施"}</span></div>
+        <div class="important-note"><strong>企業の総務と上司に事前に連絡してから行います。</strong><p>約束した日時に職場で待ち合わせて、15分程度お話をします。帰りに図書館やカフェなどで、読書や自主学習をしてから帰宅します。</p></div>
+        <div class="info-note top-gap"><strong>まずは午前中くらいを目標に、やってみてね。</strong><p>本来は出社に間に合う時間を目指すとよいですが、総務・上司との都合もあります。体調が不安なときは無理をせず、会社へ連絡して日程を調整してください。</p></div>
+      </section>
       <form id="morningForm" data-day="${dayInfo.id}" class="panel form-section">
         <div class="section-heading"><div><span class="eyebrow">CHECK IN</span><h2>朝のチェックイン</h2></div><span class="status-chip ${record.morningDone ? "complete" : "active"}">${record.morningDone ? "保存済み" : "未入力"}</span></div>
         <div class="form-grid">
@@ -326,14 +334,14 @@
           <div class="form-field"><label for="condition">体調</label><select id="condition" name="condition">${[1,2,3,4,5].map((value) => option(value, record.morning.condition, `${value}｜${value === 1 ? "つらい" : value === 3 ? "ふつう" : value === 5 ? "良い" : ""}`)).join("")}</select></div>
           <div class="form-field"><label for="mood">気分</label><select id="mood" name="mood">${[1,2,3,4,5].map((value) => option(value, record.morning.mood, `${value}｜${value === 1 ? "落ち込んでいる" : value === 3 ? "ふつう" : value === 5 ? "安定している" : ""}`)).join("")}</select></div>
           <div class="form-field full"><label for="plan">今日の予定</label><textarea id="plan" name="plan" required placeholder="無理のない範囲で予定を書きます">${escapeHtml(record.morning.plan)}</textarea></div>
-          <div class="form-field"><span class="field-label">通勤練習の予定</span><div class="choice-group">${radio("commutePlan", "あり", record.morning.commutePlan, "あり")}${radio("commutePlan", "なし", record.morning.commutePlan, "なし")}</div></div>
+          <div class="form-field"><span class="field-label">通勤訓練の予定</span><div class="choice-group">${radio("commutePlan", "あり", record.morning.commutePlan, "あり")}${radio("commutePlan", "なし", record.morning.commutePlan, "なし")}</div></div>
           <div class="form-field"><label for="concern">困っていること <span class="muted small">（任意）</span></label><textarea id="concern" name="concern" placeholder="緊急連絡には使用できません">${escapeHtml(record.morning.concern)}</textarea></div>
         </div>
         <div class="form-actions"><button class="button primary" type="submit">朝の記録を保存</button></div>
       </form>
 
       <form id="recommendationForm" data-day="${dayInfo.id}" class="panel form-section">
-        <span class="eyebrow">DAYTIME IDEAS</span><h2>日中にできそうなこと</h2><p>すべて任意です。実施しなくても修了判定には影響しません。</p>
+        <span class="eyebrow">DAYTIME IDEAS</span><h2>通勤訓練以外に、日中にできそうなこと</h2><p>ここに表示する項目はすべて任意です。実施しなくても修了判定には影響しません。</p>
         <div class="recommendation-list">${Logic.RECOMMENDATIONS.map((item) => `<label class="check-card"><input type="checkbox" name="recommendation" value="${escapeHtml(item)}"${checkedRecommendations.has(item) ? " checked" : ""}><span><strong>${escapeHtml(item)}</strong><small>できたときだけチェック</small></span></label>`).join("")}</div>
         <div class="form-field top-gap"><label for="customRecommendation">自分で追加した予定 <span class="muted small">（任意）</span></label><input id="customRecommendation" name="customRecommendation" value="${escapeHtml(record.customRecommendation)}" placeholder="例：復職初日の持ち物を確認"></div>
         <div class="form-actions"><button class="button secondary" type="submit">おすすめ事項を保存</button></div>
@@ -345,8 +353,8 @@
           <div class="form-field full"><label for="accomplished">今日できたこと</label><textarea id="accomplished" name="accomplished" required>${escapeHtml(record.evening.accomplished)}</textarea></div>
           <div class="form-field"><label for="fatigue">疲労の程度</label><select id="fatigue" name="fatigue">${[1,2,3,4,5].map((value) => option(value, record.evening.fatigue, `${value}｜${value === 1 ? "ほぼない" : value === 3 ? "ほどほど" : value === 5 ? "とても強い" : ""}`)).join("")}</select></div>
           <div class="form-field"><label for="moodChange">気分の変化</label><select id="moodChange" name="moodChange">${["良くなった", "少し落ち着いた", "変わらない", "少しつらくなった", "つらくなった"].map((value) => option(value, record.evening.moodChange)).join("")}</select></div>
-          <div class="form-field"><label for="commuteResult">通勤練習の実施</label><select id="commuteResult" name="commuteResult">${["実施した", "予定したが実施しなかった", "実施していない"].map((value) => option(value, record.evening.commuteResult)).join("")}</select></div>
-          <div class="form-field"><label for="outing">外出・通勤練習の内容</label><input id="outing" name="outing" value="${escapeHtml(record.evening.outing)}" placeholder="例：通勤経路を片道だけ練習"></div>
+          <div class="form-field"><label for="commuteResult">通勤訓練（修了条件）の実施</label><select id="commuteResult" name="commuteResult">${["実施した", "予定したが実施しなかった", "実施していない"].map((value) => option(value, record.evening.commuteResult)).join("")}</select></div>
+          <div class="form-field"><label for="outing">外出・通勤訓練の内容</label><input id="outing" name="outing" value="${escapeHtml(record.evening.outing)}" placeholder="例：総務・上司と15分話し、帰りに図書館で30分読書"></div>
           <div class="form-field"><label for="learningDone">ゲーム・動画の実施</label><select id="learningDone" name="learning">${["なし", "動画", "ゲーム", "動画とゲーム"].map((value) => option(value, record.evening.learning)).join("")}</select></div>
           <div class="form-field"><label for="challenge">生活上の課題</label><textarea id="challenge" name="challenge">${escapeHtml(record.evening.challenge)}</textarea></div>
           <div class="form-field"><label for="tomorrow">明日の予定</label><textarea id="tomorrow" name="tomorrow" required>${escapeHtml(record.evening.tomorrow)}</textarea></div>
@@ -390,7 +398,7 @@
     const summary = Logic.summaryForCompany(state);
     const prep = state.interviewPrep;
     return `<div class="share-preview">
-      <section class="share-group"><span class="status-chip active">必ず共有</span><h3>会社へ表示する要約</h3><dl><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>修了・申込状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項の記載</dt><dd>${prep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
+      <section class="share-group"><span class="status-chip active">必ず共有</span><h3>会社へ表示する要約</h3><dl><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>修了・申込状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項の記載</dt><dd>${prep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
       <section class="share-group"><span class="status-chip">本人が個別に選択</span><h3>選択した場合だけ表示</h3><dl><dt>配慮事項の具体的内容</dt><dd>${sharedValue(state.sharing.accommodations, prep.accommodations)}</dd><dt>面談準備の詳細</dt><dd>${sharedValue(state.sharing.interviewDetails, [prep.conditionSummary, prep.commuteSummary, prep.questions].filter(Boolean).join("／"))}</dd><dt>自由記述</dt><dd>${sharedValue(state.sharing.freeText, prep.freeText)}</dd><dt>服薬情報</dt><dd>${sharedValue(state.sharing.medication, prep.medication)}</dd></dl></section>
     </div>`;
   }
@@ -415,7 +423,7 @@
         <p>病名はアプリへ必須入力しません。会社が保有する復職可能の診断書で確認する想定です。</p>
         <div class="form-grid">
           <div class="form-field"><label for="conditionSummary">現在の生活・体調の要約</label><textarea id="conditionSummary" name="conditionSummary" required>${escapeHtml(prep.conditionSummary)}</textarea></div>
-          <div class="form-field"><label for="commuteSummary">通勤練習の要約</label><textarea id="commuteSummary" name="commuteSummary" required>${escapeHtml(prep.commuteSummary)}</textarea></div>
+          <div class="form-field"><label for="commuteSummary">通勤訓練の要約</label><textarea id="commuteSummary" name="commuteSummary" required>${escapeHtml(prep.commuteSummary)}</textarea></div>
           <div class="form-field"><label for="accommodations">配慮してほしい事項 <span class="muted small">（記載は任意）</span></label><textarea id="accommodations" name="accommodations">${escapeHtml(prep.accommodations)}</textarea><small>具体的内容を共有しない場合も、記載の有無は会社へ表示します。</small></div>
           <div class="form-field"><label for="questions">会社・産業医へ確認したいこと</label><textarea id="questions" name="questions" required>${escapeHtml(prep.questions)}</textarea></div>
           <div class="form-field"><label for="prepMedication">服薬情報 <span class="muted small">（任意）</span></label><textarea id="prepMedication" name="medication">${escapeHtml(prep.medication)}</textarea><small>面談で産業医から確認されることが多いため、事前記載をおすすめします。</small></div>
@@ -475,7 +483,7 @@
       ${resultNote}
       <div class="two-column top-gap">
         <section class="panel"><h2>修了条件</h2>${completionList(progress)}</section>
-        <section class="panel"><h2>本人への最終フィードバック</h2><dl class="result-list"><dt>記録日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>面談申込み</dt><dd>${state.decision === "formal" ? "デモ上で会社へ送信した想定" : "正式申込みなし"}</dd></dl></section>
+        <section class="panel"><h2>本人への最終フィードバック</h2><dl class="result-list"><dt>記録日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>面談申込み</dt><dd>${state.decision === "formal" ? "デモ上で会社へ送信した想定" : "正式申込みなし"}</dd></dl></section>
       </div>
       <div class="panel top-gap"><h2>修了証明書</h2>${progress.complete ? '<p>研修有効期限は修了日から暫定1年6か月です。期限経過後も、過去に修了した事実は確認できます。</p><div class="form-actions"><a class="button primary" href="#certificate">修了証明書を表示</a><a class="button secondary" href="#verify">確認ページを見る</a></div>' : '<p class="muted">すべての修了条件を満たした場合だけ発行します。面談を実施できたか、実際に復職したかは発行条件に含みません。</p>'}</div>`, "result");
   }
@@ -528,7 +536,7 @@
     return `<section class="page enterprise">
       <div class="page-head"><div><span class="eyebrow">企業担当者用デモ｜共有要約</span><h1 class="page-title">佐藤みらいさん</h1><p class="lead">本人が同意した範囲だけを表示します。病名は会社が保有する診断書で確認する想定のため、この画面には表示しません。</p></div><div class="page-head-actions"><a class="button secondary" href="#company">一覧へ戻る</a></div></div>
       <div class="two-column">
-        <section class="panel"><span class="status-chip active">必ず共有</span><h2 class="top-gap">実施状況の要約</h2><dl class="result-list"><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項</dt><dd>${state.interviewPrep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
+        <section class="panel"><span class="status-chip active">必ず共有</span><h2 class="top-gap">実施状況の要約</h2><dl class="result-list"><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項</dt><dd>${state.interviewPrep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
         <section class="panel"><span class="status-chip">本人が個別に選択</span><h2 class="top-gap">共有された詳細</h2><dl class="result-list"><dt>配慮事項</dt><dd>${sharedValue(state.sharing.accommodations, state.interviewPrep.accommodations)}</dd><dt>面談準備</dt><dd>${sharedValue(state.sharing.interviewDetails, [state.interviewPrep.conditionSummary, state.interviewPrep.commuteSummary, state.interviewPrep.questions].filter(Boolean).join("／"))}</dd><dt>自由記述</dt><dd>${sharedValue(state.sharing.freeText, state.interviewPrep.freeText)}</dd><dt>服薬情報</dt><dd>${sharedValue(state.sharing.medication, state.interviewPrep.medication)}</dd></dl></section>
       </div>
       <section class="panel top-gap"><div class="two-column"><div><h2>産業医面談の申込み</h2><p>${state.decision === "formal" ? `<span class="status-chip ${progress.complete ? "complete" : "warning"}">${progress.complete ? "修了・正式申込み済み" : "未修了での産業医面談の申し込み"}</span></p><p>デモ上で会社へ送信した想定です。会社から産業医へ最終依頼します。</p>` : `<span class="status-chip ${statusClass(summary.status)}">${escapeHtml(summary.status)}</span></p><p>${state.decision === "postpone" ? "延期の連絡をデモ上で受け付けました。" : state.decision === "cancel" ? "利用中止の連絡をデモ上で受け付けました。" : "正式申込みの通知はまだありません。"}</p>`}${state.decisionReason ? `<p class="muted small">連絡メモ：${escapeHtml(state.decisionReason)}</p>` : ""}</div><div><h2>修了証明書</h2>${progress.complete ? '<p>証明書番号 RA-20260722-0001</p><div class="form-actions"><a class="button primary" href="#verify">証明書を確認</a></div>' : '<p class="muted">未発行です。面談申込みだけでは発行されません。</p>'}</div></div></section>
@@ -669,7 +677,7 @@
 
   function showInvite() {
     activeLesson = { kind: "invite" };
-    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職 AI Ready（アイレディ） 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職 AI Ready（アイレディ）」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤練習、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
+    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職 AI Ready（アイレディ） 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職 AI Ready（アイレディ）」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、通勤訓練1回以上、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。通勤訓練では、総務・上司と約束した日時に職場で15分程度話し、帰りに図書館やカフェなどで読書・自主学習をします。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤訓練、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
     completeLessonButton.textContent = "案内内容を確認して閉じる";
     lessonDialog.showModal();
   }
