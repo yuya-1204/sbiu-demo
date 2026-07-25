@@ -43,6 +43,9 @@ button{font-family:inherit;cursor:pointer}
 .hp-footer{text-align:center;font-size:12px;color:var(--sub);padding:24px;border-top:1px solid var(--line)}
 
 /* ===== password gate ===== */
+body.site-locked{overflow:hidden}
+body.site-locked > :not(#siteGate):not(script){display:none!important}
+#siteGate[hidden]{display:none}
 .gate-wrap{max-width:440px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:40px 36px;text-align:center}
 .gate-wrap .lock{font-size:36px}
 .gate-wrap h2{font-size:18px;color:var(--navy);margin:12px 0 6px}
@@ -228,7 +231,20 @@ button{font-family:inherit;cursor:pointer}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
 </style>
 </head>
-<body>
+<body class="site-locked">
+
+<div id="siteGate" role="dialog" aria-modal="true" aria-labelledby="siteGateTitle">
+  <div class="gate-wrap">
+    <div class="lock">🔒</div>
+    <h2 id="siteGateTitle">SBI-Uチャレンジ｜デモ体験ページ</h2>
+    <p>閲覧コードを入力して開いてください。</p>
+    <form id="siteGateForm">
+      <input type="password" id="sitePw" placeholder="閲覧コード" autocomplete="current-password" autofocus>
+      <div class="gate-err" id="sitePwErr" aria-live="polite"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" type="submit">開く</button>
+    </form>
+  </div>
+</div>
 
 <div class="demo-band">本ページは事業構想を体験いただくためのデモページです（実データ・個人情報は含まれません）。構想段階のため、画面・機能は今後変更されます。</div>
 
@@ -479,6 +495,23 @@ button{font-family:inherit;cursor:pointer}
 
 const PASSWORD = "sbiu2026"; // デモ用（公開時は必ずサーバ側認証に置換）
 
+/* ---------- page-entry password gate ---------- */
+document.getElementById("siteGateForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const input=document.getElementById("sitePw");
+  const error=document.getElementById("sitePwErr");
+  if(input.value===PASSWORD){
+    unlockDemo(false);
+    document.body.classList.remove("site-locked");
+    document.getElementById("siteGate").hidden=true;
+    error.textContent="";
+    window.scrollTo({top:0});
+  }else{
+    error.textContent="閲覧コードが違います";
+    input.select();
+  }
+});
+
 /* ---------- HP tabs ---------- */
 document.querySelectorAll(".hp-tab").forEach(btn=>{
   btn.addEventListener("click",()=>{
@@ -493,17 +526,20 @@ document.querySelectorAll(".hp-tab").forEach(btn=>{
 
 /* ---------- password gate ---------- */
 let unlocked=false;
+function unlockDemo(showNotice=true){
+  unlocked=true;
+  document.getElementById("gate").classList.add("hidden");
+  document.getElementById("portal").classList.remove("hidden");
+  const mt=document.getElementById("medmatchTab");
+  if(mt.classList.contains("hidden")){
+    mt.classList.remove("hidden");mt.classList.add("tab-appear");
+    if(showNotice)setTimeout(()=>toast("🔓 新しいタブ「その先へ（Medmatch）」が開放されました"),600);
+  }
+}
 function checkPw(){
   const v=document.getElementById("pw").value;
   if(v===PASSWORD){
-    unlocked=true;
-    document.getElementById("gate").classList.add("hidden");
-    document.getElementById("portal").classList.remove("hidden");
-    const mt=document.getElementById("medmatchTab");
-    if(mt.classList.contains("hidden")){
-      mt.classList.remove("hidden");mt.classList.add("tab-appear");
-      setTimeout(()=>toast("🔓 新しいタブ「その先へ（Medmatch）」が開放されました"),600);
-    }
+    unlockDemo();
   }else{
     document.getElementById("pwErr").textContent="閲覧コードが違います";
   }
