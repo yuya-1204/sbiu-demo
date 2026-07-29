@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f3f0e7">
+  <script src="./auth.js"></script>
+  <title>じゅんばん くみたて</title>
+  <style>
+    :root{
+      --ink:#19362f;
+      --muted:#64736f;
+      --paper:#f3f0e7;
+      --card:#fffdf8;
+      --line:#d8d2c5;
+      --green:#17836d;
+      --green-dark:#0e5f50;
+      --orange:#ef9f2f;
+      --orange-dark:#b96712;
+      --blue:#2476c9;
+      --shadow:0 16px 42px rgba(28,54,47,.13);
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--paper)}
+    body{
+      min-height:100dvh;
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%,rgba(239,159,47,.17),transparent 23rem),
+        radial-gradient(circle at 94% 92%,rgba(23,131,109,.15),transparent 27rem),
+        var(--paper);
+      font-family:"BIZ UDPGothic","Yu Gothic UI","Meiryo",sans-serif;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+    button{font:inherit;cursor:pointer;touch-action:manipulation}
+    button:focus-visible{outline:5px solid #123f80;outline-offset:4px}
+    .app{
+      width:min(100%,1060px);
+      min-height:100dvh;
+      margin:auto;
+      padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
+    }
+    .screen{display:none;min-height:calc(100dvh - 36px)}
+    .screen.active{display:flex}
+    .start-screen{flex-direction:column;justify-content:space-between;gap:24px}
+    .top,.screen-head,.play-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{font-size:clamp(15px,2.2vw,21px);font-weight:1000;letter-spacing:.13em}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      padding:10px 17px;
+      border:2px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,253,248,.9);
+      color:var(--muted);
+      font-weight:1000;
+    }
+    .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(290px,.95fr);align-items:center;gap:clamp(26px,6vw,72px)}
+    .eyebrow{margin:0 0 10px;color:var(--green-dark);font-size:clamp(19px,2.8vw,28px);font-weight:1000;letter-spacing:.05em}
+    h1{margin:0;font-size:clamp(50px,8.4vw,90px);line-height:1.06;letter-spacing:.035em}
+    .lead{margin:22px 0 0;color:var(--muted);font-size:clamp(21px,3.2vw,31px);font-weight:900;line-height:1.6}
+    .stage-note{
+      margin:18px 0 0;
+      padding:14px 17px;
+      border-left:7px solid var(--orange);
+      border-radius:12px;
+      background:rgba(255,253,248,.9);
+      font-size:clamp(17px,2.4vw,22px);
+      font-weight:1000;
+      line-height:1.55;
+    }
+    .hero-machine{
+      position:relative;
+      min-height:330px;
+      overflow:hidden;
+      border:4px solid var(--ink);
+      border-radius:36px;
+      background:var(--card);
+      box-shadow:var(--shadow);
+    }
+    .hero-machine:before{
+      content:"";
+      position:absolute;
+      inset:20px;
+      border:2px dashed #c8c1b3;
+      border-radius:24px;
+    }
+    .hero-part{
+      position:absolute;
+      z-index:1;
+      display:grid;
+      place-items:center;
+      width:94px;
+      height:94px;
+      border:4px solid var(--ink);
+      border-radius:25px;
+      box-shadow:0 8px 0 var(--ink);
+      font-size:55px;
+      font-weight:1000;
+    }
+    .hero-part.one{top:48px;left:42px;color:#0d4d8c;background:#b8ddff;transform:rotate(-7deg)}
+    .hero-part.two{top:58px;right:40px;color:#8c5700;background:#ffe28b;transform:rotate(7deg)}
+    .hero-arrow{position:absolute;top:154px;left:50%;transform:translateX(-50%);font-size:58px;font-weight:1000}
+    .hero-product{
+      position:absolute;
+      left:50%;
+      bottom:35px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      width:220px;
+      height:93px;
+      transform:translateX(-50%);
+      border:4px solid var(--ink);
+      border-radius:22px 22px 34px 34px;
+      background:#e3eee9;
+      box-shadow:0 9px 0 var(--ink);
+      font-size:35px;
+    }
+    .actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .primary,.secondary,.quiet,.stage-button,.part-button,.memory-button,.staff-stage{
+      border:0;
+      font-weight:1000;
+    }
+    .primary{
+      min-width:min(100%,360px);
+      min-height:102px;
+      padding:20px 32px;
+      border-radius:26px;
+      color:#fff;
+      background:var(--green);
+      box-shadow:0 10px 0 var(--green-dark);
+      font-size:clamp(29px,5vw,43px);
+    }
+    .primary:active{transform:translateY(6px);box-shadow:0 4px 0 var(--green-dark)}
+    .secondary,.quiet{
+      min-height:68px;
+      padding:14px 21px;
+      border:2px solid var(--line);
+      border-radius:18px;
+      color:var(--ink);
+      background:var(--card);
+      font-size:20px;
+    }
+    .footer{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--muted);font-size:15px}
+    .text-button{border:0;background:transparent;color:#3f514c;text-decoration:underline;text-underline-offset:5px;font-size:16px;font-weight:1000}
+    .select-screen,.staff-screen{flex-direction:column;gap:22px;padding-bottom:36px}
+    .screen-head h2{margin:0;font-size:clamp(34px,6vw,54px)}
+    .screen-head p{margin:8px 0 0;color:var(--muted);font-size:18px;font-weight:800;line-height:1.65}
+    .stage-key{display:flex;flex-wrap:wrap;gap:9px}
+    .stage-key span{padding:8px 12px;border-radius:999px;background:#e4f4ef;color:var(--green-dark);font-size:14px;font-weight:1000}
+    .stage-grid{display:grid;grid-template-columns:repeat(5,minmax(86px,1fr));gap:13px}
+    .stage-button{
+      position:relative;
+      min-height:91px;
+      padding:10px;
+      border:3px solid var(--ink);
+      border-radius:21px;
+      color:var(--ink);
+      background:#fff;
+      box-shadow:0 6px 0 var(--ink);
+      font-size:28px;
+    }
+    .stage-button small{display:block;margin-top:3px;color:var(--muted);font-size:12px}
+    .stage-button.done:after{content:"✓";position:absolute;right:8px;top:5px;color:var(--green-dark);font-size:20px}
+    .stage-button.current{border-color:var(--green-dark);color:#fff;background:var(--green);box-shadow:0 6px 0 var(--green-dark)}
+    .stage-button.current small,.stage-button.current:after{color:#fff}
+    .stage-button:disabled{border-color:#c8c5bc;color:#8d918e;background:#e9e7e0;box-shadow:0 4px 0 #c8c5bc;cursor:not-allowed}
+    .stage-button:disabled:after{content:"●";position:absolute;right:9px;top:8px;color:#a3a69f;font-size:11px}
+    .play-screen{flex-direction:column;gap:14px}
+    .play-head{align-items:flex-start}
+    .play-meta{flex:1;text-align:center}
+    .play-meta p{margin:0 0 8px;color:var(--green-dark);font-size:18px;font-weight:1000}
+    .progress-row{display:flex;align-items:center;gap:10px;width:min(100%,490px);margin:auto}
+    .progress-track{flex:1;height:18px;overflow:hidden;border:2px solid var(--ink);border-radius:999px;background:#fff}
+    .progress-bar{width:0;height:100%;border-radius:inherit;background:var(--green);transition:width .25s ease}
+    .progress-text{min-width:65px;font-size:20px;font-weight:1000;text-align:right}
+    .rule-card{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      min-height:68px;
+      padding:10px 18px;
+      border:3px solid var(--ink);
+      border-radius:20px;
+      background:#fff;
+      box-shadow:0 6px 0 var(--ink);
+      text-align:center;
+    }
+    .rule-arrow{color:var(--orange-dark);font-size:38px;font-weight:1000}
+    .rule-text{font-size:clamp(22px,3.5vw,32px);font-weight:1000}
+    .work-area{display:grid;grid-template-columns:minmax(0,.9fr) minmax(300px,1.1fr);flex:1;gap:18px;min-height:0}
+    .order-panel,.build-panel{
+      position:relative;
+      min-height:270px;
+      padding:18px;
+      border:3px solid var(--ink);
+      border-radius:28px;
+      background:rgba(255,253,248,.95);
+      box-shadow:var(--shadow);
+    }
+    .panel-label{margin:0 0 12px;color:var(--muted);font-size:16px;font-weight:1000;text-align:center}
+    .order-list{display:flex;align-items:center;justify-content:center;gap:7px;min-height:118px;flex-wrap:wrap}
+    .order-item,.built-item{
+      display:grid;
+      place-items:center;
+      width:70px;
+      height:78px;
+      border:3px solid var(--ink);
+      border-radius:18px;
+      color:var(--part-ink,#17312b);
+      background:var(--part-bg,#fff);
+      font-size:32px;
+      font-weight:1000;
+    }
+    .order-item .code,.built-item .code{font-size:20px;line-height:1}
+    .order-item.done{opacity:.38;transform:scale(.94)}
+    .order-item.next{outline:7px solid rgba(239,159,47,.6);outline-offset:1px}
+    .order-item.hidden{
+      color:#68746f;
+      background:#e5e6e0;
+      font-size:31px;
+    }
+    .memory-cover{
+      display:none;
+      justify-content:center;
+      padding:12px 0 2px;
+    }
+    .memory-cover.show{display:flex}
+    .memory-button{
+      min-width:220px;
+      min-height:78px;
+      padding:15px 24px;
+      border-radius:20px;
+      color:#fff;
+      background:var(--orange);
+      box-shadow:0 8px 0 var(--orange-dark);
+      font-size:28px;
+    }
+    .memory-button:active{transform:translateY(5px);box-shadow:0 3px 0 var(--orange-dark)}
+    .built-line{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:110px;
+      padding:14px;
+      border:2px dashed #b9b4a9;
+      border-radius:20px;
+      background:#f5f3ec;
+      flex-wrap:wrap;
+    }
+    .built-item{width:62px;height:68px;animation:place .2s ease-out}
+    .empty-build{color:var(--muted);font-size:18px;font-weight:900}
+    .feedback{
+      min-height:60px;
+      margin:14px 0 0;
+      padding:12px 16px;
+      border-radius:16px;
+      background:#e8f4f0;
+      color:var(--green-dark);
+      font-size:clamp(19px,3vw,26px);
+      font-weight:1000;
+      text-align:center;
+    }
+    .feedback.try{background:#fff1d8;color:#76470b}
+    .parts{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .part-button{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      align-items:center;
+      justify-items:center;
+      gap:8px;
+      min-height:104px;
+      padding:10px;
+      border:4px solid var(--ink);
+      border-radius:24px;
+      color:var(--ink);
+      background:#fff;
+      box-shadow:0 7px 0 var(--ink);
+      font-size:25px;
+    }
+    .part-button:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ink)}
+    .part-button .part-symbol{
+      display:grid;
+      place-items:center;
+      width:55px;
+      height:55px;
+      border:2px solid rgba(25,54,47,.35);
+      border-radius:15px;
+      color:var(--part-ink);
+      background:var(--part-bg);
+      font-size:34px;
+    }
+    .part-button .part-name{font-size:clamp(18px,2.8vw,25px)}
+    .part-button.hint{animation:hint .8s ease-in-out infinite alternate;outline:8px solid var(--orange);outline-offset:-9px}
+    .part-button.wrong{animation:shake .25s ease-in-out}
+    .part-button:disabled{opacity:.55;cursor:default}
+    .complete-screen{flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center}
+    .complete-mark{
+      display:grid;
+      place-items:center;
+      width:150px;
+      height:150px;
+      border:6px solid var(--ink);
+      border-radius:50%;
+      color:#fff;
+      background:var(--green);
+      box-shadow:0 15px 0 var(--green-dark);
+      font-size:84px;
+      font-weight:1000;
+    }
+    .complete-screen h2{margin:10px 0 0;font-size:clamp(54px,10vw,92px);line-height:1}
+    .complete-stage{margin:0;color:var(--green-dark);font-size:clamp(23px,4vw,34px);font-weight:1000}
+    .complete-text{margin:0;color:var(--muted);font-size:clamp(21px,3.7vw,31px);font-weight:900}
+    .complete-actions{display:flex;justify-content:center;gap:15px;width:100%;flex-wrap:wrap}
+    .complete-actions .secondary{min-width:185px;min-height:84px;font-size:24px}
+    .staff-card{
+      padding:22px;
+      border:2px solid var(--line);
+      border-radius:25px;
+      background:var(--card);
+      box-shadow:0 9px 25px rgba(28,54,47,.08);
+    }
+    .staff-card h3{margin:0 0 9px;font-size:24px}
+    .staff-card p{margin:7px 0;color:var(--muted);font-size:17px;line-height:1.7}
+    .privacy{padding:13px 16px;border-left:7px solid var(--green);border-radius:10px;background:#e4f4ef}
+    .staff-stages{display:grid;grid-template-columns:repeat(10,minmax(55px,1fr));gap:8px;margin-top:15px}
+    .staff-stage{
+      min-height:57px;
+      border:2px solid var(--ink);
+      border-radius:13px;
+      color:var(--ink);
+      background:#fff;
+      box-shadow:0 3px 0 var(--ink);
+      font-size:18px;
+    }
+    .staff-stage:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+    .sound-row{display:flex;align-items:center;justify-content:space-between;gap:15px}
+    .sound-status{font-size:19px;font-weight:1000}
+    .preview-banner{
+      display:none;
+      padding:8px 14px;
+      border-radius:12px;
+      background:#fff1d8;
+      color:#76470b;
+      font-size:15px;
+      font-weight:1000;
+      text-align:center;
+    }
+    .preview-banner.show{display:block}
+    @keyframes shake{0%,100%{transform:translateX(0)}35%{transform:translateX(-7px)}70%{transform:translateX(7px)}}
+    @keyframes hint{from{transform:scale(1)}to{transform:scale(1.035)}}
+    @keyframes place{from{transform:translateY(-16px);opacity:.2}to{transform:translateY(0);opacity:1}}
+    @media(max-width:800px){
+      .hero{grid-template-columns:1fr}
+      .hero-machine{min-height:235px}
+      .hero-part{width:73px;height:73px;font-size:42px}
+      .hero-arrow{top:110px}
+      .hero-product{height:78px}
+      .work-area{grid-template-columns:1fr}
+      .order-panel,.build-panel{min-height:auto}
+      .parts{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .staff-stages{grid-template-columns:repeat(5,minmax(55px,1fr))}
+    }
+    @media(max-width:560px){
+      .app{padding:13px}
+      .screen{min-height:calc(100dvh - 26px)}
+      .actions{align-items:stretch;flex-direction:column}
+      .primary{width:100%}
+      .footer{align-items:flex-start;flex-direction:column}
+      .stage-grid{grid-template-columns:repeat(5,minmax(55px,1fr));gap:8px}
+      .stage-button{min-height:70px;padding:7px;border-width:2px;border-radius:15px;font-size:22px}
+      .stage-button small{font-size:10px}
+      .play-head{align-items:center}
+      .play-head .quiet{min-height:54px;padding:9px 11px;font-size:16px}
+      .play-meta p{font-size:15px}
+      .progress-text{min-width:52px;font-size:16px}
+      .rule-card{min-height:58px}
+      .rule-arrow{font-size:30px}
+      .order-panel,.build-panel{padding:13px}
+      .order-item{width:55px;height:63px;border-width:2px;border-radius:14px;font-size:26px}
+      .order-item .code{font-size:17px}
+      .parts{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      .part-button{grid-template-columns:1fr;gap:3px;min-height:102px;border-width:3px;border-radius:20px}
+      .part-button .part-symbol{width:48px;height:48px;font-size:30px}
+      .staff-stages{grid-template-columns:repeat(5,minmax(50px,1fr))}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+  <section class="screen start-screen active" id="startScreen" aria-labelledby="mainTitle">
+    <div class="top">
+      <div class="brand">WORK STEP</div>
+      <div class="pill" id="startStagePill">ステージ 1</div>
+    </div>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">おしごとの れんしゅう</p>
+        <h1 id="mainTitle">じゅんばん<br>くみたて</h1>
+        <p class="lead">みて、おぼえて、じゅんばんに おそう。</p>
+        <p class="stage-note" id="startStageNote">2つの ぶひんから 1つを えらびます。</p>
+      </div>
+      <div class="hero-machine" aria-hidden="true">
+        <div class="hero-part one">●</div>
+        <div class="hero-part two">■</div>
+        <div class="hero-arrow">↓</div>
+        <div class="hero-product"><span>●</span><span>■</span><span>▲</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="actions">
+        <button class="primary" id="startButton">ステージ 1を はじめる</button>
+        <button class="secondary" id="selectButton">ステージを えらぶ</button>
+        <button class="secondary" id="readIntroButton">おとで きく</button>
+      </div>
+      <div class="footer">
+        <span>じかんは きにしなくて だいじょうぶ</span>
+        <button class="text-button" id="staffButton">しょくいんの がめん</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen select-screen" id="selectScreen" aria-labelledby="selectTitle">
+    <div class="screen-head">
+      <div>
+        <h2 id="selectTitle">ステージを えらぶ</h2>
+        <p>できた ステージの つぎが ひらきます。</p>
+      </div>
+      <button class="quiet" id="selectBackButton">もどる</button>
+    </div>
+    <div class="stage-key" aria-label="ステージの ないよう">
+      <span>1〜10 みて おす</span>
+      <span>11〜25 ながい じゅんばん</span>
+      <span>26〜35 Aと すうじ</span>
+      <span>36〜45 おぼえる</span>
+      <span>46〜50 ルールが かわる</span>
+    </div>
+    <div class="stage-grid" id="stageGrid" aria-label="50の ステージ"></div>
+  </section>
+
+  <section class="screen play-screen" id="playScreen" aria-labelledby="ruleText">
+    <div class="preview-banner" id="previewBanner">しょくいんの おためし</div>
+    <div class="play-head">
+      <button class="quiet" id="quitButton">やめる</button>
+      <div class="play-meta">
+        <p id="playStage">ステージ 1</p>
+        <div class="progress-row" aria-label="すすみぐあい">
+          <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+          <div class="progress-text" id="progressText">0 / 1</div>
+        </div>
+      </div>
+      <button class="quiet" id="readButton">おとで きく</button>
+    </div>
+    <div class="rule-card">
+      <span class="rule-arrow" id="ruleArrow" aria-hidden="true">→</span>
+      <span class="rule-text" id="ruleText">ひだりから おしてね</span>
+    </div>
+    <div class="work-area">
+      <section class="order-panel" aria-labelledby="orderLabel">
+        <p class="panel-label" id="orderLabel">じゅんばん</p>
+        <div class="order-list" id="orderList"></div>
+        <div class="memory-cover" id="memoryCover">
+          <button class="memory-button" id="memoryButton">おぼえた</button>
+        </div>
+      </section>
+      <section class="build-panel" aria-labelledby="partsLabel">
+        <p class="panel-label">くみたて</p>
+        <div class="built-line" id="builtLine"><span class="empty-build">ここに ならぶよ</span></div>
+        <div class="feedback" id="feedback" aria-live="polite">じゅんばんを みてね</div>
+        <p class="panel-label" id="partsLabel">ぶひん</p>
+        <div class="parts" id="parts"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="screen complete-screen" id="completeScreen" aria-labelledby="completeTitle">
+    <div class="complete-mark" aria-hidden="true">✓</div>
+    <h2 id="completeTitle">できた！</h2>
+    <p class="complete-stage" id="completeStage">ステージ 1 クリア</p>
+    <p class="complete-text" id="completeText">じゅんばんどおりに できました。</p>
+    <div class="complete-actions">
+      <button class="primary" id="nextButton">つぎの ステージ</button>
+      <button class="secondary" id="againButton">もう いちど</button>
+      <button class="secondary" id="completeBackButton">おわる</button>
+    </div>
+  </section>
+
+  <section class="screen staff-screen" id="staffScreen" aria-labelledby="staffTitle">
+    <div class="screen-head">
+      <div>
+        <h2 id="staffTitle">しょくいんの がめん</h2>
+        <p>どの ステージも ためすことが できます。</p>
+      </div>
+      <button class="quiet" id="staffBackButton">もどる</button>
+    </div>
+    <div class="staff-card">
+      <h3>おためし</h3>
+      <p>おためしでは、ひらいた ステージや できた きろくは かわりません。</p>
+      <div class="staff-stages" id="staffStages" aria-label="しょくいんの ステージ おためし"></div>
+    </div>
+    <div class="staff-card">
+      <div class="sound-row">
+        <div>
+          <h3>おと</h3>
+          <p>せいかいの おとと、よみあげを つかいます。</p>
+        </div>
+        <button class="secondary" id="soundButton"><span class="sound-status" id="soundStatus">おと あり</span></button>
+      </div>
+    </div>
+    <div class="staff-card privacy">
+      <h3>データ</h3>
+      <p>すすみぐあいは、この たんまつの なかだけに ほぞんします。そとへは おくりません。</p>
+      <p id="staffProgress">ひらいた ステージ 1 / 50</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORE_KEY = "junbanKumitateV1";
+  var PARTS = [
+    {id:"red",name:"あか",code:"A",symbol:"●",bg:"#ffd1ca",ink:"#8d2e20"},
+    {id:"blue",name:"あお",code:"B",symbol:"■",bg:"#cbe4ff",ink:"#175891"},
+    {id:"yellow",name:"きいろ",code:"C",symbol:"▲",bg:"#ffe9a6",ink:"#835c00"},
+    {id:"green",name:"みどり",code:"D",symbol:"◆",bg:"#c9ead9",ink:"#176044"},
+    {id:"purple",name:"むらさき",code:"1",symbol:"▬",bg:"#e3d4ff",ink:"#56318d"},
+    {id:"orange",name:"オレンジ",code:"2",symbol:"＋",bg:"#ffd8ad",ink:"#8d4800"},
+    {id:"gray",name:"しろ",code:"3",symbol:"⬢",bg:"#f4f3ef",ink:"#4d5753"},
+    {id:"pink",name:"ピンク",code:"4",symbol:"★",bg:"#ffd4e6",ink:"#8d3158"}
+  ];
+
+  function configFor(number){
+    var cfg = {number:number,length:1,options:2,builds:1,mode:"color",memory:false,directions:["left"]};
+    if(number === 1){
+      cfg.length = 1;
+    }else if(number <= 5){
+      cfg.length = 2;
+    }else if(number <= 10){
+      cfg.length = 2;
+      cfg.options = 3;
+    }else if(number <= 15){
+      cfg.length = 3;
+      cfg.options = 3;
+    }else if(number <= 17){
+      cfg.length = 3;
+      cfg.options = 4;
+      cfg.builds = 2;
+    }else if(number <= 20){
+      cfg.length = 4;
+      cfg.options = 4;
+      cfg.builds = 2;
+    }else if(number <= 22){
+      cfg.length = 4;
+      cfg.options = 4;
+      cfg.builds = 2;
+    }else if(number <= 25){
+      cfg.length = 4;
+      cfg.options = 5;
+      cfg.builds = 2;
+    }else if(number <= 30){
+      cfg.length = 4;
+      cfg.options = 5;
+      cfg.builds = 2;
+      cfg.mode = "code";
+    }else if(number <= 32){
+      cfg.length = 4;
+      cfg.options = 5;
+      cfg.builds = 2;
+      cfg.mode = "code";
+    }else if(number <= 35){
+      cfg.length = 5;
+      cfg.options = 6;
+      cfg.builds = 2;
+      cfg.mode = "code";
+    }else if(number <= 38){
+      cfg.length = 3;
+      cfg.options = 5;
+      cfg.builds = 2;
+      cfg.mode = "code";
+      cfg.memory = true;
+    }else if(number <= 40){
+      cfg.length = 4;
+      cfg.options = 5;
+      cfg.builds = 2;
+      cfg.mode = "code";
+      cfg.memory = true;
+    }else if(number <= 43){
+      cfg.length = 4;
+      cfg.options = 6;
+      cfg.builds = 2;
+      cfg.mode = "code";
+      cfg.memory = true;
+      cfg.directions = ["left","right"];
+    }else if(number <= 45){
+      cfg.length = 5;
+      cfg.options = 6;
+      cfg.builds = 2;
+      cfg.mode = "code";
+      cfg.memory = true;
+      cfg.directions = ["right","left"];
+    }else{
+      cfg.length = number <= 47 ? 5 : (number <= 49 ? 6 : 7);
+      cfg.options = number <= 47 ? 6 : 7;
+      cfg.builds = 3;
+      cfg.mode = "code";
+      cfg.memory = true;
+      cfg.directions = number % 2 === 0 ? ["left","right","left"] : ["right","left","right"];
+    }
+    return cfg;
+  }
+
+  var STAGES = Array.from({length:50},function(_,i){return configFor(i+1);});
+
+  function defaultState(){
+    return {unlocked:1,completed:[],sound:true};
+  }
+
+  function loadState(){
+    try{
+      var data = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      if(!data || typeof data !== "object") return defaultState();
+      var unlocked = Math.max(1,Math.min(50,Number(data.unlocked) || 1));
+      var completed = Array.isArray(data.completed) ? data.completed.filter(function(n){return Number.isInteger(n) && n >= 1 && n <= 50;}) : [];
+      return {unlocked:unlocked,completed:Array.from(new Set(completed)),sound:data.sound !== false};
+    }catch(error){
+      return defaultState();
+    }
+  }
+
+  var state = loadState();
+  var currentStage = state.unlocked;
+  var currentConfig = STAGES[currentStage-1];
+  var previewMode = false;
+  var buildIndex = 0;
+  var stepIndex = 0;
+  var totalCorrect = 0;
+  var errorsOnStep = 0;
+  var memoryReady = true;
+  var currentOptions = [];
+  var currentShownSequence = [];
+  var currentExpected = [];
+  var locked = false;
+  var audioContext = null;
+
+  var screens = Array.from(document.querySelectorAll(".screen"));
+  var startScreen = document.getElementById("startScreen");
+  var selectScreen = document.getElementById("selectScreen");
+  var playScreen = document.getElementById("playScreen");
+  var completeScreen = document.getElementById("completeScreen");
+  var staffScreen = document.getElementById("staffScreen");
+  var stageGrid = document.getElementById("stageGrid");
+  var staffStages = document.getElementById("staffStages");
+  var orderList = document.getElementById("orderList");
+  var partsBox = document.getElementById("parts");
+  var builtLine = document.getElementById("builtLine");
+  var feedback = document.getElementById("feedback");
+  var memoryCover = document.getElementById("memoryCover");
+  var previewBanner = document.getElementById("previewBanner");
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORE_KEY,JSON.stringify(state));
+    }catch(error){}
+  }
+
+  function showScreen(screen){
+    screens.forEach(function(item){item.classList.toggle("active",item === screen);});
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function getPart(id){
+    return PARTS.find(function(part){return part.id === id;});
+  }
+
+  function labelFor(part){
+    return currentConfig.mode === "code" ? part.code : part.name;
+  }
+
+  function partStyle(part){
+    return "--part-bg:"+part.bg+";--part-ink:"+part.ink;
+  }
+
+  function stageNote(cfg){
+    if(cfg.number === 1) return "2つの ぶひんから 1つを えらびます。";
+    if(cfg.memory && cfg.number >= 46) return cfg.length+"こを おぼえて、ルールを きりかえます。";
+    if(cfg.memory) return cfg.length+"この じゅんばんを おぼえます。";
+    if(cfg.mode === "code") return "Aや すうじの ぶひんを じゅんばんに おします。";
+    return cfg.length+"この ぶひんを じゅんばんに おします。";
+  }
+
+  function refreshHome(){
+    currentStage = Math.max(1,Math.min(50,state.unlocked));
+    currentConfig = STAGES[currentStage-1];
+    document.getElementById("startStagePill").textContent = "ステージ "+currentStage;
+    document.getElementById("startButton").textContent = "ステージ "+currentStage+"を はじめる";
+    document.getElementById("startStageNote").textContent = stageNote(currentConfig);
+    document.getElementById("staffProgress").textContent = "ひらいた ステージ "+state.unlocked+" / 50";
+    document.getElementById("soundStatus").textContent = state.sound ? "おと あり" : "おと なし";
+  }
+
+  function renderStageGrid(){
+    stageGrid.innerHTML = "";
+    STAGES.forEach(function(cfg){
+      var button = document.createElement("button");
+      var isDone = state.completed.indexOf(cfg.number) !== -1;
+      button.className = "stage-button"+(isDone?" done":"")+(cfg.number === state.unlocked?" current":"");
+      button.disabled = cfg.number > state.unlocked;
+      button.innerHTML = cfg.number+"<small>"+(cfg.memory?"おぼえる":(cfg.mode === "code"?"Aと すうじ":"みて おす"))+"</small>";
+      button.setAttribute("aria-label","ステージ "+cfg.number+(button.disabled?" まだ できません":""));
+      button.addEventListener("click",function(){startStage(cfg.number,false);});
+      stageGrid.appendChild(button);
+    });
+  }
+
+  function renderStaffStages(){
+    staffStages.innerHTML = "";
+    STAGES.forEach(function(cfg){
+      var button = document.createElement("button");
+      button.className = "staff-stage";
+      button.textContent = cfg.number;
+      button.setAttribute("aria-label","ステージ "+cfg.number+"を ためす");
+      button.addEventListener("click",function(){startStage(cfg.number,true);});
+      staffStages.appendChild(button);
+    });
+  }
+
+  function makeRound(cfg,round){
+    var offset = (cfg.number*2 + round*3) % PARTS.length;
+    var options = [];
+    for(var i=0;i<cfg.options;i++){
+      options.push(PARTS[(offset+i)%PARTS.length].id);
+    }
+    var sequence = [];
+    for(var j=0;j<cfg.length;j++){
+      var index = (j*2 + cfg.number + round) % options.length;
+      if(j > 0 && options[index] === sequence[j-1]) index = (index+1)%options.length;
+      sequence.push(options[index]);
+    }
+    return {options:options,sequence:sequence};
+  }
+
+  function startStage(number,isPreview){
+    currentStage = number;
+    currentConfig = STAGES[number-1];
+    previewMode = !!isPreview;
+    buildIndex = 0;
+    totalCorrect = 0;
+    locked = false;
+    previewBanner.classList.toggle("show",previewMode);
+    document.getElementById("playStage").textContent = "ステージ "+number;
+    showScreen(playScreen);
+    startRound();
+  }
+
+  function startRound(){
+    var round = makeRound(currentConfig,buildIndex);
+    currentOptions = round.options;
+    currentShownSequence = round.sequence;
+    var direction = currentConfig.directions[buildIndex % currentConfig.directions.length];
+    currentExpected = direction === "right" ? round.sequence.slice().reverse() : round.sequence.slice();
+    stepIndex = 0;
+    errorsOnStep = 0;
+    locked = false;
+    memoryReady = !currentConfig.memory;
+    document.getElementById("ruleArrow").textContent = direction === "right" ? "←" : "→";
+    document.getElementById("ruleText").textContent = direction === "right" ? "みぎから おしてね" : "ひだりから おしてね";
+    builtLine.innerHTML = '<span class="empty-build">ここに ならぶよ</span>';
+    feedback.className = "feedback";
+    feedback.textContent = currentConfig.memory ? "じゅんばんを みて おぼえてね" : "じゅんばんを みてね";
+    memoryCover.classList.toggle("show",currentConfig.memory);
+    renderOrder();
+    renderParts();
+    updateProgress();
+    if(currentConfig.memory) speak("じゅんばんを みて おぼえてね");
+  }
+
+  function renderOrder(){
+    orderList.innerHTML = "";
+    currentShownSequence.forEach(function(id,index){
+      var part = getPart(id);
+      var item = document.createElement("div");
+      var expectedShownIndex = currentConfig.directions[buildIndex % currentConfig.directions.length] === "right"
+        ? currentShownSequence.length-1-stepIndex
+        : stepIndex;
+      item.className = "order-item";
+      if(memoryReady && currentConfig.memory){
+        item.classList.add("hidden");
+        item.textContent = "?";
+      }else{
+        if(index < stepIndex && currentConfig.directions[buildIndex % currentConfig.directions.length] === "left") item.classList.add("done");
+        if(index >= currentShownSequence.length-stepIndex && currentConfig.directions[buildIndex % currentConfig.directions.length] === "right") item.classList.add("done");
+        if(!currentConfig.memory && index === expectedShownIndex) item.classList.add("next");
+        item.style.cssText = partStyle(part);
+        item.innerHTML = '<span aria-hidden="true">'+part.symbol+'</span><span class="code">'+labelFor(part)+'</span>';
+      }
+      orderList.appendChild(item);
+    });
+  }
+
+  function renderParts(){
+    partsBox.innerHTML = "";
+    currentOptions.forEach(function(id){
+      var part = getPart(id);
+      var button = document.createElement("button");
+      button.className = "part-button";
+      button.style.cssText = partStyle(part);
+      button.dataset.part = id;
+      button.disabled = !memoryReady || locked;
+      button.setAttribute("aria-label",labelFor(part));
+      button.innerHTML = '<span class="part-symbol" aria-hidden="true">'+part.symbol+'</span><span class="part-name">'+labelFor(part)+'</span>';
+      button.addEventListener("click",function(){choosePart(id,button);});
+      partsBox.appendChild(button);
+    });
+  }
+
+  function addBuiltPart(part){
+    var empty = builtLine.querySelector(".empty-build");
+    if(empty) empty.remove();
+    var item = document.createElement("div");
+    item.className = "built-item";
+    item.style.cssText = partStyle(part);
+    item.innerHTML = '<span aria-hidden="true">'+part.symbol+'</span><span class="code">'+labelFor(part)+'</span>';
+    builtLine.appendChild(item);
+  }
+
+  function choosePart(id,button){
+    if(locked || !memoryReady) return;
+    var expected = currentExpected[stepIndex];
+    if(id === expected){
+      errorsOnStep = 0;
+      clearHints();
+      addBuiltPart(getPart(id));
+      stepIndex += 1;
+      totalCorrect += 1;
+      feedback.className = "feedback";
+      feedback.textContent = stepIndex === currentExpected.length ? "できた！" : "いいね。つぎだよ";
+      playTone(true);
+      renderOrder();
+      updateProgress();
+      if(stepIndex >= currentExpected.length){
+        locked = true;
+        setPartsDisabled(true);
+        buildIndex += 1;
+        if(buildIndex >= currentConfig.builds){
+          window.setTimeout(finishStage,750);
+        }else{
+          window.setTimeout(function(){
+            feedback.textContent = "つぎの くみたて";
+            startRound();
+          },850);
+        }
+      }
+    }else{
+      errorsOnStep += 1;
+      feedback.className = "feedback try";
+      feedback.textContent = errorsOnStep >= 2 ? "ここを おしてみよう" : "だいじょうぶ。もう いちど";
+      button.classList.remove("wrong");
+      void button.offsetWidth;
+      button.classList.add("wrong");
+      playTone(false);
+      if(errorsOnStep >= 2) showHint();
+    }
+  }
+
+  function clearHints(){
+    partsBox.querySelectorAll(".part-button").forEach(function(button){button.classList.remove("hint");});
+  }
+
+  function showHint(){
+    clearHints();
+    var target = partsBox.querySelector('[data-part="'+currentExpected[stepIndex]+'"]');
+    if(target) target.classList.add("hint");
+  }
+
+  function setPartsDisabled(disabled){
+    partsBox.querySelectorAll("button").forEach(function(button){button.disabled = disabled;});
+  }
+
+  function updateProgress(){
+    var total = currentConfig.length*currentConfig.builds;
+    var percent = total ? Math.round((totalCorrect/total)*100) : 0;
+    document.getElementById("progressBar").style.width = percent+"%";
+    document.getElementById("progressText").textContent = totalCorrect+" / "+total;
+  }
+
+  function finishStage(){
+    if(!previewMode){
+      if(state.completed.indexOf(currentStage) === -1) state.completed.push(currentStage);
+      if(currentStage < 50) state.unlocked = Math.max(state.unlocked,currentStage+1);
+      saveState();
+    }
+    document.getElementById("completeStage").textContent = "ステージ "+currentStage+" クリア";
+    document.getElementById("completeText").textContent = previewMode
+      ? "おためしが できました。"
+      : "じゅんばんどおりに できました。";
+    document.getElementById("nextButton").textContent = previewMode ? "つぎを ためす" : "つぎの ステージ";
+    document.getElementById("nextButton").style.display = currentStage < 50 ? "" : "none";
+    showScreen(completeScreen);
+    playClear();
+    speak("できた。ステージ "+currentStage+" クリア");
+    refreshHome();
+  }
+
+  function speak(text){
+    if(!state.sound || !("speechSynthesis" in window)) return;
+    try{
+      window.speechSynthesis.cancel();
+      var utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "ja-JP";
+      utterance.rate = .86;
+      utterance.pitch = 1.05;
+      window.speechSynthesis.speak(utterance);
+    }catch(error){}
+  }
+
+  function playTone(good){
+    if(!state.sound || !("AudioContext" in window || "webkitAudioContext" in window)) return;
+    try{
+      var AudioClass = window.AudioContext || window.webkitAudioContext;
+      audioContext = audioContext || new AudioClass();
+      var oscillator = audioContext.createOscillator();
+      var gain = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = good ? 610 : 230;
+      gain.gain.setValueAtTime(.0001,audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.08,audioContext.currentTime+.01);
+      gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.14);
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime+.16);
+    }catch(error){}
+  }
+
+  function playClear(){
+    if(!state.sound) return;
+    playTone(true);
+    window.setTimeout(function(){playTone(true);},170);
+  }
+
+  document.getElementById("memoryButton").addEventListener("click",function(){
+    memoryReady = true;
+    memoryCover.classList.remove("show");
+    feedback.textContent = "おぼえた じゅんばんで おしてね";
+    renderOrder();
+    renderParts();
+    speak(document.getElementById("ruleText").textContent);
+  });
+
+  document.getElementById("startButton").addEventListener("click",function(){startStage(state.unlocked,false);});
+  document.getElementById("selectButton").addEventListener("click",function(){renderStageGrid();showScreen(selectScreen);});
+  document.getElementById("selectBackButton").addEventListener("click",function(){showScreen(startScreen);});
+  document.getElementById("staffButton").addEventListener("click",function(){refreshHome();showScreen(staffScreen);});
+  document.getElementById("staffBackButton").addEventListener("click",function(){showScreen(startScreen);});
+  document.getElementById("quitButton").addEventListener("click",function(){showScreen(previewMode?staffScreen:startScreen);});
+  document.getElementById("readIntroButton").addEventListener("click",function(){speak("じゅんばん くみたて。みて、おぼえて、じゅんばんに おそう。");});
+  document.getElementById("readButton").addEventListener("click",function(){
+    var text = document.getElementById("ruleText").textContent;
+    speak(currentConfig.memory && !memoryReady ? "じゅんばんを みて おぼえてね。"+text : text);
+  });
+  document.getElementById("soundButton").addEventListener("click",function(){
+    state.sound = !state.sound;
+    saveState();
+    refreshHome();
+    if(state.sound) speak("おと あり");
+  });
+  document.getElementById("nextButton").addEventListener("click",function(){
+    if(currentStage < 50) startStage(currentStage+1,previewMode);
+  });
+  document.getElementById("againButton").addEventListener("click",function(){startStage(currentStage,previewMode);});
+  document.getElementById("completeBackButton").addEventListener("click",function(){
+    renderStageGrid();
+    showScreen(previewMode?staffScreen:startScreen);
+  });
+
+  refreshHome();
+  renderStageGrid();
+  renderStaffStages();
+})();
+</script>
+</body>
+</html>

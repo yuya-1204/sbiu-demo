@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#edf8f1">
+  <script src="./auth.js"></script>
+  <title>ぴったり ラベル｜おしごと れんしゅう</title>
+  <style>
+    :root{
+      --ink:#17352b;--muted:#5d6f67;--paper:#edf8f1;--card:#fffef9;
+      --green:#16835f;--green-dark:#0e6549;--mint:#dff4e9;--yellow:#f4bd37;
+      --line:#cbdad2;--purple:#7453a6;--shadow:0 17px 42px rgba(24,65,49,.13)
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--paper)}
+    body{
+      min-height:100dvh;margin:0;color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 7%,rgba(244,189,55,.18),transparent 24rem),
+        radial-gradient(circle at 92% 90%,rgba(22,131,95,.15),transparent 29rem),
+        var(--paper);
+      font-family:"BIZ UDPGothic","Yu Gothic UI","Meiryo",sans-serif;
+      -webkit-tap-highlight-color:transparent;touch-action:manipulation
+    }
+    button{font:inherit;cursor:pointer;touch-action:manipulation}
+    button:focus-visible{outline:5px solid #174d8e;outline-offset:4px}
+    .app{
+      width:min(100%,1080px);min-height:100dvh;margin:auto;
+      padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right))
+        max(22px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))
+    }
+    .screen{display:none;min-height:calc(100dvh - 40px)}
+    .screen.active{display:flex}
+    .start-screen{flex-direction:column;justify-content:space-between;gap:24px}
+    .top,.stage-top,.play-top,.staff-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{font-size:clamp(15px,2.2vw,21px);font-weight:900;letter-spacing:.14em}
+    .pill{
+      display:inline-flex;align-items:center;min-height:46px;padding:9px 17px;
+      border:2px solid var(--line);border-radius:999px;background:rgba(255,254,249,.88);
+      color:var(--green-dark);font-weight:900
+    }
+    .hero{
+      display:grid;grid-template-columns:minmax(0,1.05fr) minmax(290px,.95fr);
+      align-items:center;gap:clamp(30px,6vw,74px)
+    }
+    .eyebrow{margin:0 0 9px;color:var(--green-dark);font-size:clamp(18px,2.8vw,27px);font-weight:900}
+    h1{margin:0;font-size:clamp(50px,8.7vw,88px);line-height:1.04;letter-spacing:.04em}
+    .lead{margin:23px 0 0;color:var(--muted);font-size:clamp(22px,3.3vw,31px);font-weight:800;line-height:1.6}
+    .summary{
+      margin:18px 0 0;padding:13px 17px;border-left:7px solid var(--yellow);
+      border-radius:12px;background:rgba(255,254,249,.9);font-size:clamp(17px,2.3vw,21px);
+      font-weight:900;line-height:1.55
+    }
+    .hero-scene{
+      position:relative;min-height:350px;border:4px solid var(--ink);border-radius:38px;
+      background:var(--card);box-shadow:var(--shadow);overflow:hidden
+    }
+    .hero-scene:before{
+      content:"";position:absolute;inset:21px;border:2px dashed #bfcfc7;border-radius:25px
+    }
+    .hero-box{
+      position:absolute;left:50%;bottom:38px;width:220px;height:142px;transform:translateX(-50%);
+      border:4px solid var(--ink);border-radius:20px 20px 31px 31px;background:#d7b486
+    }
+    .hero-box:before{
+      content:"はこ";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      font-size:27px;font-weight:900
+    }
+    .hero-label{
+      position:absolute;display:grid;place-items:center;width:144px;height:82px;padding:8px;
+      border:4px solid var(--ink);border-radius:13px;background:#fff;box-shadow:0 7px 0 var(--ink);
+      font-size:34px;font-weight:900
+    }
+    .hero-label.one{top:45px;left:39px;transform:rotate(-7deg)}
+    .hero-label.two{top:71px;right:37px;color:var(--purple);transform:rotate(8deg)}
+    .hero-label:after{content:"";position:absolute;inset:7px;border:2px dashed #aab9b2;border-radius:6px}
+    .actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+    .primary,.secondary,.quiet,.choice,.stage-button,.staff-button,.sample-again{
+      border:0;font-weight:900
+    }
+    .primary{
+      min-width:min(100%,360px);min-height:100px;padding:19px 32px;border-radius:25px;
+      color:#fff;background:var(--green);box-shadow:0 9px 0 var(--green-dark);
+      font-size:clamp(29px,5vw,43px)
+    }
+    .primary:active{transform:translateY(5px);box-shadow:0 4px 0 var(--green-dark)}
+    .secondary,.quiet,.staff-button,.sample-again{
+      min-height:66px;padding:14px 21px;border:2px solid var(--line);border-radius:17px;
+      color:var(--ink);background:var(--card);font-size:19px
+    }
+    .footer{display:flex;align-items:center;justify-content:space-between;gap:13px;color:var(--muted);font-size:15px}
+    .staff-link{border:0;background:transparent;color:#465b52;text-decoration:underline;text-underline-offset:5px;font-weight:900}
+
+    .stage-screen{flex-direction:column;gap:21px;padding-bottom:34px}
+    .stage-screen h2,.staff-screen h2{margin:0;font-size:clamp(34px,6vw,52px)}
+    .stage-intro{margin:6px 0 0;color:var(--muted);font-size:18px;font-weight:800;line-height:1.6}
+    .stage-key{display:flex;gap:9px;flex-wrap:wrap}
+    .stage-key span{padding:8px 12px;border-radius:999px;background:#dcefe6;color:var(--green-dark);font-size:13px;font-weight:900}
+    .preview-banner{
+      display:none;align-items:center;justify-content:space-between;gap:15px;padding:12px 16px;
+      border:3px solid var(--purple);border-radius:17px;background:#f1eafa;color:#4e3279;font-weight:900
+    }
+    .preview-banner.show{display:flex}
+    .preview-banner button{min-height:48px;padding:8px 14px;border:0;border-radius:12px;color:#fff;background:var(--purple);font-weight:900}
+    .stage-grid{display:grid;grid-template-columns:repeat(5,minmax(90px,1fr));gap:13px}
+    .stage-button{
+      position:relative;min-height:91px;padding:11px 7px;border:3px solid var(--ink);
+      border-radius:20px;color:var(--ink);background:#fff;box-shadow:0 6px 0 var(--ink);font-size:27px
+    }
+    .stage-button small{display:block;margin-top:3px;color:var(--muted);font-size:12px}
+    .stage-button.completed{border-color:var(--green-dark);background:#e6f6ed}
+    .stage-button.current{color:#fff;border-color:var(--green-dark);background:var(--green);box-shadow:0 6px 0 var(--green-dark)}
+    .stage-button.current small{color:#fff}
+    .stage-button:disabled{color:#8a928e;border-color:#bfc9c4;background:#e7ece9;box-shadow:0 4px 0 #bfc9c4;cursor:not-allowed}
+
+    .play-screen{flex-direction:column;gap:16px}
+    .play-top{align-items:flex-start}
+    .progress-wrap{display:flex;align-items:center;gap:10px;min-width:min(54vw,470px)}
+    .progress-track{flex:1;height:18px;border:2px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden}
+    .progress-bar{width:0;height:100%;border-radius:inherit;background:var(--green);transition:width .25s ease}
+    .progress-text{min-width:73px;font-size:21px;font-weight:900;text-align:right}
+    .stage-line{margin:0;text-align:center;color:var(--green-dark);font-size:17px;font-weight:900}
+    .rule-badge{
+      align-self:center;min-height:48px;padding:9px 20px;border-radius:999px;color:#fff;
+      background:var(--purple);font-size:clamp(18px,3vw,25px);font-weight:900;text-align:center
+    }
+    .instruction{margin:0;text-align:center;font-size:clamp(23px,3.7vw,34px);font-weight:900}
+    .key-panel{
+      display:none;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;
+      padding:9px 13px;border:2px solid #cbbce1;border-radius:15px;background:#f5effb
+    }
+    .key-panel.show{display:flex}
+    .key-title{color:#51367a;font-weight:900}
+    .key-chip{padding:5px 9px;border-radius:9px;background:#fff;color:#51367a;font-size:14px;font-weight:900}
+    .work-area{display:grid;grid-template-columns:minmax(270px,.92fr) minmax(270px,1.08fr);gap:20px;align-items:stretch}
+    .sample-card,.package-card{
+      position:relative;min-height:244px;padding:19px;border:4px solid var(--ink);border-radius:29px;
+      background:#fff;box-shadow:var(--shadow)
+    }
+    .card-title{margin:0;color:var(--muted);font-size:17px;font-weight:900;text-align:center}
+    .sample-content{
+      display:flex;align-items:center;justify-content:center;gap:17px;min-height:154px;
+      padding:10px;transition:opacity .2s ease,filter .2s ease
+    }
+    .sample-card.hidden-sample .sample-content{opacity:.06;filter:blur(12px)}
+    .sample-cover{
+      position:absolute;inset:57px 14px 15px;display:none;place-items:center;padding:15px;
+      border-radius:20px;background:#e8f4ee;color:var(--green-dark);font-size:22px;font-weight:900;text-align:center
+    }
+    .sample-card.hidden-sample .sample-cover{display:grid}
+    .visual-shape{
+      width:100px;height:100px;flex:0 0 auto;background:var(--shape-color,#16835f);
+      border:4px solid var(--ink)
+    }
+    .visual-shape.circle{border-radius:50%}
+    .visual-shape.triangle{clip-path:polygon(50% 2%,98% 96%,2% 96%)}
+    .visual-shape.square{border-radius:12px}
+    .visual-shape.diamond{width:76px;height:76px;margin:12px;transform:rotate(45deg);border-radius:8px}
+    .sample-token{
+      display:grid;place-items:center;min-width:94px;min-height:94px;padding:10px;
+      border:4px solid var(--ink);border-radius:18px;background:#fff9df;font-size:clamp(42px,7vw,68px);
+      font-weight:900;line-height:1
+    }
+    .sample-caption{position:absolute;left:18px;right:18px;bottom:13px;margin:0;text-align:center;font-size:20px;font-weight:900}
+    .sample-again{display:none;width:100%;min-height:54px;margin-top:10px}
+    .sample-again.show{display:block}
+    .package-card{display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .package{
+      position:relative;width:min(75%,260px);height:158px;border:4px solid var(--ink);
+      border-radius:18px 18px 28px 28px;background:#d9b884
+    }
+    .package:before{
+      content:"";position:absolute;left:50%;top:-4px;width:4px;height:100%;transform:translateX(-50%);background:var(--ink)
+    }
+    .attached-label{
+      position:absolute;left:50%;top:50%;display:grid;place-items:center;min-width:130px;min-height:73px;
+      max-width:88%;padding:8px 13px;transform:translate(-50%,-50%);border:4px solid var(--ink);
+      border-radius:11px;background:#fff;font-size:clamp(25px,4vw,38px);font-weight:900;text-align:center
+    }
+    .attached-label.empty{color:#6e7d76;border-style:dashed;font-size:19px}
+    .feedback{min-height:51px;margin:12px 0 0;text-align:center;font-size:clamp(19px,3vw,25px);font-weight:900}
+    .feedback.good{color:var(--green-dark)}
+    .choices{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(13px,2.1vw,21px);
+      padding-bottom:10px
+    }
+    .choices.count-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .choices.count-4,.choices.count-5,.choices.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .choice{
+      position:relative;display:flex;align-items:center;justify-content:center;gap:12px;min-height:119px;
+      padding:14px 12px;border:4px solid var(--ink);border-radius:22px;color:var(--ink);
+      background:#fff;box-shadow:0 7px 0 var(--ink);font-size:clamp(23px,3.6vw,34px)
+    }
+    .choice:active{transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
+    .choice-swatch{width:48px;height:48px;flex:0 0 auto;border:3px solid var(--ink);border-radius:12px;background:var(--swatch)}
+    .choice-shape{width:47px;height:47px;flex:0 0 auto;border:3px solid var(--ink);background:var(--swatch,#16835f)}
+    .choice-shape.circle{border-radius:50%}.choice-shape.square{border-radius:7px}
+    .choice-shape.triangle{clip-path:polygon(50% 2%,98% 96%,2% 96%)}
+    .choice-shape.diamond{width:35px;height:35px;margin:6px;transform:rotate(45deg);border-radius:5px}
+    .choice.answer-hint{outline:9px solid var(--yellow);outline-offset:-9px;animation:breathe .8s ease-in-out infinite alternate}
+    .choice.gentle-shake{animation:shake .22s ease-in-out}
+    .choice:disabled{cursor:default;opacity:.8}
+
+    .complete-screen{flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center}
+    .complete-mark{
+      display:grid;place-items:center;width:150px;height:150px;border:6px solid var(--ink);
+      border-radius:50%;color:#fff;background:var(--green);box-shadow:0 13px 0 var(--green-dark);
+      font-size:64px;font-weight:900
+    }
+    .complete-screen h2{margin:9px 0 0;font-size:clamp(54px,9vw,86px)}
+    .complete-stage{margin:0;color:var(--green-dark);font-size:clamp(23px,4vw,33px);font-weight:900}
+    .complete-note{margin:0;color:var(--muted);font-size:20px;font-weight:800}
+    .complete-actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;width:100%}
+    .complete-actions .secondary{min-width:185px;min-height:83px;font-size:23px}
+
+    .staff-screen{flex-direction:column;gap:20px;padding-bottom:35px}
+    .staff-screen .notice{
+      padding:14px 17px;border-left:7px solid var(--green);border-radius:11px;background:#dff4e9;
+      font-size:17px;line-height:1.65
+    }
+    .staff-grid{display:grid;grid-template-columns:1fr 1fr;gap:19px}
+    .panel{padding:23px;border:2px solid var(--line);border-radius:23px;background:var(--card);box-shadow:0 8px 24px rgba(24,65,49,.08)}
+    .panel h3{margin:0 0 13px;font-size:23px}.panel p{color:var(--muted);line-height:1.7}
+    .toggle{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-top:13px;border-top:1px solid var(--line)}
+    .toggle input{width:34px;height:34px;accent-color:var(--green)}
+
+    .modal{
+      position:fixed;inset:0;z-index:20;display:none;place-items:center;padding:22px;background:rgba(23,53,43,.68)
+    }
+    .modal.open{display:grid}
+    .modal-card{width:min(100%,520px);padding:27px;border-radius:25px;background:var(--card);box-shadow:var(--shadow)}
+    .modal-card h3{margin:0 0 12px;font-size:26px}.modal-card p{color:var(--muted);font-size:17px;line-height:1.7}
+    .modal-actions{display:flex;justify-content:flex-end;gap:11px;flex-wrap:wrap}
+
+    @keyframes shake{0%,100%{transform:translateX(0)}35%{transform:translateX(-7px)}70%{transform:translateX(7px)}}
+    @keyframes breathe{from{transform:scale(1)}to{transform:scale(1.025)}}
+    @media(max-width:760px){
+      .app{padding:14px}.screen{min-height:calc(100dvh - 28px)}
+      .hero{grid-template-columns:1fr}.hero-scene{min-height:238px}.hero-label{width:119px;height:69px;font-size:27px}
+      .hero-box{width:185px;height:112px}.stage-grid{grid-template-columns:repeat(5,minmax(60px,1fr));gap:8px}
+      .stage-button{min-height:73px;border-width:2px;border-radius:16px;font-size:22px}
+      .work-area{grid-template-columns:1fr 1fr;gap:12px}.sample-card,.package-card{min-height:221px;padding:13px}
+      .visual-shape{width:82px;height:82px}.sample-token{min-width:75px;min-height:75px}
+      .choices,.choices.count-3,.choices.count-4,.choices.count-5,.choices.count-6{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .choice{min-height:104px}.staff-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:520px){
+      .actions{align-items:stretch;flex-direction:column}.footer{align-items:flex-start;flex-direction:column}
+      .play-top{align-items:center}.quiet{min-height:56px;padding:9px 12px;font-size:16px}.progress-wrap{min-width:0;flex:1}
+      .progress-text{min-width:55px;font-size:17px}.work-area{grid-template-columns:1fr}
+      .sample-card,.package-card{min-height:190px}.sample-content{min-height:117px}.package{height:126px}
+      .choices{gap:10px}.choice{min-height:94px;padding:10px 7px;border-width:3px;border-radius:18px}
+      .choice-swatch{width:38px;height:38px}.choice-shape{width:38px;height:38px}
+      .stage-grid{grid-template-columns:repeat(4,minmax(57px,1fr))}.stage-button small{font-size:10px}
+    }
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <section class="screen start-screen active" id="startScreen" aria-labelledby="mainTitle">
+    <div class="top"><div class="brand">WORK STEP</div><div class="pill" id="startStagePill">ステージ 1</div></div>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">おしごと れんしゅう</p>
+        <h1 id="mainTitle">ぴったり<br>ラベル</h1>
+        <p class="lead">みほんを みて<br>ラベルを はろう</p>
+        <p class="summary" id="startSummary">いろを みて おなじ ラベルを えらびます</p>
+      </div>
+      <div class="hero-scene" aria-hidden="true">
+        <div class="hero-label one">あか</div><div class="hero-label two">B3</div><div class="hero-box"></div>
+      </div>
+    </div>
+    <div>
+      <div class="actions">
+        <button class="primary" id="startButton">ステージ 1を はじめる</button>
+        <button class="secondary" id="stageEntryButton">ステージを えらぶ</button>
+      </div>
+      <div class="footer"><span>じかんは はかりません</span><button class="staff-link" id="staffEntryButton">しょくいんの かたへ</button></div>
+    </div>
+  </section>
+
+  <section class="screen stage-screen" id="stageScreen" aria-labelledby="stageTitle">
+    <div class="stage-top">
+      <div><h2 id="stageTitle">ステージを えらぶ</h2><p class="stage-intro">できたら つぎが ひらきます</p></div>
+      <button class="quiet" id="stageBackButton">もどる</button>
+    </div>
+    <div class="preview-banner" id="previewBanner"><span>しょくいんの ためし です</span><button id="previewExitButton">ためしを おわる</button></div>
+    <div class="stage-key" aria-label="ステージの ないよう">
+      <span>1-10 いろ かたち</span><span>11-20 すうじ ABC</span><span>21-30 まぜる ふたつ</span>
+      <span>31-40 コード</span><span>41-50 おぼえる きりかえ</span>
+    </div>
+    <div class="stage-grid" id="stageGrid" aria-label="ステージ"></div>
+  </section>
+
+  <section class="screen play-screen" id="playScreen" aria-labelledby="instructionText">
+    <div class="play-top">
+      <button class="quiet" id="quitButton">やめる</button>
+      <div class="progress-wrap" aria-label="すすみぐあい">
+        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-text" id="progressText">1 / 5</div>
+      </div>
+      <button class="quiet" id="soundButton" aria-pressed="true">おと あり</button>
+    </div>
+    <p class="stage-line" id="playStageLabel">ステージ 1</p>
+    <div class="rule-badge" id="ruleBadge">いろ の ラベル</div>
+    <p class="instruction" id="instructionText">みほんに ぴったりの ラベルを えらんでね</p>
+    <div class="key-panel" id="keyPanel" aria-label="コードの ひょう"></div>
+    <div class="work-area">
+      <div>
+        <div class="sample-card" id="sampleCard">
+          <p class="card-title">みほん</p>
+          <div class="sample-content" id="sampleContent"></div>
+          <p class="sample-caption" id="sampleCaption"></p>
+          <div class="sample-cover">みほんは かくれたよ</div>
+        </div>
+        <button class="sample-again" id="sampleAgainButton">もういちど みる</button>
+      </div>
+      <div class="package-card">
+        <p class="card-title">はこ</p>
+        <div class="package"><div class="attached-label empty" id="attachedLabel">ラベルを はる</div></div>
+        <p class="feedback" id="feedback" aria-live="polite">よく みてね</p>
+      </div>
+    </div>
+    <div class="choices" id="choices" aria-label="ラベル"></div>
+  </section>
+
+  <section class="screen complete-screen" id="completeScreen" aria-labelledby="completeTitle">
+    <div class="complete-mark" aria-hidden="true">OK</div>
+    <h2 id="completeTitle">できたよ</h2>
+    <p class="complete-stage" id="completeStage">ステージ 1 クリア</p>
+    <p class="complete-note" id="completeNote">つぎの ステージが ひらきました</p>
+    <div class="complete-actions">
+      <button class="primary" id="nextButton">つぎへ</button>
+      <button class="secondary" id="againButton">もういちど</button>
+      <button class="secondary" id="finishButton">ステージを えらぶ</button>
+    </div>
+  </section>
+
+  <section class="screen staff-screen" id="staffScreen" aria-labelledby="staffTitle">
+    <div class="staff-top"><h2 id="staffTitle">しょくいん せってい</h2><button class="quiet" id="staffBackButton">もどる</button></div>
+    <div class="notice">きろくは この タブレットの ブラウザだけに ほぞんします。なまえは ほぞんしません。</div>
+    <div class="staff-grid">
+      <div class="panel">
+        <h3>50 ステージを ためす</h3>
+        <p>すすみぐあいを かえずに、どの ステージも ためせます。</p>
+        <button class="staff-button" id="previewButton">50 ステージを ためす</button>
+      </div>
+      <div class="panel">
+        <h3>おとの せってい</h3>
+        <p>せいかいの ときだけ、みじかい おとが なります。</p>
+        <label class="toggle"><strong>せいかいの おと</strong><input type="checkbox" id="soundToggle" checked></label>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>つかいかた</h3>
+      <p>はじめは いろや かたちを みて、ラベルを えらびます。あとでは コード、おぼえる もんだい、きまりの きりかえが でてきます。まちがえても へりません。2かい まよったら こたえを ひかります。</p>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="staffModal" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
+  <div class="modal-card">
+    <h3 id="staffModalTitle">しょくいんの かたですか</h3>
+    <p>50 ステージの ためしと、おとの せっていが できます。</p>
+    <div class="modal-actions"><button class="secondary" id="staffCancelButton">もどる</button><button class="staff-button" id="staffOpenButton">ひらく</button></div>
+  </div>
+</div>
+
+<script>
+(()=>{
+  "use strict";
+  const MAX_STAGE=50;
+  const PROGRESS_KEY="workstep_label_progress_v1";
+  const SETTINGS_KEY="workstep_label_settings_v1";
+  const COLORS=[
+    {id:"red",name:"あか",code:"R",hex:"#e04d43"},
+    {id:"blue",name:"あお",code:"B",hex:"#347fd0"},
+    {id:"yellow",name:"きいろ",code:"Y",hex:"#f1bd32"},
+    {id:"green",name:"みどり",code:"G",hex:"#2d986e"}
+  ];
+  const SHAPES=[
+    {id:"circle",name:"まる",code:"C"},
+    {id:"triangle",name:"さんかく",code:"T"},
+    {id:"square",name:"しかく",code:"S"},
+    {id:"diamond",name:"ひしがた",code:"D"}
+  ];
+  const LETTERS=["A","B","C","D","E","F"];
+  const RULE_NAMES={
+    colorName:"いろ の ラベル",shapeName:"かたち の ラベル",number:"すうじ の ラベル",
+    letter:"ABC の ラベル",colorShapeName:"いろ と かたち",
+    colorNumberCode:"いろ と すうじ の コード",shapeLetterCode:"かたち と ABC の コード",
+    colorShapeCode:"いろ と かたち の コード",tripleCode:"3つの コード"
+  };
+  const $=id=>document.getElementById(id);
+  const screens={start:$("startScreen"),stage:$("stageScreen"),play:$("playScreen"),complete:$("completeScreen"),staff:$("staffScreen")};
+
+  function makeStage(stage){
+    const base={
+      stage,tasks:6,choices:3,rules:["colorName"],colorCount:3,shapeCount:3,
+      numbers:[0,1,2,3],letters:["A","B","C"],hideAfter:0,showWords:false
+    };
+    if(stage===1)return{...base,tasks:5,choices:2,colorCount:2,showWords:true};
+    if(stage===2)return{...base,tasks:6,choices:2,colorCount:2,showWords:true};
+    if(stage===3)return{...base,tasks:6,choices:3,colorCount:3,showWords:true};
+    if(stage===4)return{...base,tasks:6,choices:3,colorCount:3};
+    if(stage===5)return{...base,tasks:7,choices:4,colorCount:4};
+    if(stage===6)return{...base,tasks:5,choices:2,rules:["shapeName"],shapeCount:2,showWords:true};
+    if(stage===7)return{...base,tasks:6,choices:2,rules:["shapeName"],shapeCount:2,showWords:true};
+    if(stage===8)return{...base,tasks:6,choices:3,rules:["shapeName"],shapeCount:3,showWords:true};
+    if(stage===9)return{...base,tasks:7,choices:3,rules:["shapeName"],shapeCount:3};
+    if(stage===10)return{...base,tasks:7,choices:4,rules:["shapeName"],shapeCount:4};
+    if(stage===11)return{...base,tasks:5,choices:2,rules:["number"],numbers:[1,2]};
+    if(stage===12)return{...base,tasks:6,choices:3,rules:["number"],numbers:[1,2,3]};
+    if(stage===13)return{...base,tasks:6,choices:3,rules:["number"],numbers:[0,1,2,3]};
+    if(stage===14)return{...base,tasks:7,choices:4,rules:["number"],numbers:[0,1,2,3,4,5]};
+    if(stage===15)return{...base,tasks:8,choices:4,rules:["number"],numbers:[0,1,2,3,4,5,6,7,8,9]};
+    if(stage===16)return{...base,tasks:5,choices:2,rules:["letter"],letters:["A","B"]};
+    if(stage===17)return{...base,tasks:6,choices:3,rules:["letter"],letters:["A","B","C"]};
+    if(stage===18)return{...base,tasks:6,choices:3,rules:["letter"],letters:["A","B","C","D"]};
+    if(stage===19)return{...base,tasks:7,choices:4,rules:["letter"],letters:["A","B","C","D","E"]};
+    if(stage===20)return{...base,tasks:8,choices:5,rules:["letter"],letters:LETTERS};
+    if(stage===21)return{...base,tasks:6,choices:3,rules:["colorName","shapeName"],colorCount:3,shapeCount:3};
+    if(stage===22)return{...base,tasks:7,choices:3,rules:["colorName","shapeName","number"],numbers:[1,2,3]};
+    if(stage===23)return{...base,tasks:8,choices:3,rules:["colorName","shapeName","number","letter"],numbers:[1,2,3],letters:["A","B","C"]};
+    if(stage===24)return{...base,tasks:8,choices:4,rules:["colorName","shapeName","number","letter"],colorCount:4,shapeCount:4,numbers:[0,1,2,3],letters:["A","B","C","D"]};
+    if(stage===25)return{...base,tasks:9,choices:4,rules:["letter","number","shapeName","colorName"],colorCount:4,shapeCount:4,numbers:[0,2,4,6,8],letters:["A","B","C","D","E"]};
+    if(stage===26)return{...base,tasks:6,choices:3,rules:["colorShapeName"],colorCount:2,shapeCount:2,showWords:true};
+    if(stage===27)return{...base,tasks:6,choices:3,rules:["colorShapeName"],colorCount:3,shapeCount:2,showWords:true};
+    if(stage===28)return{...base,tasks:7,choices:4,rules:["colorShapeName"],colorCount:3,shapeCount:3};
+    if(stage===29)return{...base,tasks:8,choices:4,rules:["colorShapeName"],colorCount:4,shapeCount:3};
+    if(stage===30)return{...base,tasks:9,choices:5,rules:["colorShapeName"],colorCount:4,shapeCount:4};
+    if(stage===31)return{...base,tasks:6,choices:3,rules:["colorNumberCode"],colorCount:2,numbers:[1,2]};
+    if(stage===32)return{...base,tasks:7,choices:3,rules:["colorNumberCode"],colorCount:3,numbers:[1,2,3]};
+    if(stage===33)return{...base,tasks:7,choices:4,rules:["colorNumberCode"],colorCount:3,numbers:[0,1,2,3,4]};
+    if(stage===34)return{...base,tasks:8,choices:4,rules:["colorNumberCode"],colorCount:4,numbers:[1,3,5,7,9]};
+    if(stage===35)return{...base,tasks:9,choices:5,rules:["colorNumberCode"],colorCount:4,numbers:[0,1,2,3,4,5,6,7,8,9]};
+    if(stage===36)return{...base,tasks:6,choices:3,rules:["shapeLetterCode"],shapeCount:2,letters:["A","B"]};
+    if(stage===37)return{...base,tasks:7,choices:4,rules:["shapeLetterCode"],shapeCount:3,letters:["A","B","C"]};
+    if(stage===38)return{...base,tasks:8,choices:4,rules:["colorNumberCode","shapeLetterCode"],colorCount:3,shapeCount:3,numbers:[1,2,3],letters:["A","B","C"]};
+    if(stage===39)return{...base,tasks:9,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode"],colorCount:4,shapeCount:4,numbers:[0,2,4,6,8],letters:["A","B","C","D"]};
+    if(stage===40)return{...base,tasks:9,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode"],colorCount:4,shapeCount:4,numbers:[1,3,5,7,9],letters:["A","B","C","D"],hideAfter:3600};
+    if(stage===41)return{...base,tasks:8,choices:4,rules:["colorNumberCode"],colorCount:3,numbers:[1,2,3,4],hideAfter:3400};
+    if(stage===42)return{...base,tasks:8,choices:4,rules:["shapeLetterCode"],shapeCount:3,letters:["A","B","C","D"],hideAfter:3200};
+    if(stage===43)return{...base,tasks:9,choices:5,rules:["colorNumberCode","shapeLetterCode"],colorCount:4,shapeCount:4,numbers:[2,7,12,18,24,31],letters:["A","B","C","D"],hideAfter:2900};
+    if(stage===44)return{...base,tasks:9,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode"],colorCount:4,shapeCount:4,numbers:[3,9,14,21,28,35],letters:["A","B","C","D","E"],hideAfter:2600};
+    if(stage===45)return{...base,tasks:10,choices:5,rules:["colorShapeCode","shapeLetterCode","colorNumberCode"],colorCount:4,shapeCount:4,numbers:[4,11,19,27,36,42],letters:LETTERS,hideAfter:2300};
+    if(stage===46)return{...base,tasks:9,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode"],colorCount:4,shapeCount:4,numbers:[5,12,20,29,38,47],letters:LETTERS,hideAfter:2200};
+    if(stage===47)return{...base,tasks:10,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode","tripleCode"],colorCount:4,shapeCount:4,numbers:[6,13,22,31,40,49],letters:LETTERS,hideAfter:2050};
+    if(stage===48)return{...base,tasks:10,choices:5,rules:["colorNumberCode","shapeLetterCode","colorShapeCode","tripleCode"],colorCount:4,shapeCount:4,numbers:[7,16,25,34,43,52],letters:LETTERS,hideAfter:1900};
+    if(stage===49)return{...base,tasks:11,choices:6,rules:["shapeLetterCode","tripleCode","colorNumberCode","colorShapeCode"],colorCount:4,shapeCount:4,numbers:[8,17,26,35,44,53],letters:LETTERS,hideAfter:1700};
+    return{...base,tasks:12,choices:6,rules:["tripleCode","colorNumberCode","shapeLetterCode","colorShapeCode","tripleCode"],colorCount:4,shapeCount:4,numbers:[9,18,27,36,45,54,63],letters:LETTERS,hideAfter:1500};
+  }
+
+  const STAGES=Array.from({length:MAX_STAGE},(_,index)=>makeStage(index+1));
+  if(STAGES.length!==50)throw new Error("stage count");
+
+  let progress=loadProgress();
+  let settings=loadSettings();
+  let currentStage=Math.min(MAX_STAGE,progress.highestUnlocked);
+  let config=STAGES[currentStage-1];
+  let queue=[],taskIndex=0,mistakes=0,locked=false,staffPreview=false,hideTimer=0,audioContext=null;
+
+  function loadProgress(){
+    try{
+      const value=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}");
+      const highestUnlocked=Math.min(MAX_STAGE,Math.max(1,Number(value.highestUnlocked)||1));
+      const completed=Array.isArray(value.completed)?value.completed.filter(n=>Number.isInteger(n)&&n>=1&&n<=MAX_STAGE):[];
+      return{highestUnlocked,completed:[...new Set(completed)]};
+    }catch{return{highestUnlocked:1,completed:[]}}
+  }
+  function loadSettings(){
+    try{return{sound:JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}").sound!==false}}
+    catch{return{sound:true}}
+  }
+  function saveProgress(){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(progress))}catch{}}
+  function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}catch{}}
+  function show(name){
+    Object.entries(screens).forEach(([key,element])=>element.classList.toggle("active",key===name));
+    window.scrollTo(0,0);
+  }
+  function shuffle(values){
+    const result=[...values];
+    for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}
+    return result;
+  }
+  function stageSummary(stage){
+    if(stage<=5)return"いろを みて おなじ ラベルを えらびます";
+    if(stage<=10)return"かたちを みて おなじ ラベルを えらびます";
+    if(stage<=15)return"すうじの ラベルを えらびます";
+    if(stage<=20)return"ABCの ラベルを えらびます";
+    if(stage<=25)return"きまりを みて ラベルを えらびます";
+    if(stage<=30)return"いろと かたちを みて えらびます";
+    if(stage<=40)return"みほんを コードに かえます";
+    return"みほんを おぼえて コードを えらびます";
+  }
+  function stageGroup(stage){
+    if(stage<=10)return"いろ";
+    if(stage<=20)return"ABC";
+    if(stage<=30)return"ふたつ";
+    if(stage<=40)return"コード";
+    return"おぼえる";
+  }
+  function updateStart(){
+    currentStage=Math.min(currentStage,staffPreview?MAX_STAGE:progress.highestUnlocked);
+    config=STAGES[currentStage-1];
+    $("startStagePill").textContent=`ステージ ${currentStage}`;
+    $("startSummary").textContent=stageSummary(currentStage);
+    $("startButton").textContent=`ステージ ${currentStage}を はじめる`;
+    $("soundToggle").checked=settings.sound;
+    updateSoundButton();
+  }
+  function renderStageGrid(){
+    const grid=$("stageGrid");
+    grid.innerHTML="";
+    for(let stage=1;stage<=MAX_STAGE;stage++){
+      const button=document.createElement("button");
+      const isOpen=staffPreview||stage<=progress.highestUnlocked;
+      button.className="stage-button";
+      if(progress.completed.includes(stage)&&!staffPreview)button.classList.add("completed");
+      if(stage===currentStage)button.classList.add("current");
+      button.disabled=!isOpen;
+      button.innerHTML=`${stage}<small>${!isOpen?"まだ":progress.completed.includes(stage)&&!staffPreview?"できた":stageGroup(stage)}</small>`;
+      button.setAttribute("aria-label",`ステージ ${stage}${!isOpen?" まだ":""}`);
+      button.addEventListener("click",()=>{currentStage=stage;startStage()});
+      grid.appendChild(button);
+    }
+    $("previewBanner").classList.toggle("show",staffPreview);
+  }
+  function openStageScreen(){renderStageGrid();show("stage")}
+
+  function activeColors(){return COLORS.slice(0,config.colorCount)}
+  function activeShapes(){return SHAPES.slice(0,config.shapeCount)}
+  function labelFor(rule,sample){
+    if(rule==="colorName")return{key:`c-${sample.color.id}`,text:sample.color.name,kind:"color",color:sample.color.hex};
+    if(rule==="shapeName")return{key:`s-${sample.shape.id}`,text:sample.shape.name,kind:"shape",shape:sample.shape.id,color:"#16835f"};
+    if(rule==="number")return{key:`n-${sample.number}`,text:String(sample.number),kind:"text"};
+    if(rule==="letter")return{key:`l-${sample.letter}`,text:sample.letter,kind:"text"};
+    if(rule==="colorShapeName")return{key:`csn-${sample.color.id}-${sample.shape.id}`,text:`${sample.color.name} ${sample.shape.name}`,kind:"shape",shape:sample.shape.id,color:sample.color.hex};
+    if(rule==="colorNumberCode")return{key:`cn-${sample.color.id}-${sample.number}`,text:`${sample.color.code}${sample.number}`,kind:"code"};
+    if(rule==="shapeLetterCode")return{key:`sl-${sample.shape.id}-${sample.letter}`,text:`${sample.shape.code}${sample.letter}`,kind:"code"};
+    if(rule==="colorShapeCode")return{key:`csc-${sample.color.id}-${sample.shape.id}`,text:`${sample.color.code}${sample.shape.code}`,kind:"code"};
+    return{key:`tri-${sample.color.id}-${sample.number}-${sample.shape.id}`,text:`${sample.color.code}${sample.number}${sample.shape.code}`,kind:"code"};
+  }
+  function poolFor(rule){
+    const colors=activeColors(),shapes=activeShapes(),numbers=config.numbers,letters=config.letters,pool=[];
+    if(rule==="colorName")colors.forEach(color=>pool.push(labelFor(rule,{color})));
+    else if(rule==="shapeName")shapes.forEach(shape=>pool.push(labelFor(rule,{shape})));
+    else if(rule==="number")numbers.forEach(number=>pool.push(labelFor(rule,{number})));
+    else if(rule==="letter")letters.forEach(letter=>pool.push(labelFor(rule,{letter})));
+    else if(rule==="colorShapeName"||rule==="colorShapeCode")colors.forEach(color=>shapes.forEach(shape=>pool.push(labelFor(rule,{color,shape}))));
+    else if(rule==="colorNumberCode")colors.forEach(color=>numbers.forEach(number=>pool.push(labelFor(rule,{color,number}))));
+    else if(rule==="shapeLetterCode")shapes.forEach(shape=>letters.forEach(letter=>pool.push(labelFor(rule,{shape,letter}))));
+    else colors.forEach(color=>numbers.forEach(number=>shapes.forEach(shape=>pool.push(labelFor(rule,{color,number,shape})))));
+    return pool;
+  }
+  function makeTask(index){
+    const rule=config.rules[index%config.rules.length];
+    const colors=activeColors(),shapes=activeShapes();
+    const sample={
+      color:colors[(currentStage+index*2)%colors.length],
+      shape:shapes[(currentStage+index*3)%shapes.length],
+      number:config.numbers[(currentStage+index)%config.numbers.length],
+      letter:config.letters[(currentStage+index*2)%config.letters.length]
+    };
+    const correct=labelFor(rule,sample);
+    const distractors=shuffle(poolFor(rule).filter(label=>label.key!==correct.key));
+    const options=shuffle([correct,...distractors.slice(0,Math.max(1,config.choices-1))]).slice(0,config.choices);
+    return{rule,sample,correct,options};
+  }
+  function makeQueue(){return Array.from({length:config.tasks},(_,index)=>makeTask(index))}
+
+  function startStage(){
+    config=STAGES[currentStage-1];
+    queue=makeQueue();taskIndex=0;mistakes=0;locked=false;
+    $("playStageLabel").textContent=`ステージ ${currentStage}`;
+    show("play");
+    renderTask();
+  }
+  function renderTask(){
+    clearTimeout(hideTimer);
+    locked=false;mistakes=0;
+    const task=queue[taskIndex];
+    $("ruleBadge").textContent=RULE_NAMES[task.rule];
+    $("progressText").textContent=`${taskIndex+1} / ${queue.length}`;
+    $("progressBar").style.width=`${(taskIndex/queue.length)*100}%`;
+    $("attachedLabel").textContent="ラベルを はる";
+    $("attachedLabel").className="attached-label empty";
+    $("feedback").textContent="よく みてね";
+    $("feedback").className="feedback";
+    renderKey(task.rule);
+    renderSample(task);
+    renderChoices(task);
+  }
+  function shapeHtml(shape,color,className="visual-shape"){
+    return `<span class="${className} ${shape.id}" style="--shape-color:${color};--swatch:${color}" aria-label="${shape.name}"></span>`;
+  }
+  function renderSample(task){
+    const {rule,sample}=task;
+    const content=$("sampleContent");
+    let html="";
+    if(rule==="colorName")html=shapeHtml(SHAPES[0],sample.color.hex);
+    else if(rule==="shapeName")html=shapeHtml(sample.shape,"#16835f");
+    else if(rule==="number")html=`<span class="sample-token">${sample.number}</span>`;
+    else if(rule==="letter")html=`<span class="sample-token">${sample.letter}</span>`;
+    else if(rule==="colorShapeName"||rule==="colorShapeCode")html=shapeHtml(sample.shape,sample.color.hex);
+    else if(rule==="colorNumberCode")html=`${shapeHtml(SHAPES[0],sample.color.hex)}<span class="sample-token">${sample.number}</span>`;
+    else if(rule==="shapeLetterCode")html=`${shapeHtml(sample.shape,"#16835f")}<span class="sample-token">${sample.letter}</span>`;
+    else html=`${shapeHtml(sample.shape,sample.color.hex)}<span class="sample-token">${sample.number}</span>`;
+    content.innerHTML=html;
+    let caption="";
+    if(config.showWords&&rule==="colorName")caption=sample.color.name;
+    if(config.showWords&&rule==="shapeName")caption=sample.shape.name;
+    if(config.showWords&&rule==="colorShapeName")caption=`${sample.color.name} ${sample.shape.name}`;
+    $("sampleCaption").textContent=caption;
+    $("sampleCard").classList.remove("hidden-sample");
+    $("sampleAgainButton").classList.toggle("show",config.hideAfter>0);
+    if(config.hideAfter>0)hideTimer=setTimeout(()=>$("sampleCard").classList.add("hidden-sample"),config.hideAfter);
+  }
+  function renderKey(rule){
+    const panel=$("keyPanel");
+    const parts=[];
+    if(["colorNumberCode","colorShapeCode","tripleCode"].includes(rule)){
+      activeColors().forEach(color=>parts.push(`<span class="key-chip">${color.code} ${color.name}</span>`));
+    }
+    if(["shapeLetterCode","colorShapeCode","tripleCode"].includes(rule)){
+      activeShapes().forEach(shape=>parts.push(`<span class="key-chip">${shape.code} ${shape.name}</span>`));
+    }
+    panel.innerHTML=parts.length?`<span class="key-title">コード</span>${parts.join("")}`:"";
+    panel.classList.toggle("show",parts.length>0);
+  }
+  function renderChoices(task){
+    const container=$("choices");
+    container.className=`choices count-${task.options.length}`;
+    container.innerHTML="";
+    task.options.forEach(label=>{
+      const button=document.createElement("button");
+      button.className="choice";
+      button.dataset.key=label.key;
+      let icon="";
+      if(label.kind==="color")icon=`<span class="choice-swatch" style="--swatch:${label.color}"></span>`;
+      if(label.kind==="shape")icon=shapeHtml({id:label.shape,name:""},label.color,"choice-shape");
+      button.innerHTML=`${icon}<span>${label.text}</span>`;
+      button.setAttribute("aria-label",label.text);
+      button.addEventListener("click",()=>answer(label,button));
+      container.appendChild(button);
+    });
+  }
+  function answer(label,button){
+    if(locked)return;
+    const task=queue[taskIndex];
+    if(label.key!==task.correct.key){
+      mistakes++;
+      button.classList.remove("gentle-shake");
+      void button.offsetWidth;
+      button.classList.add("gentle-shake");
+      if(mistakes>=2){
+        $("feedback").textContent="ここを えらんでみよう";
+        const correctButton=$("choices").querySelector(`[data-key="${task.correct.key}"]`);
+        if(correctButton)correctButton.classList.add("answer-hint");
+      }else $("feedback").textContent="ちがっても だいじょうぶ。もういちど みてね";
+      return;
+    }
+    locked=true;clearTimeout(hideTimer);
+    $("sampleCard").classList.remove("hidden-sample");
+    $("attachedLabel").textContent=task.correct.text;
+    $("attachedLabel").className="attached-label";
+    $("feedback").textContent="ぴったり。できたよ";
+    $("feedback").className="feedback good";
+    [...$("choices").querySelectorAll("button")].forEach(choice=>choice.disabled=true);
+    playTone();
+    setTimeout(()=>{
+      taskIndex++;
+      if(taskIndex<queue.length)renderTask();
+      else finishStage();
+    },700);
+  }
+  function finishStage(){
+    $("progressBar").style.width="100%";
+    if(!staffPreview){
+      if(!progress.completed.includes(currentStage))progress.completed.push(currentStage);
+      progress.highestUnlocked=Math.max(progress.highestUnlocked,Math.min(MAX_STAGE,currentStage+1));
+      saveProgress();
+    }
+    $("completeStage").textContent=`ステージ ${currentStage} クリア`;
+    if(staffPreview)$("completeNote").textContent="しょくいんの ためし です";
+    else if(currentStage===MAX_STAGE)$("completeNote").textContent="50 ステージ できました";
+    else $("completeNote").textContent="つぎの ステージが ひらきました";
+    $("nextButton").hidden=currentStage===MAX_STAGE;
+    show("complete");
+  }
+  function playTone(){
+    if(!settings.sound)return;
+    try{
+      audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)();
+      const oscillator=audioContext.createOscillator(),gain=audioContext.createGain();
+      oscillator.type="sine";oscillator.frequency.setValueAtTime(520,audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(760,audioContext.currentTime+.13);
+      gain.gain.setValueAtTime(.0001,audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.16,audioContext.currentTime+.02);
+      gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.22);
+      oscillator.connect(gain);gain.connect(audioContext.destination);oscillator.start();oscillator.stop(audioContext.currentTime+.23);
+    }catch{}
+  }
+  function updateSoundButton(){
+    $("soundButton").textContent=settings.sound?"おと あり":"おと なし";
+    $("soundButton").setAttribute("aria-pressed",String(settings.sound));
+    $("soundToggle").checked=settings.sound;
+  }
+  function setSound(value){settings.sound=value;saveSettings();updateSoundButton()}
+
+  $("startButton").addEventListener("click",startStage);
+  $("stageEntryButton").addEventListener("click",openStageScreen);
+  $("stageBackButton").addEventListener("click",()=>show(staffPreview?"staff":"start"));
+  $("quitButton").addEventListener("click",openStageScreen);
+  $("sampleAgainButton").addEventListener("click",()=>{
+    clearTimeout(hideTimer);$("sampleCard").classList.remove("hidden-sample");
+    hideTimer=setTimeout(()=>$("sampleCard").classList.add("hidden-sample"),1400);
+  });
+  $("soundButton").addEventListener("click",()=>setSound(!settings.sound));
+  $("soundToggle").addEventListener("change",event=>setSound(event.target.checked));
+  $("nextButton").addEventListener("click",()=>{if(currentStage<MAX_STAGE)currentStage++;startStage()});
+  $("againButton").addEventListener("click",startStage);
+  $("finishButton").addEventListener("click",openStageScreen);
+  $("staffEntryButton").addEventListener("click",()=>$("staffModal").classList.add("open"));
+  $("staffCancelButton").addEventListener("click",()=>$("staffModal").classList.remove("open"));
+  $("staffOpenButton").addEventListener("click",()=>{$("staffModal").classList.remove("open");show("staff")});
+  $("staffBackButton").addEventListener("click",()=>{staffPreview=false;updateStart();show("start")});
+  $("previewButton").addEventListener("click",()=>{staffPreview=true;currentStage=1;openStageScreen()});
+  $("previewExitButton").addEventListener("click",()=>{staffPreview=false;currentStage=Math.min(progress.highestUnlocked,MAX_STAGE);updateStart();show("staff")});
+  $("staffModal").addEventListener("click",event=>{if(event.target===$("staffModal"))$("staffModal").classList.remove("open")});
+  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("staffModal").classList.contains("open"))$("staffModal").classList.remove("open")});
+
+  updateStart();
+})();
+</script>
+</body>
+</html>

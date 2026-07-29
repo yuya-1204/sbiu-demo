@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#173f39">
+  <meta property="og:title" content="WORK STEP（仮）｜関係者向け限定デモ">
+  <meta property="og:description" content="仕事の練習と支援の工夫を、段階的に確かめるプロトタイプ。">
+  <meta property="og:image" content="https://yuya-1204.github.io/sbiu-demo/work-step/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>WORK STEP（仮）｜関係者向け限定デモ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #173f39;
+      --muted: #60706c;
+      --paper: #fbfaf6;
+      --cream: #f2ede1;
+      --green: #1c6a5d;
+      --green-dark: #124b42;
+      --yellow: #f3c85c;
+      --line: rgba(23, 63, 57, .15);
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Meiryo", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(243, 200, 92, .28), transparent 28rem),
+        radial-gradient(circle at 88% 82%, rgba(28, 106, 93, .18), transparent 30rem),
+        var(--cream);
+    }
+    .shell {
+      width: min(100%, 1040px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+      overflow: hidden;
+      border: 1px solid rgba(23, 63, 57, .12);
+      border-radius: 30px;
+      background: rgba(251, 250, 246, .96);
+      box-shadow: 0 24px 80px rgba(23, 63, 57, .14);
+    }
+    .intro {
+      position: relative;
+      min-height: 590px;
+      padding: clamp(34px, 6vw, 72px);
+      color: #fff;
+      background: var(--ink);
+      isolation: isolate;
+    }
+    .intro::before,
+    .intro::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 999px;
+      opacity: .8;
+    }
+    .intro::before {
+      width: 260px;
+      height: 260px;
+      right: -100px;
+      top: -80px;
+      background: #287e70;
+    }
+    .intro::after {
+      width: 210px;
+      height: 210px;
+      left: -90px;
+      bottom: -100px;
+      background: #d6a93e;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 78px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--yellow);
+      font-size: 20px;
+    }
+    .kicker {
+      display: inline-block;
+      margin: 0 0 18px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 999px;
+      color: #f8de9c;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .06em;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(35px, 5vw, 62px);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+    }
+    .intro p {
+      max-width: 36rem;
+      margin: 24px 0 0;
+      color: rgba(255, 255, 255, .78);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+    .login {
+      align-self: center;
+      padding: clamp(34px, 6vw, 70px);
+    }
+    .login h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      letter-spacing: -.025em;
+    }
+    .login-lead {
+      margin: 0 0 30px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 16px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+      font-size: 18px;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(28, 106, 93, .12);
+    }
+    button {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 14px;
+      color: #fff;
+      background: var(--green);
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(28, 106, 93, .24);
+    }
+    button:hover { background: var(--green-dark); }
+    button:focus-visible {
+      outline: 4px solid rgba(243, 200, 92, .75);
+      outline-offset: 3px;
+    }
+    .error {
+      display: none;
+      margin: 12px 0 0;
+      color: #a33131;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .notice {
+      margin: 28px 0 0;
+      padding: 16px;
+      border-radius: 14px;
+      color: #56635f;
+      background: #f2f0e9;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    @media (max-width: 760px) {
+      body { padding: 0; background: var(--paper); }
+      .shell { min-height: 100dvh; grid-template-columns: 1fr; border: 0; border-radius: 0; }
+      .intro { min-height: auto; padding: 30px 24px 36px; }
+      .brand { margin-bottom: 42px; }
+      .intro p { margin-top: 18px; }
+      .login { padding: 34px 24px 42px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="intro" aria-labelledby="accessTitle">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">W</span>WORK STEP</div>
+      <p class="kicker">SBI-Uチャレンジ｜関係者向け限定デモ</p>
+      <h1 id="accessTitle">仕事の練習を、<br>わかりやすく。</h1>
+      <p>段階的な作業練習と、支援の工夫を見つけるためのプロトタイプです。</p>
+    </section>
+    <section class="login" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">デモを開く</h2>
+      <p class="login-lead">SBI-U関係者・共同検討先にお伝えしている共通パスワードを入力してください。</p>
+      <form id="accessForm" action="#" novalidate>
+        <label for="password">共通パスワード</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required autofocus aria-describedby="accessError">
+        <p class="error" id="accessError" role="alert" aria-live="polite">パスワードが違います。大文字・小文字を確認してください。</p>
+        <button type="submit">デモを開く</button>
+      </form>
+      <p class="notice">簡易パスワードによる限定公開です。氏名・診断名などの個人情報や、機密情報は入力しないでください。</p>
+    </section>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const ACCESS_KEY = "workStepDemoAccessV1";
+      const ACCESS_CODE_HASH = "bccff68c59c16b125ac25fb56eac62e61e2f4073023b7e61485ccf000f4d2dc2";
+      const ALLOWED_PAGES = new Set([
+        "portal.html",
+        "game.html",
+        "label-work.html",
+        "cleaning-work.html",
+        "assembly-work.html",
+      ]);
+      const form = document.getElementById("accessForm");
+      const password = document.getElementById("password");
+      const error = document.getElementById("accessError");
+      const requested = new URLSearchParams(location.search).get("return") || "portal.html";
+      const returnTo = ALLOWED_PAGES.has(requested) ? requested : "portal.html";
+
+      async function sha256(value) {
+        const bytes = new TextEncoder().encode(value);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(digest), (byte) =>
+          byte.toString(16).padStart(2, "0")
+        ).join("");
+      }
+
+      function hasValidAccess() {
+        try {
+          const state = JSON.parse(localStorage.getItem(ACCESS_KEY) || "null");
+          return state && state.granted === true && Number(state.expiresAt) > Date.now();
+        } catch {
+          return false;
+        }
+      }
+
+      if (hasValidAccess()) location.replace("./" + returnTo);
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.style.display = "none";
+        password.setAttribute("aria-invalid", "false");
+        const submitted = password.value;
+        if (!submitted || await sha256(submitted) !== ACCESS_CODE_HASH) {
+          error.style.display = "block";
+          password.setAttribute("aria-invalid", "true");
+          password.focus();
+          return;
+        }
+        localStorage.setItem(ACCESS_KEY, JSON.stringify({
+          granted: true,
+          expiresAt: Date.now() + 8 * 60 * 60 * 1000,
+        }));
+        location.replace("./" + returnTo);
+      });
+    })();
+  </script>
+</body>
+</html>

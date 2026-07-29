@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f2e9">
+  <script src="./auth.js"></script>
+  <title>おなじ しるしへ｜しわけの しごと</title>
+  <style>
+    :root{--ink:#17312b;--muted:#5e6f6a;--paper:#f5f2e9;--card:#fffdf8;--line:#d9d4c7;--teal:#167a68;--teal-dark:#0f5f51;--yellow:#f0b429;--shadow:0 18px 48px rgba(41,57,51,.12)}
+    *{box-sizing:border-box}html{min-height:100%;background:var(--paper)}
+    body{min-height:100dvh;margin:0;color:var(--ink);background:radial-gradient(circle at 8% 8%,rgba(240,180,41,.17),transparent 23rem),radial-gradient(circle at 92% 92%,rgba(22,122,104,.15),transparent 28rem),var(--paper);font-family:"BIZ UDPGothic","Yu Gothic UI","Meiryo",sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:5px solid #103d79;outline-offset:4px}
+    .app{width:min(100%,1040px);min-height:100dvh;margin:auto;padding:max(22px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
+    .screen{display:none;min-height:calc(100dvh - 44px)}.screen.active{display:flex}.start-screen{flex-direction:column;justify-content:space-between;gap:24px}
+    .top,.play-top,.staff-top{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:clamp(16px,2.3vw,22px);font-weight:900;letter-spacing:.14em}
+    .tag{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border:2px solid var(--line);border-radius:999px;background:rgba(255,253,248,.8);color:var(--muted);font-weight:900}
+    .stage-summary{margin:18px 0 0;padding:14px 18px;border-left:7px solid var(--yellow);border-radius:12px;background:rgba(255,253,248,.86);color:var(--ink);font-size:clamp(17px,2.4vw,22px);font-weight:900;line-height:1.55}
+    .hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr);align-items:center;gap:clamp(28px,6vw,76px)}
+    .eyebrow{margin:0 0 10px;color:var(--teal-dark);font-size:clamp(19px,2.8vw,28px);font-weight:900;letter-spacing:.05em}h1{margin:0;font-size:clamp(48px,8.4vw,88px);line-height:1.06;letter-spacing:.035em}.lead{margin:24px 0 0;color:var(--muted);font-size:clamp(22px,3.2vw,32px);font-weight:800;line-height:1.6}
+    .scene{position:relative;min-height:330px;border:3px solid var(--ink);border-radius:36px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}.scene:before{content:"";position:absolute;inset:21px;border:2px dashed #c9c2b4;border-radius:24px}
+    .scene-part{position:absolute;display:grid;place-items:center;width:112px;height:112px;border:4px solid var(--ink);border-radius:26px;background:#e9f3ff;color:#2f78d1;font-size:58px;font-weight:900;transform:rotate(-7deg)}.scene-part.one{top:48px;left:42px}.scene-part.two{top:80px;right:38px;color:#b67900;background:#fff2bd;transform:rotate(8deg)}
+    .scene-box{position:absolute;left:50%;bottom:38px;width:210px;height:105px;transform:translateX(-50%);border:4px solid var(--ink);border-radius:18px 18px 30px 30px;background:#dfe9e5}.scene-box:before{content:"しわけ";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:900}
+    .actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.primary,.secondary,.quiet,.staff-button,.choice,.read-button,.stage-button{border:0;font-weight:900}.primary{min-width:min(100%,360px);min-height:104px;padding:20px 34px;border-radius:26px;color:#fff;background:var(--teal);box-shadow:0 10px 0 var(--teal-dark);font-size:clamp(30px,5vw,44px)}.primary:active{transform:translateY(6px);box-shadow:0 4px 0 var(--teal-dark)}
+    .read-button,.quiet,.secondary,.staff-button{min-height:68px;padding:15px 22px;border:2px solid var(--line);border-radius:18px;color:var(--ink);background:var(--card);font-size:20px}.footer{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--muted);font-size:15px}.staff-link{border:0;background:transparent;color:#42544f;text-decoration:underline;text-underline-offset:5px;font-size:16px;font-weight:900}
+    .stage-screen{flex-direction:column;gap:22px;padding-bottom:40px}.stage-screen h2{margin:0;font-size:clamp(34px,6vw,54px)}.stage-intro{margin:0;color:var(--muted);font-size:19px;font-weight:800;line-height:1.7}.stage-grid{display:grid;grid-template-columns:repeat(5,minmax(92px,1fr));gap:14px}.stage-button{position:relative;min-height:92px;padding:12px;border:3px solid var(--ink);border-radius:22px;color:var(--ink);background:#fff;box-shadow:0 6px 0 var(--ink);font-size:28px}.stage-button span{display:block;margin-top:3px;color:var(--muted);font-size:13px}.stage-button.current{border-color:var(--teal-dark);color:#fff;background:var(--teal);box-shadow:0 6px 0 var(--teal-dark)}.stage-button.current span{color:#fff}.stage-button.completed:after{content:"✓";position:absolute;right:8px;top:5px;color:var(--teal-dark);font-size:20px}.stage-button.current:after{color:#fff}.stage-button:disabled{border-color:#c7c4bb;color:#8d918e;background:#e9e7e0;box-shadow:0 4px 0 #c7c4bb;cursor:not-allowed}.stage-button:disabled:after{content:"🔒";position:absolute;right:8px;top:6px;font-size:16px}.stage-key{display:flex;flex-wrap:wrap;gap:10px}.stage-key span{padding:8px 12px;border-radius:999px;background:#e7f4ef;color:var(--teal-dark);font-size:14px;font-weight:900}
+    .play-screen{flex-direction:column;gap:18px}.progress-wrap{display:flex;align-items:center;gap:12px;min-width:min(56vw,480px)}.progress-track{flex:1;height:18px;overflow:hidden;border:2px solid var(--ink);border-radius:999px;background:#fff}.progress-bar{width:0;height:100%;border-radius:inherit;background:var(--teal);transition:width .3s ease}.progress-text{min-width:72px;font-size:23px;font-weight:900;text-align:right}
+    .play-stage{margin:0;color:var(--teal-dark);font-size:18px;font-weight:900;text-align:center}.instruction{margin:2px 0 0;text-align:center;font-size:clamp(24px,4vw,38px);font-weight:900}.task-area{display:grid;grid-template-rows:minmax(235px,.85fr) minmax(180px,.65fr);flex:1;gap:20px}.item-stage{display:grid;place-items:center;position:relative;min-height:230px}
+    .item-card{display:grid;grid-template-rows:1fr auto;place-items:center;width:min(55vw,320px);aspect-ratio:1/.86;padding:22px;border:5px solid var(--ink);border-radius:38px;background:#fff;box-shadow:var(--shadow)}.item-symbol{font-size:clamp(88px,16vw,150px);line-height:.9}.item-name{font-size:clamp(25px,4vw,36px);font-weight:900}
+    .feedback{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);min-width:min(90%,560px);min-height:58px;padding:12px 22px;border-radius:999px;background:rgba(255,253,248,.97);text-align:center;font-size:clamp(20px,3.4vw,29px);font-weight:900}.feedback.good{color:var(--teal-dark)}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.5vw,26px);align-items:stretch}.choices.three{grid-template-columns:repeat(3,minmax(0,1fr))}.choices.four{grid-template-columns:repeat(4,minmax(0,1fr))}.choice{display:grid;grid-template-columns:auto 1fr;align-items:center;justify-content:center;gap:14px;min-height:150px;padding:18px;border:5px solid var(--ink);border-radius:30px;color:var(--ink);background:#fff;box-shadow:0 9px 0 var(--ink);font-size:clamp(24px,4vw,40px)}.choices.four .choice{grid-template-columns:1fr;gap:4px;padding:12px 8px}.choices.four .choice-label{font-size:clamp(18px,2.7vw,28px)}.choice:active{transform:translateY(5px);box-shadow:0 4px 0 var(--ink)}.choice-symbol{font-size:clamp(54px,9vw,90px);line-height:1}.choice.hint{animation:breathe .9s ease-in-out infinite alternate;outline:9px solid var(--yellow);outline-offset:-10px}.choice.shake{animation:shake .24s ease-in-out}
+    .complete-screen{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:24px}.complete-mark{display:grid;place-items:center;width:150px;height:150px;border:6px solid var(--ink);border-radius:50%;color:#fff;background:var(--teal);box-shadow:0 15px 0 var(--teal-dark);font-size:86px;font-weight:900}.complete-screen h2{margin:12px 0 0;font-size:clamp(55px,10vw,92px);line-height:1}.complete-stage{margin:0;color:var(--teal-dark);font-size:clamp(24px,4vw,34px);font-weight:900}.complete-count{margin:0;color:var(--muted);font-size:clamp(25px,4.5vw,39px);font-weight:900}.complete-actions{display:flex;justify-content:center;gap:18px;width:100%;flex-wrap:wrap}.complete-actions .secondary{min-width:190px;min-height:88px;font-size:25px}
+    .staff-screen{flex-direction:column;gap:20px;padding-bottom:40px}.staff-screen h2{margin:0;font-size:clamp(30px,5vw,48px)}.staff-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{padding:clamp(20px,3vw,30px);border:2px solid var(--line);border-radius:26px;background:var(--card);box-shadow:0 9px 26px rgba(41,57,51,.08)}.panel h3{margin:0 0 16px;font-size:25px}.panel p{color:var(--muted);line-height:1.7}.setting{padding:14px 0;border-top:1px solid var(--line)}.setting:first-of-type{border-top:0}.setting-title{display:block;margin-bottom:10px;font-size:18px;font-weight:900}.radio-row{display:flex;flex-wrap:wrap;gap:9px}.radio-chip{position:relative;min-width:74px;min-height:58px}.radio-chip input{position:absolute;opacity:0}.radio-chip span{display:grid;place-items:center;min-width:74px;min-height:58px;padding:10px 15px;border:2px solid var(--line);border-radius:14px;background:#fff;font-weight:900}.radio-chip input:checked+span{border-color:var(--teal);color:#fff;background:var(--teal)}.radio-chip input:focus-visible+span{outline:4px solid #103d79;outline-offset:3px}.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:15px}.toggle-row input{width:34px;height:34px;accent-color:var(--teal)}
+    .privacy{padding:14px 17px;border-left:7px solid var(--teal);border-radius:10px;background:#e7f4ef;line-height:1.65}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:16px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted);font-size:14px}.empty{padding:24px 0;color:var(--muted);text-align:center}.staff-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.danger{color:#8a2e22;border-color:#d7aaa3}
+    .confirm{position:fixed;inset:0;z-index:10;display:none;place-items:center;padding:24px;background:rgba(23,49,43,.68)}.confirm.open{display:grid}.confirm-card{width:min(100%,520px);padding:28px;border-radius:26px;background:var(--card);box-shadow:var(--shadow)}.confirm-card h3{margin-top:0;font-size:27px}.confirm-card p{color:var(--muted);font-size:18px;line-height:1.7}.confirm-actions{display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+    @keyframes shake{0%,100%{transform:translateX(0)}35%{transform:translateX(-7px)}70%{transform:translateX(7px)}}@keyframes breathe{from{transform:scale(1)}to{transform:scale(1.035)}}
+    @media(max-width:760px){.app{padding:15px}.screen{min-height:calc(100dvh - 30px)}.hero{grid-template-columns:1fr}.scene{min-height:230px}.scene-part{width:80px;height:80px;font-size:44px}.scene-box{width:170px;height:85px}.stage-grid{grid-template-columns:repeat(5,minmax(62px,1fr));gap:9px}.stage-button{min-height:74px;border-width:2px;border-radius:17px;font-size:23px}.play-top{align-items:flex-start}.progress-wrap{min-width:0;flex:1}.task-area{grid-template-rows:minmax(230px,.85fr) minmax(150px,.65fr)}.choice{grid-template-columns:1fr;gap:3px;min-height:142px;padding:10px 6px}.choice-label{font-size:clamp(18px,4vw,27px)}.choices.three,.choices.four{grid-template-columns:repeat(2,minmax(0,1fr))}.staff-grid{grid-template-columns:1fr}}
+    @media(max-width:460px){.actions{align-items:stretch;flex-direction:column}.read-button{width:100%}.footer{align-items:flex-start;flex-direction:column}.quiet{min-height:58px;padding:10px 14px;font-size:17px}.progress-text{min-width:58px;font-size:18px}.item-card{width:min(70vw,280px)}.choice{border-width:4px;border-radius:23px;min-height:128px}.stage-grid{grid-template-columns:repeat(4,minmax(60px,1fr))}.stage-button span{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <section class="screen start-screen active" id="startScreen" aria-labelledby="mainTitle">
+    <div class="top"><div class="brand">WORK STEP</div><div class="tag" id="stageTag">ステージ 1</div></div>
+    <div class="hero">
+      <div><p class="eyebrow">しごとの れんしゅう</p><h1 id="mainTitle">おなじ<br>しるしへ</h1><p class="lead">みて、えらんで、はこへ。</p><p class="stage-summary" id="stageSummary">おなじ しるしを 2つの はこから えらびます</p></div>
+      <div class="scene" aria-hidden="true"><div class="scene-part one">●</div><div class="scene-part two">▲</div><div class="scene-box"></div></div>
+    </div>
+    <div>
+      <div class="actions"><button class="primary" id="startButton">ステージ 1を はじめる</button><button class="secondary" id="stageEntryButton">ステージを えらぶ</button><button class="read-button" id="readIntroButton" aria-label="せつめいを よみあげる">♪ きく</button></div>
+      <div class="footer"><span>じかんは きにしなくて だいじょうぶ</span><button class="staff-link" id="staffEntryButton">しょくいんの がめん</button></div>
+    </div>
+  </section>
+
+  <section class="screen stage-screen" id="stageScreen" aria-labelledby="stageTitle">
+    <div class="staff-top"><div><h2 id="stageTitle">ステージを えらぶ</h2><p class="stage-intro" id="stageIntro">できた ステージの つぎが ひらきます。ぜんぶで 50 ステージです。</p></div><button class="quiet" id="stageBackButton">もどる</button></div>
+    <div class="stage-key" aria-label="ステージの ないよう"><span>1–10 しるし</span><span>11–25 はこが ふえる</span><span>26–35 いろ・かたち</span><span>36–45 すうじ・ABC</span><span>46–50 いろいろ</span></div>
+    <div class="stage-grid" id="stageGrid" aria-label="ステージ いちらん"></div>
+  </section>
+
+  <section class="screen play-screen" id="playScreen" aria-labelledby="instructionText">
+    <div class="play-top">
+      <button class="quiet" id="quitButton">やめる</button>
+      <div class="progress-wrap" aria-label="すすみぐあい"><div class="progress-track"><div class="progress-bar" id="progressBar"></div></div><div class="progress-text" id="progressText">1 / 6</div></div>
+      <button class="quiet" id="readTaskButton" aria-label="もんだいを よみあげる">♪ きく</button>
+    </div>
+    <p class="play-stage" id="playStageLabel">ステージ 1</p>
+    <p class="instruction" id="instructionText">おなじ しるしの はこを さわってね</p>
+    <div class="task-area">
+      <div class="item-stage"><div class="item-card" id="itemCard" role="img"><div class="item-symbol" id="itemSymbol">●</div><div class="item-name" id="itemName">あお</div></div><div class="feedback" id="feedback" aria-live="polite">よく みてね</div></div>
+      <div class="choices" id="choices" aria-label="しわける はこ"></div>
+    </div>
+  </section>
+
+  <section class="screen complete-screen" id="completeScreen" aria-labelledby="completeTitle">
+    <div class="complete-mark" aria-hidden="true">✓</div><h2 id="completeTitle">できた！</h2><p class="complete-stage" id="completeStage">ステージ 1 クリア</p><p class="complete-count" id="completeCount">6こ できました</p>
+    <div class="complete-actions"><button class="primary" id="nextButton">つぎの ステージ</button><button class="secondary" id="againButton">もう いちど</button><button class="secondary" id="finishButton">おわる</button></div>
+  </section>
+
+  <section class="screen staff-screen" id="staffScreen" aria-labelledby="staffTitle">
+    <div class="staff-top"><h2 id="staffTitle">職員用設定</h2><button class="quiet" id="staffBackButton">利用者画面へ戻る</button></div>
+    <div class="privacy">この試作は氏名・診断名を収集しません。設定と匿名のプレイ記録は、この端末のブラウザ内だけに保存されます。</div>
+    <div class="staff-grid">
+      <div class="panel"><h3>ゲーム設定</h3>
+        <div class="setting"><span class="setting-title">ステージ進行</span><p id="staffProgressText">ステージ 1まで開いています。</p><button class="staff-button" id="staffStageButton">全50ステージを試す</button></div>
+        <div class="setting toggle-row"><label for="hintToggle"><strong>2回迷ったらヒント</strong></label><input type="checkbox" id="hintToggle"></div>
+        <div class="setting toggle-row"><label for="soundToggle"><strong>成功音</strong></label><input type="checkbox" id="soundToggle"></div>
+      </div>
+      <div class="panel"><h3>使い方</h3><p>ステージ1は「箱2つ・6問・ヒントあり」です。クリアすると次のステージが開き、50まで少しずつ難しくなります。本人が画面に近づく、触ろうとする、次へを選ぶ、といった反応を最初の成果として観察してください。</p><p><strong>点数で人と比べません。</strong> 同じ人の興味や取り組み方の変化を見るために使います。</p></div>
+    </div>
+    <div class="panel"><h3>この端末のプレイ記録</h3><div class="table-wrap" id="historyTableWrap"></div><div class="staff-actions"><button class="staff-button" id="exportButton">CSVを保存</button><button class="staff-button danger" id="clearButton">記録を消す</button></div></div>
+  </section>
+</div>
+
+<div class="confirm" id="staffConfirm" role="dialog" aria-modal="true" aria-labelledby="staffConfirmTitle"><div class="confirm-card"><h3 id="staffConfirmTitle">職員用画面を開きますか？</h3><p>ゲームの設定と、この端末に保存された匿名のプレイ記録を確認できます。</p><div class="confirm-actions"><button class="secondary" id="staffCancelButton">もどる</button><button class="staff-button" id="staffOpenButton">ひらく</button></div></div></div>
+<div class="confirm" id="clearConfirm" role="dialog" aria-modal="true" aria-labelledby="clearConfirmTitle"><div class="confirm-card"><h3 id="clearConfirmTitle">記録をすべて消しますか？</h3><p>この操作は元に戻せません。必要なら、先にCSVを保存してください。</p><div class="confirm-actions"><button class="secondary" id="clearCancelButton">キャンセル</button><button class="staff-button danger" id="clearConfirmButton">消す</button></div></div></div>
+
+<script>
+(()=>{
+  const SETTINGS_KEY="workstep_sort_settings_v1",HISTORY_KEY="workstep_sort_history_v1",PROGRESS_KEY="workstep_sort_progress_v2",MAX_STAGE=50;
+  const DEFAULTS={hints:true,sound:true};
+  const COLORS=[
+    {id:"blue",name:"あお",color:"#2f78d1",pale:"#e9f3ff"},
+    {id:"yellow",name:"きいろ",color:"#a66e00",pale:"#fff2bd"},
+    {id:"green",name:"みどり",color:"#277b5d",pale:"#e5f5ed"},
+    {id:"red",name:"あか",color:"#c6483d",pale:"#fde9e6"}
+  ];
+  const SHAPES=[
+    {id:"circle",name:"まる",symbol:"●"},
+    {id:"triangle",name:"さんかく",symbol:"▲"},
+    {id:"square",name:"しかく",symbol:"■"},
+    {id:"diamond",name:"ひしがた",symbol:"◆"}
+  ];
+  const NUMBERS=["1","2","3","4"],LETTERS=["A","B","C","D"];
+  const RULE_TEXT={
+    exact:"おなじ しるしの はこを さわってね",
+    color:"おなじ いろの はこを さわってね",
+    shape:"おなじ かたちの はこを さわってね",
+    number:"おなじ すうじの はこを さわってね",
+    letter:"おなじ アルファベットの はこを さわってね"
+  };
+  const $=id=>document.getElementById(id);
+  const screens={start:$("startScreen"),stage:$("stageScreen"),play:$("playScreen"),complete:$("completeScreen"),staff:$("staffScreen")};
+  let settings=loadSettings(),progress=loadProgress(),currentStage=progress.highestUnlocked,profile=stageProfile(currentStage),queue=[],index=0,mistakes=0,firstTry=0,attempts=0,startedAt=0,saved=false,locked=false,isStaffPreview=false;
+
+  function loadSettings(){try{return{...DEFAULTS,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}")}}catch{return{...DEFAULTS}}}
+  function loadProgress(){try{const stored=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"{}"),highestUnlocked=Math.min(MAX_STAGE,Math.max(1,Number(stored.highestUnlocked)||1)),highestCompleted=Math.min(MAX_STAGE,Math.max(0,Number(stored.highestCompleted)||0));return{highestUnlocked,highestCompleted}}catch{return{highestUnlocked:1,highestCompleted:0}}}
+  function history(){try{const value=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");return Array.isArray(value)?value:[]}catch{return[]}}
+  function show(name){Object.entries(screens).forEach(([key,el])=>el.classList.toggle("active",key===name));window.scrollTo(0,0)}
+  function saveSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
+  function saveProgress(){localStorage.setItem(PROGRESS_KEY,JSON.stringify(progress))}
+  function stageProfile(stage){
+    if(stage<=5)return{stage,boxCount:2,taskCount:5+stage,modes:["exact"],shuffleBoxes:false,short:"しるし",summary:"おなじ しるしを 2つの はこから えらびます"};
+    if(stage<=10)return{stage,boxCount:3,taskCount:stage,modes:["exact"],shuffleBoxes:false,short:"3つ",summary:"おなじ しるしを 3つの はこから えらびます"};
+    if(stage<=15)return{stage,boxCount:3,taskCount:stage-4,modes:["exact"],shuffleBoxes:true,short:"うごく",summary:"3つの はこの ばしょが すこしずつ かわります"};
+    if(stage<=20)return{stage,boxCount:4,taskCount:stage-10,modes:["exact"],shuffleBoxes:false,short:"4つ",summary:"おなじ しるしを 4つの はこから えらびます"};
+    if(stage<=25)return{stage,boxCount:4,taskCount:stage-13,modes:["exact"],shuffleBoxes:true,short:"うごく",summary:"4つの はこの ばしょが すこしずつ かわります"};
+    if(stage<=30)return{stage,boxCount:3,taskCount:stage-20,modes:["color"],shuffleBoxes:true,short:"いろ",summary:"かたちが ちがっても、おなじ いろを えらびます"};
+    if(stage<=35)return{stage,boxCount:3,taskCount:stage-25,modes:["shape"],shuffleBoxes:true,short:"かたち",summary:"いろが ちがっても、おなじ かたちを えらびます"};
+    if(stage<=40)return{stage,boxCount:stage>=38?4:3,taskCount:stage-30,modes:["number"],shuffleBoxes:true,short:"すうじ",summary:"おなじ すうじの はこを えらびます"};
+    if(stage<=45)return{stage,boxCount:stage>=43?4:3,taskCount:stage-35,modes:["letter"],shuffleBoxes:true,short:"ABC",summary:"おなじ アルファベットの はこを えらびます"};
+    const mixedModes=["exact","color","shape","number","letter"].slice(0,Math.min(5,stage-44));
+    return{stage,boxCount:stage===50?4:3,taskCount:stage-38,modes:mixedModes,shuffleBoxes:true,short:"いろいろ",summary:"もんだいごとに、みる ところが かわります"};
+  }
+  function getOptions(mode,count){
+    if(mode==="exact")return COLORS.slice(0,count).map((color,i)=>({id:`exact-${i}`,name:`${color.name} ${SHAPES[i].name}`,label:color.name,symbol:SHAPES[i].symbol,color:color.color,pale:color.pale}));
+    if(mode==="color")return COLORS.slice(0,count).map(color=>({id:`color-${color.id}`,name:color.name,label:color.name,symbol:"●",color:color.color,pale:color.pale}));
+    if(mode==="shape")return SHAPES.slice(0,count).map(shape=>({id:`shape-${shape.id}`,name:shape.name,label:shape.name,symbol:shape.symbol,color:"#17312b",pale:"#f5f2e9"}));
+    if(mode==="number")return NUMBERS.slice(0,count).map(value=>({id:`number-${value}`,name:value,label:"",symbol:value,color:"#175f91",pale:"#e9f3ff"}));
+    return LETTERS.slice(0,count).map(value=>({id:`letter-${value}`,name:value,label:"",symbol:value,color:"#7d3f8f",pale:"#f5eafa"}));
+  }
+  function makeTask(mode,correct,options,taskIndex){
+    if(mode==="color"){const shape=SHAPES[(taskIndex+currentStage)%SHAPES.length];return{mode,correctId:correct.id,options,symbol:shape.symbol,caption:correct.name,spoken:correct.name,color:correct.color,pale:correct.pale}}
+    if(mode==="shape"){const color=COLORS[(taskIndex+currentStage)%COLORS.length];return{mode,correctId:correct.id,options,symbol:correct.symbol,caption:correct.name,spoken:correct.name,color:color.color,pale:color.pale}}
+    if(mode==="number")return{mode,correctId:correct.id,options,symbol:correct.symbol,caption:"すうじ",spoken:correct.name,color:correct.color,pale:correct.pale};
+    if(mode==="letter")return{mode,correctId:correct.id,options,symbol:correct.symbol,caption:"アルファベット",spoken:correct.name,color:correct.color,pale:correct.pale};
+    return{mode,correctId:correct.id,options,symbol:correct.symbol,caption:correct.label,spoken:correct.name,color:correct.color,pale:correct.pale}
+  }
+  function shuffle(values){const result=[...values];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}return result}
+  function makeQueue(){
+    const result=[],modeCounts={};
+    for(let i=0;i<profile.taskCount;i++){
+      const mode=profile.modes[i%profile.modes.length],options=getOptions(mode,profile.boxCount),used=modeCounts[mode]||0,correct=options[(used+currentStage-1)%options.length];
+      modeCounts[mode]=used+1;result.push(makeTask(mode,correct,options,i));
+    }
+    return result
+  }
+  function updateStart(){
+    profile=stageProfile(currentStage);
+    $("stageTag").textContent=`ステージ ${currentStage}`;
+    $("stageSummary").textContent=profile.summary;
+    $("startButton").textContent=`ステージ ${currentStage}を はじめる`;
+    $("staffProgressText").textContent=`ステージ ${progress.highestUnlocked}まで開いています。`;
+  }
+  function renderStageGrid(){
+    const grid=$("stageGrid");grid.innerHTML="";
+    for(let stage=1;stage<=MAX_STAGE;stage++){
+      const stageInfo=stageProfile(stage),button=document.createElement("button");
+      button.className="stage-button";button.disabled=stage>progress.highestUnlocked&&!isStaffPreview;
+      if(stage===currentStage)button.classList.add("current");
+      if(stage<=progress.highestCompleted)button.classList.add("completed");
+      button.setAttribute("aria-label",button.disabled?`ステージ ${stage} ロック中`:`ステージ ${stage} ${stageInfo.summary}`);
+      button.innerHTML=`${stage}<span>${stageInfo.short}</span>`;
+      button.onclick=()=>{currentStage=stage;updateStart();show("start")};
+      grid.appendChild(button);
+    }
+  }
+  function openStageSelect(staffMode=false){isStaffPreview=staffMode;$("stageTitle").textContent=staffMode?"職員用 おためし":"ステージを えらぶ";$("stageIntro").textContent=staffMode?"進みぐあいを変えずに、全50ステージを確認できます。":"できた ステージの つぎが ひらきます。ぜんぶで 50 ステージです。";renderStageGrid();show("stage")}
+  function start(){profile=stageProfile(currentStage);queue=makeQueue();index=0;mistakes=0;firstTry=0;attempts=0;startedAt=Date.now();saved=false;locked=false;$("playStageLabel").textContent=`ステージ ${currentStage}`;show("play");showItem()}
+  function buildChoices(task){
+    const wrap=$("choices");wrap.innerHTML="";wrap.classList.toggle("three",profile.boxCount===3);wrap.classList.toggle("four",profile.boxCount===4);
+    const options=profile.shuffleBoxes?shuffle(task.options):task.options;
+    options.forEach(option=>{const button=document.createElement("button");button.className="choice";button.style.background=option.pale;button.dataset.option=option.id;button.setAttribute("aria-label",`${option.name} の はこ`);button.innerHTML=`<span class="choice-symbol" style="color:${option.color}">${option.symbol}</span>${option.label?`<span class="choice-label">${option.label}</span>`:""}`;button.onclick=()=>choose(option,button);wrap.appendChild(button)})
+  }
+  function showItem(){
+    const task=queue[index];mistakes=0;locked=false;buildChoices(task);
+    $("instructionText").textContent=RULE_TEXT[task.mode];$("itemSymbol").textContent=task.symbol;$("itemSymbol").style.color=task.color;$("itemName").textContent=task.caption;$("itemCard").style.background=task.pale;$("itemCard").setAttribute("aria-label",`${task.spoken} ${task.symbol}`);$("feedback").textContent="よく みてね";$("feedback").className="feedback";$("progressText").textContent=`${index+1} / ${queue.length}`;$("progressBar").style.width=`${index/queue.length*100}%`
+  }
+  function choose(option,button){
+    if(locked)return;attempts++;const correct=queue[index];
+    if(option.id===correct.correctId){locked=true;if(mistakes===0)firstTry++;$("feedback").textContent="できた！";$("feedback").className="feedback good";$("progressBar").style.width=`${(index+1)/queue.length*100}%`;chime();setTimeout(()=>{index++;index>=queue.length?complete():showItem()},620)}
+    else{mistakes++;$("feedback").textContent="だいじょうぶ。もう いちど";button.classList.remove("shake");void button.offsetWidth;button.classList.add("shake");if(settings.hints&&mistakes>=2){document.querySelector(`[data-option="${correct.correctId}"]`)?.classList.add("hint");$("feedback").textContent="ここを みてね"}}
+  }
+  function complete(){
+    saveSession(true);if(!isStaffPreview){progress.highestCompleted=Math.max(progress.highestCompleted,currentStage);if(currentStage<MAX_STAGE)progress.highestUnlocked=Math.max(progress.highestUnlocked,currentStage+1);saveProgress();updateStart()}
+    $("completeStage").textContent=`ステージ ${currentStage} ${isStaffPreview?"おためし できた":"クリア"}`;$("completeCount").textContent=`${queue.length}こ できました`;$("nextButton").textContent=currentStage<MAX_STAGE?"つぎの ステージ":"ステージを えらぶ";show("complete");if(settings.sound)setTimeout(()=>speak(`ステージ ${currentStage}。よく できました`),180)
+  }
+  function leavePreview(){if(isStaffPreview){isStaffPreview=false;currentStage=progress.highestUnlocked;updateStart()}}
+  function quit(){if(startedAt&&index>0)saveSession(false);leavePreview();show("start")}
+  function saveSession(completed){if(saved)return;const record={playedAt:new Date().toISOString(),stage:currentStage,practice:profile.short,preview:isStaffPreview,completed,completedItems:completed?queue.length:index,plannedItems:queue.length,firstTryCorrect:firstTry,totalAttempts:attempts,durationSeconds:Math.max(1,Math.round((Date.now()-startedAt)/1000)),boxCount:profile.boxCount,hints:settings.hints};const records=history();records.unshift(record);localStorage.setItem(HISTORY_KEY,JSON.stringify(records.slice(0,100)));saved=true}
+  function chime(){if(!settings.sound)return;try{const Ctx=window.AudioContext||window.webkitAudioContext,ctx=new Ctx();[523.25,659.25].forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain(),t=ctx.currentTime+i*.08;osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.12,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+.22);osc.connect(gain).connect(ctx.destination);osc.start(t);osc.stop(t+.24)});setTimeout(()=>ctx.close(),650)}catch{}}
+  function speak(text){if(!("speechSynthesis"in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="ja-JP";u.rate=.82;speechSynthesis.speak(u)}
+  function sync(){$("hintToggle").checked=settings.hints;$("soundToggle").checked=settings.sound;$("staffProgressText").textContent=`ステージ ${progress.highestUnlocked}まで開いています。`}
+  function renderHistory(){const records=history(),wrap=$("historyTableWrap");if(!records.length){wrap.innerHTML='<div class="empty">まだ記録はありません。</div>';return}const rows=records.slice(0,12).map(r=>{const d=new Date(r.playedAt),accuracy=r.completedItems?Math.round(r.firstTryCorrect/r.completedItems*100):0,duration=`${Math.floor(r.durationSeconds/60)}分${r.durationSeconds%60}秒`;return`<tr><td>${d.toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td>${r.stage||1}</td><td>${r.completed?"完了":"中断"}</td><td>${r.completedItems} / ${r.plannedItems}</td><td>${accuracy}%</td><td>${duration}</td><td>${r.boxCount}</td></tr>`}).join("");wrap.innerHTML=`<table><thead><tr><th>日時</th><th>ステージ</th><th>結果</th><th>できた数</th><th>1回正解</th><th>時間</th><th>箱</th></tr></thead><tbody>${rows}</tbody></table>`}
+  function openStaff(){sync();renderHistory();show("staff")}
+  function exportCsv(){const records=history();if(!records.length)return;const rows=[["日時","ステージ","練習内容","完了","できた数","予定数","1回で正解","タッチ回数","時間（秒）","箱の数","ヒント"],...records.map(r=>[r.playedAt,r.stage||1,r.practice||"しるし",r.completed?"はい":"いいえ",r.completedItems,r.plannedItems,r.firstTryCorrect,r.totalAttempts,r.durationSeconds,r.boxCount,r.hints?"あり":"なし"])];const csv="\ufeff"+rows.map(row=>row.map(value=>`"${String(value).replaceAll('"','""')}"`).join(",")).join("\r\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download=`しわけゲーム記録_${new Date().toISOString().slice(0,10)}.csv`;link.click();URL.revokeObjectURL(link.href)}
+
+  $("startButton").onclick=start;$("stageEntryButton").onclick=()=>openStageSelect(false);$("stageBackButton").onclick=()=>{leavePreview();show("start")};$("staffStageButton").onclick=()=>openStageSelect(true);$("againButton").onclick=start;$("nextButton").onclick=()=>{if(currentStage<MAX_STAGE){currentStage++;updateStart();start()}else openStageSelect(isStaffPreview)};$("finishButton").onclick=()=>{leavePreview();show("start")};$("quitButton").onclick=quit;
+  $("readIntroButton").onclick=()=>speak(`しごとの れんしゅう。おなじ しるしへ。ステージ ${currentStage}。はじめるを さわってね`);$("readTaskButton").onclick=()=>{const task=queue[index];speak(`${task.spoken}。${RULE_TEXT[task.mode]}`)};
+  $("staffEntryButton").onclick=()=>$("staffConfirm").classList.add("open");$("staffCancelButton").onclick=()=>$("staffConfirm").classList.remove("open");$("staffOpenButton").onclick=()=>{$("staffConfirm").classList.remove("open");openStaff()};$("staffBackButton").onclick=()=>show("start");
+  $("hintToggle").onchange=e=>{settings.hints=e.target.checked;saveSettings()};$("soundToggle").onchange=e=>{settings.sound=e.target.checked;saveSettings()};
+  $("exportButton").onclick=exportCsv;$("clearButton").onclick=()=>$("clearConfirm").classList.add("open");$("clearCancelButton").onclick=()=>$("clearConfirm").classList.remove("open");$("clearConfirmButton").onclick=()=>{localStorage.removeItem(HISTORY_KEY);$("clearConfirm").classList.remove("open");renderHistory()};sync();
+  updateStart();renderStageGrid();
+})();
+</script>
+</body>
+</html>

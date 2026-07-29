@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#173f39">
+  <meta name="description" content="WORK STEP（仮）は、段階的な作業練習と支援方法の検討を助ける関係者向けプロトタイプです。">
+  <meta property="og:title" content="WORK STEP（仮）｜関係者向け限定デモ">
+  <meta property="og:description" content="4つの作業練習と、画像認識PoCの操作イメージを体験できます。">
+  <meta property="og:image" content="https://yuya-1204.github.io/sbiu-demo/work-step/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>WORK STEP（仮）｜仕事の練習と支援のプロトタイプ</title>
+  <script src="./auth.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #173f39;
+      --ink-2: #2d514a;
+      --green: #1c6a5d;
+      --green-dark: #124b42;
+      --mint: #dcece5;
+      --paper: #fbfaf6;
+      --cream: #f1ecdf;
+      --yellow: #f3c85c;
+      --orange: #e78a4c;
+      --blue: #4c7fb2;
+      --rose: #bd6a71;
+      --muted: #60706c;
+      --line: rgba(23, 63, 57, .14);
+      --shadow: 0 18px 54px rgba(23, 63, 57, .11);
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Meiryo", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 4px solid rgba(243, 200, 92, .78);
+      outline-offset: 4px;
+    }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+    .site-header {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      border-bottom: 1px solid rgba(23, 63, 57, .09);
+      background: rgba(251, 250, 246, .91);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 950;
+      letter-spacing: .1em;
+      text-decoration: none;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--yellow);
+      letter-spacing: 0;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .limited {
+      padding: 7px 11px;
+      border-radius: 999px;
+      color: var(--green-dark);
+      background: var(--mint);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .logout {
+      border: 0;
+      padding: 9px 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .logout:hover { color: var(--ink); background: rgba(23, 63, 57, .06); }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(64px, 9vw, 118px) 0 70px;
+      background:
+        radial-gradient(circle at 82% 12%, rgba(243, 200, 92, .32), transparent 25rem),
+        radial-gradient(circle at 12% 94%, rgba(28, 106, 93, .12), transparent 30rem),
+        var(--cream);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 390px;
+      height: 390px;
+      right: -170px;
+      bottom: -250px;
+      border: 70px solid rgba(28, 106, 93, .08);
+      border-radius: 50%;
+    }
+    .audience-path {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 28px;
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .audience-path span {
+      padding: 7px 11px;
+      border: 1px solid rgba(28, 106, 93, .16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .58);
+    }
+    .audience-path i { font-style: normal; opacity: .5; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(310px, .8fr);
+      gap: clamp(38px, 7vw, 88px);
+      align-items: center;
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(43px, 7vw, 82px);
+      line-height: 1.08;
+      letter-spacing: -.055em;
+    }
+    .hero-lead {
+      max-width: 760px;
+      margin: 28px 0 0;
+      color: var(--ink-2);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.9;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .button {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 20px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+    .button-primary {
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 12px 28px rgba(28, 106, 93, .22);
+    }
+    .button-primary:hover { background: var(--green-dark); }
+    .button-secondary { border-color: var(--line); background: rgba(255, 255, 255, .72); }
+    .button-secondary:hover { background: #fff; }
+    .hero-board {
+      position: relative;
+      display: grid;
+      min-height: 420px;
+      padding: 26px;
+      border-radius: 28px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+    .board-tag {
+      align-self: start;
+      justify-self: start;
+      padding: 7px 11px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 999px;
+      color: #f8de9c;
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .board-center { align-self: center; }
+    .board-number {
+      display: block;
+      font-size: clamp(78px, 13vw, 132px);
+      line-height: .9;
+      letter-spacing: -.07em;
+      font-weight: 950;
+    }
+    .board-center p {
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, .73);
+      font-weight: 800;
+    }
+    .board-footer {
+      align-self: end;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, .13);
+      color: rgba(255, 255, 255, .78);
+      font-size: 13px;
+    }
+    .section { padding: clamp(72px, 9vw, 112px) 0; }
+    .section-soft { background: #f3f0e8; }
+    .section-dark { color: #fff; background: var(--ink); }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
+    .section-kicker {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .section-dark .section-kicker { color: #f3d587; }
+    h2 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.17;
+      letter-spacing: -.04em;
+    }
+    .section-note {
+      max-width: 450px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .section-dark .section-note { color: rgba(255, 255, 255, .68); }
+    .mentor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .mentor-item {
+      min-height: 190px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+    }
+    .mentor-number {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      color: var(--green-dark);
+      background: var(--mint);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .mentor-item h3 { margin: 0 0 8px; font-size: 18px; }
+    .mentor-item p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .game-card {
+      position: relative;
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .game-card::after {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      right: -55px;
+      top: -55px;
+      border: 34px solid currentColor;
+      border-radius: 50%;
+      opacity: .07;
+    }
+    .game-card:nth-child(1) { color: var(--green); }
+    .game-card:nth-child(2) { color: var(--orange); }
+    .game-card:nth-child(3) { color: var(--blue); }
+    .game-card:nth-child(4) { color: var(--rose); }
+    .game-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 38px;
+    }
+    .game-number {
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .1em;
+    }
+    .stage-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: currentColor;
+      background: color-mix(in srgb, currentColor 11%, white);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .game-card h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(28px, 4vw, 42px);
+      letter-spacing: -.035em;
+    }
+    .game-card p {
+      max-width: 30rem;
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .game-cta {
+      margin-top: auto;
+      padding-top: 30px;
+      color: currentColor;
+      font-weight: 900;
+    }
+    .game-cta span { margin-left: 8px; }
+    .game-footnote {
+      margin: 22px 0 0;
+      padding: 18px 20px;
+      border-radius: 16px;
+      color: var(--ink-2);
+      background: var(--mint);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .poc-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .82fr) minmax(440px, 1.18fr);
+      gap: clamp(34px, 7vw, 80px);
+      align-items: start;
+    }
+    .poc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 22px 0 18px;
+      padding: 8px 12px;
+      border: 1px solid rgba(243, 200, 92, .3);
+      border-radius: 999px;
+      color: #f8dc94;
+      background: rgba(243, 200, 92, .08);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .poc-copy > p {
+      margin: 0;
+      color: rgba(255, 255, 255, .72);
+      line-height: 1.85;
+    }
+    .flow-list {
+      display: grid;
+      gap: 12px;
+      margin: 30px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .flow-list li {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .045);
+    }
+    .flow-list strong {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      color: var(--ink);
+      background: var(--yellow);
+    }
+    .flow-list span { font-size: 14px; line-height: 1.6; }
+    .device {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 28px;
+      background: #f8f7f2;
+      color: var(--ink);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, .24);
+    }
+    .device-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      color: #fff;
+      background: #102f2b;
+    }
+    .device-bar strong { font-size: 14px; }
+    .device-status {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #f8dc94;
+      background: rgba(243, 200, 92, .12);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .device-body { padding: clamp(20px, 4vw, 30px); }
+    .capture {
+      position: relative;
+      min-height: 270px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 2px dashed rgba(23, 63, 57, .18);
+      border-radius: 20px;
+      background:
+        linear-gradient(135deg, rgba(28, 106, 93, .06), rgba(243, 200, 92, .08)),
+        #fff;
+    }
+    .sample-scene {
+      width: min(74%, 330px);
+      aspect-ratio: 1.45;
+      position: relative;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: #d9c7a8;
+      box-shadow: inset 0 0 0 12px #c0a679, 0 18px 30px rgba(23, 63, 57, .13);
+    }
+    .sample-box {
+      width: 66%;
+      height: 56%;
+      position: relative;
+      border-radius: 10px;
+      background: #b88b51;
+      box-shadow: inset 0 -14px 0 rgba(99, 61, 25, .12);
+    }
+    .sample-label {
+      position: absolute;
+      width: 54%;
+      height: 32%;
+      left: 24%;
+      top: 19%;
+      display: grid;
+      place-items: center;
+      border: 4px solid #ece9df;
+      border-radius: 7px;
+      color: #214c46;
+      background: #f8f4e8;
+      font-size: 12px;
+      font-weight: 950;
+      transform: rotate(-2deg);
+    }
+    .capture img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #e5e1d8;
+    }
+    .capture-caption {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      z-index: 2;
+      padding: 6px 9px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(13, 45, 40, .78);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .capture-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .file-label,
+    .demo-button,
+    .run-button,
+    .confirm-button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .file-label:hover,
+    .demo-button:hover { background: #efede6; }
+    .file-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+    .run-button {
+      width: 100%;
+      margin-top: 12px;
+      border: 0;
+      color: #fff;
+      background: var(--green);
+    }
+    .run-button:hover { background: var(--green-dark); }
+    .run-button:disabled { cursor: wait; opacity: .62; }
+    .result-panel {
+      margin-top: 16px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .result-panel[hidden] { display: none; }
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .result-head strong { font-size: 16px; }
+    .result-tag {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #8a5a13;
+      background: #fff0c2;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .checks {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .checks li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(23, 63, 57, .09);
+      font-size: 13px;
+    }
+    .checks li:last-child { border-bottom: 0; }
+    .check-ok { color: var(--green); font-weight: 900; }
+    .check-review { color: #a46712; font-weight: 900; }
+    .result-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .staff-confirm {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .confirm-button { min-height: 44px; padding: 8px; font-size: 12px; }
+    .confirm-button:hover { border-color: var(--green); background: var(--mint); }
+    .confirmation {
+      margin: 12px 0 0;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: var(--green-dark);
+      background: var(--mint);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.6;
+    }
+    .confirmation[hidden] { display: none; }
+    .now-future {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+    }
+    .now-future article { padding: clamp(28px, 5vw, 44px); }
+    .now-future article + article { border-left: 1px solid var(--line); background: #f0f6f3; }
+    .now-future h3 { margin: 0 0 18px; font-size: 24px; }
+    .now-future ul { display: grid; gap: 12px; margin: 0; padding-left: 1.2em; color: var(--muted); line-height: 1.7; }
+    .stakeholder-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .stakeholder {
+      min-height: 260px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+    }
+    .stakeholder-priority {
+      display: inline-block;
+      margin-bottom: 30px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .08em;
+    }
+    .stakeholder h3 { margin: 0 0 12px; font-size: 20px; }
+    .stakeholder p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+    .safety {
+      display: grid;
+      grid-template-columns: minmax(250px, .65fr) minmax(0, 1.35fr);
+      gap: 40px;
+      padding: clamp(30px, 6vw, 54px);
+      border-radius: 28px;
+      color: #fff;
+      background: #163b36;
+    }
+    .safety h2 { font-size: clamp(28px, 4vw, 42px); }
+    .safety-list { display: grid; gap: 14px; }
+    .safety-item {
+      padding: 16px 18px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 14px;
+      color: rgba(255, 255, 255, .78);
+      background: rgba(255, 255, 255, .04);
+      line-height: 1.7;
+    }
+    .safety-item strong { color: #f8dc94; }
+    footer {
+      padding: 34px 0 46px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    @media (max-width: 940px) {
+      .hero-grid, .poc-grid, .safety { grid-template-columns: 1fr; }
+      .hero-board { min-height: 330px; }
+      .mentor-grid, .stakeholder-grid { grid-template-columns: repeat(2, 1fr); }
+      .poc-grid { gap: 46px; }
+    }
+    @media (max-width: 680px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .site-header { position: static; }
+      .header-inner { min-height: 64px; }
+      .brand { font-size: 14px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .limited { display: none; }
+      .hero { padding-top: 48px; }
+      .audience-path i { display: none; }
+      .section-head { display: block; }
+      .section-note { margin-top: 16px; }
+      .mentor-grid, .game-grid, .stakeholder-grid, .now-future { grid-template-columns: 1fr; }
+      .now-future article + article { border-top: 1px solid var(--line); border-left: 0; }
+      .game-card { min-height: 285px; padding: 24px; }
+      .capture-actions, .staff-confirm { grid-template-columns: 1fr; }
+      .device-body { padding: 18px; }
+      .capture { min-height: 235px; }
+      .footer-inner { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">W</span>WORK STEP</a>
+      <div class="header-actions">
+        <span class="limited">関係者向け限定デモ</span>
+        <button class="logout" id="logoutButton" type="button">ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="audience-path" aria-label="このデモで優先する閲覧者">
+          <span>SBI-Uメンター</span><i>→</i><span>MetaTech</span><i>→</i><span>グループホーム支援員</span><i>→</i><span>就労支援事業者</span>
+        </div>
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">SBI-U Challenge Prototype</p>
+            <h1>仕事の練習を、<br>わかりやすく。<br>支援の工夫を、<br>見つけやすく。</h1>
+            <p class="hero-lead">WORK STEP（仮）は、知的障害や発達特性のある方を想定した、段階的な作業練習の試作です。現在は4種類のブラウザゲームと、画像認識PoCの操作イメージを体験できます。</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#games">4つのゲームを試す <span aria-hidden="true">↓</span></a>
+              <a class="button button-secondary" href="#vision">画像認識PoCを見る</a>
+            </div>
+          </div>
+          <aside class="hero-board" aria-label="現在のデモ概要">
+            <span class="board-tag">CURRENT DEMO</span>
+            <div class="board-center">
+              <strong class="board-number">4</strong>
+              <p>種類の作業練習 × 各50ステージ</p>
+            </div>
+            <div class="board-footer"><span>タブレット対応</span><span>段階的なヒント</span></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="section-kicker">For SBI-U Mentors</p><h2>このデモで確かめたいこと</h2></div>
+          <p class="section-note">完成品の説明ではなく、顧客課題・MVP・現場運用・共同検証の進め方を確かめるための試作です。</p>
+        </div>
+        <div class="mentor-grid">
+          <article class="mentor-item"><span class="mentor-number">01</span><h3>利用者に伝わるか</h3><p>説明や操作が分かりやすく、無理なく次へ進めるか。</p></article>
+          <article class="mentor-item"><span class="mentor-number">02</span><h3>現場で続けられるか</h3><p>支援員が短時間から取り入れ、支援の工夫を残せるか。</p></article>
+          <article class="mentor-item"><span class="mentor-number">03</span><h3>AIを加える価値</h3><p>画像認識が役立つ作業と、人の確認が必要な範囲はどこか。</p></article>
+          <article class="mentor-item"><span class="mentor-number">04</span><h3>実証の順序</h3><p>実証先・評価指標・費用対効果をどう段階的に確かめるか。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="games">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="section-kicker">Playable Now</p><h2>現在体験できる4つの練習</h2></div>
+          <p class="section-note">各ゲームは新しいタブで開きます。時間や順位ではなく、本人に合う説明・手がかり・練習の段階を探る設計です。</p>
+        </div>
+        <div class="game-grid">
+          <a class="game-card" href="./game.html" target="_blank" rel="noopener">
+            <div class="game-top"><span class="game-number">GAME 01</span><span class="stage-pill">50 STAGES</span></div>
+            <h3>おなじ しるしへ</h3>
+            <p>見本と同じ色・形・記号を見分けて、合う箱へ仕分けます。</p>
+            <span class="game-cta">仕分けゲームを試す <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="game-card" href="./label-work.html" target="_blank" rel="noopener">
+            <div class="game-top"><span class="game-number">GAME 02</span><span class="stage-pill">50 STAGES</span></div>
+            <h3>ぴったり ラベル</h3>
+            <p>色・形・数字・英字など、見本に合うラベルを選びます。</p>
+            <span class="game-cta">ラベル貼りゲームを試す <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="game-card" href="./cleaning-work.html" target="_blank" rel="noopener">
+            <div class="game-top"><span class="game-number">GAME 03</span><span class="stage-pill">50 STAGES</span></div>
+            <h3>おそうじ チェック</h3>
+            <p>場所や状況を見て、道具・手順・次の行動を選びます。</p>
+            <span class="game-cta">清掃ゲームを試す <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="game-card" href="./assembly-work.html" target="_blank" rel="noopener">
+            <div class="game-top"><span class="game-number">GAME 04</span><span class="stage-pill">50 STAGES</span></div>
+            <h3>じゅんばん くみたて</h3>
+            <p>見本を覚え、部品を正しい順番で選んで組み立てます。</p>
+            <span class="game-cta">組立ゲームを試す <span aria-hidden="true">↗</span></span>
+          </a>
+        </div>
+        <p class="game-footnote">4ゲームとも進捗や設定はこの端末のブラウザ内に保存され、外部へ送信されません。匿名のプレイ履歴確認・CSV保存は、現時点では「おなじ しるしへ」のみ対応しています。</p>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="vision">
+      <div class="wrap poc-grid">
+        <div class="poc-copy">
+          <p class="section-kicker">For MetaTech / Vision PoC</p>
+          <h2>まずは、1つの<br>静止画課題から。</h2>
+          <span class="poc-badge">画像認識PoC｜AIモデル未接続</span>
+          <p>右の画面は、撮影から支援員の確認までの操作フローを確かめるシミュレーションです。判定候補はデモ用の固定表示で、アップロードした画像をAI解析していません。</p>
+          <ol class="flow-list">
+            <li><strong>1</strong><span>作業後の状態を撮影、またはサンプルを選ぶ</span></li>
+            <li><strong>2</strong><span>AIが「できている可能性／要確認」の候補を提示</span></li>
+            <li><strong>3</strong><span>支援員が候補を確認・修正する</span></li>
+            <li><strong>4</strong><span>次の練習や声かけを考える材料にする</span></li>
+          </ol>
+        </div>
+        <div class="device" aria-labelledby="pocDeviceTitle">
+          <div class="device-bar"><strong id="pocDeviceTitle">作業状態チェック｜操作デモ</strong><span class="device-status">AI未接続</span></div>
+          <div class="device-body">
+            <div class="capture" id="captureArea">
+              <div class="sample-scene" id="sampleScene" aria-label="箱にラベルを貼ったサンプル作業">
+                <div class="sample-box"><span class="sample-label">A-12</span></div>
+              </div>
+              <img id="previewImage" alt="選択した作業画像の端末内プレビュー" hidden>
+              <span class="capture-caption" id="captureCaption">デモ用サンプル</span>
+            </div>
+            <div class="capture-actions">
+              <label class="file-label" for="workImage">写真を選ぶ</label>
+              <input class="file-input" id="workImage" type="file" accept="image/*" capture="environment">
+              <button class="demo-button" id="sampleButton" type="button">サンプルに戻す</button>
+            </div>
+            <button class="run-button" id="runVisionButton" type="button">判定候補を表示する</button>
+            <div class="result-panel" id="resultPanel" hidden aria-live="polite">
+              <div class="result-head"><strong>判定候補</strong><span class="result-tag">支援員の確認が必要</span></div>
+              <ul class="checks">
+                <li><span>対象物が画面内にある</span><span class="check-ok">できている可能性</span></li>
+                <li><span>ラベルの向き</span><span class="check-ok">できている可能性</span></li>
+                <li><span>指定位置とのずれ</span><span class="check-review">要確認</span></li>
+              </ul>
+              <p class="result-note" id="resultNote">これは固定サンプルです。実画像を解析した結果ではありません。</p>
+              <div class="staff-confirm" aria-label="支援員による確認">
+                <button class="confirm-button" type="button" data-confirm="できていると確認しました。">できている</button>
+                <button class="confirm-button" type="button" data-confirm="要確認として、次の声かけを検討します。">要確認</button>
+                <button class="confirm-button" type="button" data-confirm="撮影条件を整えて、撮り直します。">撮り直す</button>
+              </div>
+              <p class="confirmation" id="confirmation" hidden></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="section-kicker">Scope</p><h2>現在の実装と将来構想</h2></div>
+          <p class="section-note">「今できること」と「共同検証したいこと」を混同しない形で提示します。</p>
+        </div>
+        <div class="now-future">
+          <article>
+            <h3>現在のブラウザデモ</h3>
+            <ul>
+              <li>4種類の作業練習をタップ操作で体験</li>
+              <li>間違いを減点せず、段階的にヒントを表示</li>
+              <li>進捗や設定は利用端末の中だけに保存</li>
+              <li>氏名・診断名・顔写真を収集しない</li>
+            </ul>
+          </article>
+          <article>
+            <h3>将来の画像認識PoC</h3>
+            <ul>
+              <li>作業後の静止画から物品・配置・状態の候補を提示</li>
+              <li>AI出力は支援員が必ず確認・修正</li>
+              <li>認識精度、判定保留率、確認時間、現場負担を検証</li>
+              <li>静止画の実証後、必要な場合のみ短時間動画へ拡張</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="section-kicker">Stakeholders</p><h2>それぞれの立場で見るポイント</h2></div>
+          <p class="section-note">優先順位に沿って、事業・技術・支援現場の論点を同じデモで確認します。</p>
+        </div>
+        <div class="stakeholder-grid">
+          <article class="stakeholder"><span class="stakeholder-priority">PRIORITY 01</span><h3>SBI-Uメンター</h3><p>顧客課題、MVPの範囲、実証計画、事業化の順序が妥当かを確認します。</p></article>
+          <article class="stakeholder"><span class="stakeholder-priority">PRIORITY 02</span><h3>MetaTech</h3><p>静止画1課題から始める認識PoC、精度、確認UI、費用対効果の論点を整理します。</p></article>
+          <article class="stakeholder"><span class="stakeholder-priority">PRIORITY 03</span><h3>グループホーム支援員</h3><p>短時間の練習から、本人に伝わる説明や必要な手がかりを一緒に探します。</p></article>
+          <article class="stakeholder"><span class="stakeholder-priority">PRIORITY 04</span><h3>就労支援事業者</h3><p>実作業前の練習と、ゲーム上の取り組みが現場へつながるかを実証します。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap safety">
+        <div><p class="section-kicker">Safety & Data</p><h2>人を判定するAIにはしません。</h2></div>
+        <div class="safety-list">
+          <div class="safety-item"><strong>対象は作業状態です。</strong><br>画像認識で確認する対象は、人の能力ではなく、画像上の物品・配置・作業状態です。</div>
+          <div class="safety-item"><strong>支援員の確認が前提です。</strong><br>AIの出力だけで就労可否、障害の程度、支援の要否、人事評価を自動判定しません。</div>
+          <div class="safety-item"><strong>この操作デモは画像を送信しません。</strong><br>選んだ写真は端末内のプレビューにのみ使い、保存・外部送信・AI学習には使いません。</div>
+          <div class="safety-item"><strong>将来のPoCは本人同意から始めます。</strong><br>顔や個人情報を写さない条件、保存期間、削除方法、学習利用の可否を事前に定めます。</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner"><strong>WORK STEP（仮）</strong><span>SBI-Uチャレンジ｜関係者向け検討デモ</span></div>
+  </footer>
+
+  <script>
+    (() => {
+      const ACCESS_KEY = "workStepDemoAccessV1";
+      document.getElementById("logoutButton").addEventListener("click", () => {
+        localStorage.removeItem(ACCESS_KEY);
+        location.replace("./index.html");
+      });
+
+      const input = document.getElementById("workImage");
+      const preview = document.getElementById("previewImage");
+      const scene = document.getElementById("sampleScene");
+      const caption = document.getElementById("captureCaption");
+      const sampleButton = document.getElementById("sampleButton");
+      const runButton = document.getElementById("runVisionButton");
+      const resultPanel = document.getElementById("resultPanel");
+      const resultNote = document.getElementById("resultNote");
+      const confirmation = document.getElementById("confirmation");
+      let objectUrl = "";
+      let source = "sample";
+
+      function resetResult() {
+        resultPanel.hidden = true;
+        confirmation.hidden = true;
+        confirmation.textContent = "";
+        runButton.disabled = false;
+        runButton.textContent = "判定候補を表示する";
+      }
+
+      function showSample() {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = "";
+        input.value = "";
+        preview.hidden = true;
+        preview.removeAttribute("src");
+        scene.hidden = false;
+        caption.textContent = "デモ用サンプル";
+        source = "sample";
+        resetResult();
+      }
+
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(file);
+        preview.src = objectUrl;
+        preview.hidden = false;
+        scene.hidden = true;
+        caption.textContent = "端末内プレビュー";
+        source = "local";
+        resetResult();
+      });
+
+      sampleButton.addEventListener("click", showSample);
+
+      runButton.addEventListener("click", () => {
+        runButton.disabled = true;
+        runButton.textContent = "操作デモを準備中…";
+        resultPanel.hidden = true;
+        confirmation.hidden = true;
+        window.setTimeout(() => {
+          resultNote.textContent = source === "local"
+            ? "選択した画像は表示だけに使用しています。判定候補は固定サンプルで、実画像をAI解析した結果ではありません。"
+            : "これは固定サンプルです。実画像を解析した結果ではありません。";
+          resultPanel.hidden = false;
+          runButton.disabled = false;
+          runButton.textContent = "判定候補をもう一度表示";
+          resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 650);
+      });
+
+      document.querySelectorAll("[data-confirm]").forEach((button) => {
+        button.addEventListener("click", () => {
+          confirmation.textContent = "支援員の確認：" + button.dataset.confirm;
+          confirmation.hidden = false;
+        });
+      });
+
+      window.addEventListener("pagehide", () => {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+      });
+    })();
+  </script>
+</body>
+</html>
