@@ -36,30 +36,11 @@
     "open-learning": "全従業員向け情報提供",
   };
 
-  const LESSONS = {
-    1: {
-      title: "復職 AI Ready（アイレディ）の目的と注意点",
-      duration: "約5分",
-      pages: [
-        ["このプログラムの役割", "産業医面談の前に、生活リズム、通勤訓練、職場へ相談したいことを14日間で整理します。通勤訓練は1回以上の実施が修了条件です。復職できるかどうかを判定するものではありません。"],
-        ["記録の扱い", "本人はすべての記録を確認できます。会社には、実施日数などの必須要約と、本人が個別に共有を選んだ内容だけを表示します。"],
-        ["安全に関する注意", "入力内容はリアルタイムで確認されません。体調の急変や危険を感じるときは、主治医、登録した連絡先、119・110などへ直接連絡してください。"],
-      ],
-    },
-    7: {
-      title: "産業医面談の準備と最終意思確認",
-      duration: "約7分",
-      pages: [
-        ["面談前にそろえること", "記録、1回以上の通勤訓練、配慮してほしい事項、確認したい質問を短い言葉でまとめます。病名のアプリ入力は必須ではありません。"],
-        ["最終意思を選ぶ", "産業医面談予定日の5～3日前を目安に、正式申込み、延期、中止のいずれかを本人が選びます。日数は当面、カレンダー上の日数で扱います。"],
-        ["正式申込みの流れ", "アプリで会社へ申込みを登録し、会社から産業医へ最終依頼する想定です。申込み後に実際の面談や復職ができたかどうかは、プログラム修了の条件に含みません。"],
-      ],
-    },
-  };
-
   let memoryState = null;
   let state = loadState();
   let activeLesson = null;
+  let lessonPlayer = null;
+  let youtubeApiPromise = null;
   let activeGame = null;
   let pendingDecision = null;
   let lastVerification = null;
@@ -180,8 +161,8 @@
         <div class="hero-grid">
           <div>
             <span class="eyebrow">企業向け操作デモ</span>
-            <h1>復職 AI Ready（アイレディ）<span>産業医面談前の14日間を、本人と会社の共通準備に。</span></h1>
-            <p class="hero-copy">生活リズムの記録、1回以上の通勤訓練、自己学習、面談準備を一つの流れにまとめたデモです。復職可否の判定ではなく、本人の準備と最終意思確認を支えます。</p>
+            <h1>復職AI Ready（アイレディ）<span>産業医面談前の14日間を、本人と会社の共通準備に。</span></h1>
+            <p class="hero-copy">生活リズムの記録、1回以上の通勤練習、自己学習、面談準備を一つの流れにまとめたデモです。復職可否の判定ではなく、本人の準備と最終意思確認を支えます。</p>
             <div class="hero-actions">
               <a class="button primary" href="#consent">本人用デモを始める</a>
               <a class="button secondary" href="#company">企業担当者用デモを見る</a>
@@ -212,7 +193,7 @@
         <div class="flow" aria-label="利用の流れ">
           <div class="flow-step"><span class="flow-dot"></span><strong>会社から案内</strong><small>診断書提出済みを確認</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>本人が開始</strong><small>説明・同意後に記録</small></div>
-          <div class="flow-step highlight"><span class="flow-dot"></span><strong>14日間の準備</strong><small>記録・通勤訓練・動画・ゲーム</small></div>
+          <div class="flow-step highlight"><span class="flow-dot"></span><strong>14日間の準備</strong><small>記録・通勤練習・動画・ゲーム</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>最終意思確認</strong><small>予定日の5～3日前</small></div>
           <div class="flow-step"><span class="flow-dot"></span><strong>会社へ申込み</strong><small>会社から産業医へ依頼</small></div>
         </div>
@@ -229,7 +210,7 @@
             <h2 id="scopeTitle">準備の見える化</h2>
             <ul class="summary-list">
               <li>朝・夕の記録と生活リズムの要約</li>
-              <li>修了条件となる通勤訓練を1回以上</li>
+              <li>修了条件となる通勤練習を1回以上</li>
               <li>日中の任意のおすすめ事項</li>
               <li>必須動画7本、必須ゲーム3種</li>
               <li>面談準備、共有範囲、最終意思確認</li>
@@ -261,7 +242,7 @@
         <div class="stack consent-list">
           <label class="check-card"><input type="checkbox" name="consent_medical"${agreed ? " checked" : ""}><span><strong>医療的な判断を行わない</strong><small>復職可否、回復の程度、治療方針をこのサービスが判定することはありません。</small></span></label>
           <label class="check-card"><input type="checkbox" name="consent_monitoring"${agreed ? " checked" : ""}><span><strong>リアルタイムで確認されない</strong><small>入力は緊急連絡ではありません。危険を感じるときは主治医、連絡先、119・110へ直接連絡します。</small></span></label>
-          <label class="check-card"><input type="checkbox" name="consent_sharing"${agreed ? " checked" : ""}><span><strong>会社へ必須要約を共有する</strong><small>実施日数、生活リズム要約、通勤訓練、修了・面談申込状況は会社へ共有されます。</small></span></label>
+          <label class="check-card"><input type="checkbox" name="consent_sharing"${agreed ? " checked" : ""}><span><strong>会社へ必須要約を共有する</strong><small>実施日数、生活リズム要約、通勤練習、修了・面談申込状況は会社へ共有されます。</small></span></label>
           <label class="check-card"><input type="checkbox" name="consent_stop"${agreed ? " checked" : ""}><span><strong>いつでも中断・中止できる</strong><small>開始後も本人の意思で止められます。中断・中止だけを理由に復職可否を決めるものではありません。</small></span></label>
         </div>
         <div class="warning-note top-gap"><strong>体調の急変・生命の危険があるとき</strong><p>この画面への入力を待たず、主治医や医療機関、事前に決めた連絡先へ連絡してください。緊急時は119・110を利用してください。</p></div>
@@ -281,7 +262,7 @@
       ${!state.consented ? '<div class="important-note bottom-gap"><strong>まず、利用開始前の説明・同意が必要です。</strong><p>デモ用プロフィールの切替では、途中や修了時点へ直接移動することもできます。</p></div>' : ""}
       <div class="metric-grid">
         <div class="metric"><span class="metric-label">朝・夕を記録した平日</span><span class="metric-value">${progress.completedDays}<small>/10日</small></span><span class="metric-help">修了条件は8日以上</span></div>
-        <div class="metric"><span class="metric-label">通勤訓練</span><span class="metric-value">${progress.commuteDays}<small>/1回以上</small></span><span class="metric-help">修了条件</span></div>
+        <div class="metric"><span class="metric-label">通勤練習</span><span class="metric-value">${progress.commuteDays}<small>/1回以上</small></span><span class="metric-help">修了条件</span></div>
         <div class="metric"><span class="metric-label">自己学習動画</span><span class="metric-value">${progress.videosDone}<small>/7本</small></span><span class="metric-help">7種類を1回ずつ</span></div>
         <div class="metric"><span class="metric-label">必須ゲーム</span><span class="metric-value">${progress.gamesDone}<small>/3種</small></span><span class="metric-help">点数・成績は不問</span></div>
         <div class="metric"><span class="metric-label">修了条件</span><span class="metric-value">${doneCount}<small>/${progress.items.length}項目</small></span><span class="metric-help">正式申込みまで</span></div>
@@ -294,7 +275,7 @@
       </div>
       ${state.decision === "cancel" ? '<div class="panel top-gap"><span class="eyebrow">利用中止後</span><h2>任意の情報提供動画を利用できます</h2><p>復職準備コースの記録・必須課題は閉じています。再開する場合は、会社から改めて案内を受ける想定です。</p><div class="form-actions"><a class="button primary" href="#open-learning">任意動画を見る</a><a class="button secondary" href="#result">利用結果を確認</a></div></div>' : `<div class="card-grid">
         <div class="card action-card"><span class="card-kicker">毎日 約20分×2回</span><h3>朝と夕方の記録</h3><p>好きな日へ切り替えて、14日間の操作を短時間で確認できます。</p><a class="button friendly" href="#daily">記録する</a></div>
-        <div class="card action-card"><span class="card-kicker">必須7本</span><h3>自己学習動画</h3><p>デモでは1・7を視聴可能にし、ほかは準備中または疑似履歴で表示します。</p><a class="button friendly" href="#learning">動画を見る</a></div>
+        <div class="card action-card"><span class="card-kicker">必須7本</span><h3>自己学習動画</h3><p>7本すべてを視聴できます。各動画を最後まで再生し、非常に簡単な確認問題2問に正解すると完了になります。</p><a class="button friendly" href="#learning">動画を見る</a></div>
         <div class="card action-card"><span class="card-kicker">最終ステップ</span><h3>面談準備と意思確認</h3><p>共有する内容を確認し、会社への正式申込みを登録します。</p><a class="button friendly" href="#reflection">準備を確認する</a></div>
       </div>`}`, "participant-dashboard");
   }
@@ -319,8 +300,8 @@
       <div class="page-head"><div><span class="eyebrow">本人用デモ｜毎日の記録</span><h1 class="page-title">${escapeHtml(dayInfo.label)}（${escapeHtml(dayInfo.weekday)}）のチェックイン・アウト</h1><p class="lead">上の日付を自由に切り替えられます。朝と夕方の両方を保存すると、平日1日分として数えます。</p></div><div class="page-head-actions"><a class="button secondary" href="#participant-dashboard">進捗へ戻る</a></div></div>
       <div class="panel bottom-gap"><span class="field-label">デモ用日付切替</span>${dayTabs()}<p class="muted small">この疑似日付では月～金を「平日」とし、祝日設定は省略しています。</p>${dayInfo.weekend ? '<div class="info-note"><strong>土日の記録は任意です。</strong><p>保存しても修了条件の「平日8日以上」には加算されません。</p></div>' : ""}</div>
       <section class="panel form-section">
-        <div class="section-heading"><div><span class="eyebrow">REQUIRED COMMUTE TRAINING</span><h2>修了条件：通勤訓練を1回以上</h2></div><span class="status-chip ${progress.commuteDays >= 1 ? "complete" : "active"}">${progress.commuteDays >= 1 ? `${progress.commuteDays}回 実施済み` : "未実施"}</span></div>
-        <div class="important-note"><strong>企業の総務と上司に事前に連絡してから行います。</strong><p>約束した日時に職場で待ち合わせて、15分程度お話をします。帰りに図書館やカフェなどで、読書や自主学習をしてから帰宅します。</p></div>
+        <div class="section-heading"><div><span class="eyebrow">REQUIRED COMMUTE PRACTICE</span><h2>修了条件：通勤練習を1回以上</h2></div><span class="status-chip ${progress.commuteDays >= 1 ? "complete" : "active"}">${progress.commuteDays >= 1 ? `${progress.commuteDays}回 実施済み` : "未実施"}</span></div>
+        <div class="important-note"><strong>会社の上司・人事など、約束した相手と日時・職場内の待ち合わせ場所を事前に決めてから行います。</strong><p>職場で挨拶し、可能であれば短い体調・疲労確認を行います。通勤練習として数える条件は、事前に約束して職場を訪問し、相手に挨拶することです。自習は推奨事項であり、修了条件そのものではありません。会社が用意できる場合は自習場所を利用し、仕事に関する一般常識の本、または持参した趣味・資格などの本を読み、休憩を含め約2時間過ごすことを推奨します。場所を用意できない場合は、図書館・カフェ等での約2時間を代替にできます。実業務、社内システム、機密資料は使用しません。</p></div>
         <div class="info-note top-gap"><strong>まずは午前中くらいを目標に、やってみてね。</strong><p>本来は出社に間に合う時間を目指すとよいですが、総務・上司との都合もあります。体調が不安なときは無理をせず、会社へ連絡して日程を調整してください。</p></div>
       </section>
       <form id="morningForm" data-day="${dayInfo.id}" class="panel form-section">
@@ -334,14 +315,14 @@
           <div class="form-field"><label for="condition">体調</label><select id="condition" name="condition">${[1,2,3,4,5].map((value) => option(value, record.morning.condition, `${value}｜${value === 1 ? "つらい" : value === 3 ? "ふつう" : value === 5 ? "良い" : ""}`)).join("")}</select></div>
           <div class="form-field"><label for="mood">気分</label><select id="mood" name="mood">${[1,2,3,4,5].map((value) => option(value, record.morning.mood, `${value}｜${value === 1 ? "落ち込んでいる" : value === 3 ? "ふつう" : value === 5 ? "安定している" : ""}`)).join("")}</select></div>
           <div class="form-field full"><label for="plan">今日の予定</label><textarea id="plan" name="plan" required placeholder="無理のない範囲で予定を書きます">${escapeHtml(record.morning.plan)}</textarea></div>
-          <div class="form-field"><span class="field-label">通勤訓練の予定</span><div class="choice-group">${radio("commutePlan", "あり", record.morning.commutePlan, "あり")}${radio("commutePlan", "なし", record.morning.commutePlan, "なし")}</div></div>
+          <div class="form-field"><span class="field-label">通勤練習の予定</span><div class="choice-group">${radio("commutePlan", "あり", record.morning.commutePlan, "あり")}${radio("commutePlan", "なし", record.morning.commutePlan, "なし")}</div></div>
           <div class="form-field"><label for="concern">困っていること <span class="muted small">（任意）</span></label><textarea id="concern" name="concern" placeholder="緊急連絡には使用できません">${escapeHtml(record.morning.concern)}</textarea></div>
         </div>
         <div class="form-actions"><button class="button primary" type="submit">朝の記録を保存</button></div>
       </form>
 
       <form id="recommendationForm" data-day="${dayInfo.id}" class="panel form-section">
-        <span class="eyebrow">DAYTIME IDEAS</span><h2>通勤訓練以外に、日中にできそうなこと</h2><p>ここに表示する項目はすべて任意です。実施しなくても修了判定には影響しません。</p>
+        <span class="eyebrow">DAYTIME IDEAS</span><h2>通勤練習以外に、日中にできそうなこと</h2><p>ここに表示する項目はすべて任意です。実施しなくても修了判定には影響しません。</p>
         <div class="recommendation-list">${Logic.RECOMMENDATIONS.map((item) => `<label class="check-card"><input type="checkbox" name="recommendation" value="${escapeHtml(item)}"${checkedRecommendations.has(item) ? " checked" : ""}><span><strong>${escapeHtml(item)}</strong><small>できたときだけチェック</small></span></label>`).join("")}</div>
         <div class="form-field top-gap"><label for="customRecommendation">自分で追加した予定 <span class="muted small">（任意）</span></label><input id="customRecommendation" name="customRecommendation" value="${escapeHtml(record.customRecommendation)}" placeholder="例：復職初日の持ち物を確認"></div>
         <div class="form-actions"><button class="button secondary" type="submit">おすすめ事項を保存</button></div>
@@ -353,8 +334,8 @@
           <div class="form-field full"><label for="accomplished">今日できたこと</label><textarea id="accomplished" name="accomplished" required>${escapeHtml(record.evening.accomplished)}</textarea></div>
           <div class="form-field"><label for="fatigue">疲労の程度</label><select id="fatigue" name="fatigue">${[1,2,3,4,5].map((value) => option(value, record.evening.fatigue, `${value}｜${value === 1 ? "ほぼない" : value === 3 ? "ほどほど" : value === 5 ? "とても強い" : ""}`)).join("")}</select></div>
           <div class="form-field"><label for="moodChange">気分の変化</label><select id="moodChange" name="moodChange">${["良くなった", "少し落ち着いた", "変わらない", "少しつらくなった", "つらくなった"].map((value) => option(value, record.evening.moodChange)).join("")}</select></div>
-          <div class="form-field"><label for="commuteResult">通勤訓練（修了条件）の実施</label><select id="commuteResult" name="commuteResult">${["実施した", "予定したが実施しなかった", "実施していない"].map((value) => option(value, record.evening.commuteResult)).join("")}</select></div>
-          <div class="form-field"><label for="outing">外出・通勤訓練の内容</label><input id="outing" name="outing" value="${escapeHtml(record.evening.outing)}" placeholder="例：総務・上司と15分話し、帰りに図書館で30分読書"></div>
+          <div class="form-field"><label for="commuteResult">通勤練習（修了条件）の実施</label><select id="commuteResult" name="commuteResult">${["実施した", "予定したが実施しなかった", "実施していない"].map((value) => option(value, record.evening.commuteResult)).join("")}</select></div>
+          <div class="form-field"><label for="outing">外出・通勤練習の内容</label><input id="outing" name="outing" value="${escapeHtml(record.evening.outing)}" placeholder="例：約束した上司に挨拶し、短い体調確認後、職場の自習場所で約2時間読書"></div>
           <div class="form-field"><label for="learningDone">ゲーム・動画の実施</label><select id="learningDone" name="learning">${["なし", "動画", "ゲーム", "動画とゲーム"].map((value) => option(value, record.evening.learning)).join("")}</select></div>
           <div class="form-field"><label for="challenge">生活上の課題</label><textarea id="challenge" name="challenge">${escapeHtml(record.evening.challenge)}</textarea></div>
           <div class="form-field"><label for="tomorrow">明日の予定</label><textarea id="tomorrow" name="tomorrow" required>${escapeHtml(record.evening.tomorrow)}</textarea></div>
@@ -368,13 +349,13 @@
   function renderLearning() {
     const progress = Logic.completion(state);
     return participantPage("learning", `
-      <div class="page-head"><div><span class="eyebrow">本人用デモ｜自己学習</span><h1 class="page-title">必須動画 7本</h1><p class="lead">7種類を1回ずつ視聴します。デモでは第1回・第7回を開けます。</p></div><div class="page-head-actions"><span class="status-chip ${progress.videosDone === 7 ? "complete" : "active"}">${progress.videosDone}/7本 視聴済み</span></div></div>
-      <div class="info-note bottom-gap"><strong>デモ用プロフィールについて</strong><p>第2～6回は制作準備中です。「修了直前」「修了後」では、デモ説明用の視聴履歴として完了表示になります。</p></div>
+      <div class="page-head"><div><span class="eyebrow">本人用デモ｜自己学習</span><h1 class="page-title">必須動画 7本</h1><p class="lead">7種類を1回ずつ最後まで視聴し、各動画の簡単な確認問題2問に正解すると視聴完了にできます。</p></div><div class="page-head-actions"><span class="status-chip ${progress.videosDone === 7 ? "complete" : "active"}">${progress.videosDone}/7本 視聴済み</span></div></div>
+      <div class="info-note bottom-gap"><strong>視聴完了の登録方法</strong><p>動画を最後まで再生すると確認問題が表示されます。2問とも正解すると「視聴完了にする」ボタンが有効になります。同じ動画版の視聴済み状態は保持されますが、動画版が更新された場合は再視聴が必要です。</p></div>
       <div class="video-list">${Logic.VIDEOS.map((video) => {
         const done = Boolean(state.videos[video.id]);
         const available = video.available;
         const status = done ? "視聴済み" : available ? "視聴可能" : "準備中";
-        return `<article class="video-card${available ? " available" : ""}"><span class="video-number">${String(video.id).padStart(2, "0")}</span><span class="status-chip card-status ${done ? "complete" : available ? "active" : ""}">${status}${done && !available ? "（デモ履歴）" : ""}</span><h3>${escapeHtml(video.title)}</h3><p>${available ? "デモ用の要点画面を確認し、最後に視聴完了を登録します。" : "本公開までに動画コンテンツを用意する想定です。"}</p>${available ? `<button class="button ${done ? "secondary" : "primary"} small" type="button" data-action="open-lesson" data-lesson="${video.id}" data-track="true">${done ? "もう一度見る" : "デモ動画を見る"}</button>` : '<button class="button secondary small" type="button" disabled>準備中</button>'}</article>`;
+        return `<article class="video-card${available ? " available" : ""}"><span class="video-number">${String(video.id).padStart(2, "0")}</span><span class="status-chip card-status ${done ? "complete" : available ? "active" : ""}">${status}</span><h3>${escapeHtml(video.title)}</h3><p>${available ? `${escapeHtml(video.duration)}｜最後まで再生後、簡単な2問に回答します。` : "本公開までに動画コンテンツを用意する想定です。"}</p>${available ? `<button class="button ${done ? "secondary" : "primary"} small" type="button" data-action="open-lesson" data-lesson="${video.id}" data-track="true">${done ? "もう一度見る" : "動画を見る"}</button>` : '<button class="button secondary small" type="button" disabled>準備中</button>'}</article>`;
       }).join("")}</div>`, "learning");
   }
 
@@ -398,7 +379,7 @@
     const summary = Logic.summaryForCompany(state);
     const prep = state.interviewPrep;
     return `<div class="share-preview">
-      <section class="share-group"><span class="status-chip active">必ず共有</span><h3>会社へ表示する要約</h3><dl><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>修了・申込状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項の記載</dt><dd>${prep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
+      <section class="share-group"><span class="status-chip active">必ず共有</span><h3>会社へ表示する要約</h3><dl><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>修了・申込状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項の記載</dt><dd>${prep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
       <section class="share-group"><span class="status-chip">本人が個別に選択</span><h3>選択した場合だけ表示</h3><dl><dt>配慮事項の具体的内容</dt><dd>${sharedValue(state.sharing.accommodations, prep.accommodations)}</dd><dt>面談準備の詳細</dt><dd>${sharedValue(state.sharing.interviewDetails, [prep.conditionSummary, prep.commuteSummary, prep.questions].filter(Boolean).join("／"))}</dd><dt>自由記述</dt><dd>${sharedValue(state.sharing.freeText, prep.freeText)}</dd><dt>服薬情報</dt><dd>${sharedValue(state.sharing.medication, prep.medication)}</dd></dl></section>
     </div>`;
   }
@@ -423,7 +404,7 @@
         <p>病名はアプリへ必須入力しません。会社が保有する復職可能の診断書で確認する想定です。</p>
         <div class="form-grid">
           <div class="form-field"><label for="conditionSummary">現在の生活・体調の要約</label><textarea id="conditionSummary" name="conditionSummary" required>${escapeHtml(prep.conditionSummary)}</textarea></div>
-          <div class="form-field"><label for="commuteSummary">通勤訓練の要約</label><textarea id="commuteSummary" name="commuteSummary" required>${escapeHtml(prep.commuteSummary)}</textarea></div>
+          <div class="form-field"><label for="commuteSummary">通勤練習の要約</label><textarea id="commuteSummary" name="commuteSummary" required>${escapeHtml(prep.commuteSummary)}</textarea></div>
           <div class="form-field"><label for="accommodations">配慮してほしい事項 <span class="muted small">（記載は任意）</span></label><textarea id="accommodations" name="accommodations">${escapeHtml(prep.accommodations)}</textarea><small>具体的内容を共有しない場合も、記載の有無は会社へ表示します。</small></div>
           <div class="form-field"><label for="questions">会社・産業医へ確認したいこと</label><textarea id="questions" name="questions" required>${escapeHtml(prep.questions)}</textarea></div>
           <div class="form-field"><label for="prepMedication">服薬情報 <span class="muted small">（任意）</span></label><textarea id="prepMedication" name="medication">${escapeHtml(prep.medication)}</textarea><small>面談で産業医から確認されることが多いため、事前記載をおすすめします。</small></div>
@@ -447,8 +428,8 @@
   function decisionDefinition(type) {
     return {
       formal: { title: "産業医面談を正式に申し込む", description: "面談準備完了として会社へ登録し、会社から産業医へ最終依頼する想定です。", button: "正式申込みを確認" },
-      postpone: { title: "面談を延期する", description: "今回は申込みを行わず、必要に応じて準備を続けます。延期中は未修了です。", button: "延期を確認" },
-      cancel: { title: "利用を中止する", description: "復職準備コースを中止し、任意の情報提供動画だけを見られる状態へ戻す想定です。", button: "中止を確認" },
+      postpone: { title: "面談を延期する", description: "今回は申込みを行わず、必要に応じて準備を続けます。未修了として、準備課題の完了状況と正式申込みの見送りを分けて記録します。", button: "延期を確認" },
+      cancel: { title: "利用を中止する", description: "復職準備コースを中止します。未修了として、準備課題の完了状況と正式申込みの見送りを分けて記録します。", button: "中止を確認" },
     }[type];
   }
 
@@ -458,7 +439,7 @@
     const pending = pendingDecision ? decisionDefinition(pendingDecision) : null;
     return participantPage("decision", `
       <div class="page-head"><div><span class="eyebrow">本人用デモ｜最終ステップ</span><h1 class="page-title">産業医面談の最終意思確認</h1><p class="lead">産業医面談予定日の5～3日前（当面はカレンダー日）に本人が選び、会社へ連絡が付くよう登録します。</p></div></div>
-      ${state.decision ? `<div class="success-note bottom-gap"><strong>登録済み：${escapeHtml(current.title)}</strong><p>${escapeHtml(state.decisionAt || "デモ日時")}に、デモ上で会社へ送信した想定です。選び直すこともできます。</p></div>` : ""}
+      ${state.decision ? `<div class="success-note bottom-gap"><strong>登録済み：${escapeHtml(current.title)}</strong><p>${escapeHtml(state.decisionAt || "デモ日時")}に、デモ上で会社へ送信した想定です。現在の区分は「${escapeHtml(Logic.participantStatus(state))}」です。選び直すこともできます。</p></div>` : ""}
       <div class="panel bottom-gap"><div class="two-column"><div><h2>申込み前の修了条件</h2>${completionList(progress)}</div><div><h2>現在の状態</h2>${progress.readyBeforeDecision ? '<div class="success-note"><strong>面談準備まで完了しています。</strong><p>正式申込みを登録すると、全条件を満たします。</p></div>' : `<div class="warning-note"><strong>まだ${progress.unmet.filter((item) => item.id !== "decision").length}項目が未完了です。</strong><p>未修了でも本人が希望する場合は、産業医面談の申込み自体はできます。ただし修了証明書は発行されません。</p></div>`}</div></div></div>
       <div class="decision-grid">
         <article class="decision-card formal"><span class="eyebrow">FORMAL</span><h3>正式に申し込む</h3><p>会社へ申込みを登録し、会社から産業医へ面談を最終依頼します。</p><button class="button primary" type="button" data-action="choose-decision" data-decision="formal">この内容を選ぶ</button></article>
@@ -474,16 +455,16 @@
     const status = Logic.participantStatus(state);
     const summary = Logic.summaryForCompany(state);
     let resultNote = '<div class="info-note"><strong>修了結果はまだ確定していません。</strong><p>修了条件を確認し、最後に産業医面談の正式申込みを登録します。</p></div>';
-    if (progress.complete) resultNote = '<div class="success-note"><strong>復職 AI Ready（アイレディ） 復職準備コースを修了しました。</strong><p>プログラムへの取組みと正式申込みを確認しました。これは復職可能性や医学的回復を証明するものではありません。</p></div>';
+    if (progress.complete) resultNote = '<div class="success-note"><strong>復職AI Ready（アイレディ） 復職準備コースを修了しました。</strong><p>プログラムへの取組みと正式申込みを確認しました。これは復職可能性や医学的回復を証明するものではありません。</p></div>';
     else if (state.decision === "formal") resultNote = '<div class="warning-note"><strong>未修了での産業医面談の申し込みを登録しました。</strong><p>会社への申込みは登録されていますが、修了条件を満たしていないため修了証明書は発行しません。</p></div>';
-    else if (state.decision === "postpone") resultNote = '<div class="warning-note"><strong>産業医面談を延期しました。</strong><p>延期を選んだため、現時点では未修了です。</p></div>';
-    else if (state.decision === "cancel") resultNote = '<div class="warning-note"><strong>利用を中止しました。</strong><p>準備コースは未修了です。全従業員向けの任意動画へ戻る想定です。</p><p><a class="button secondary small" href="#open-learning">任意の情報提供動画を見る</a></p></div>';
+    else if (state.decision === "postpone") resultNote = `<div class="warning-note"><strong>産業医面談を延期しました。</strong><p>現時点では未修了です。区分は「${escapeHtml(status)}」として記録します。</p></div>`;
+    else if (state.decision === "cancel") resultNote = `<div class="warning-note"><strong>利用を中止しました。</strong><p>準備コースは未修了です。区分は「${escapeHtml(status)}」として記録します。全従業員向けの任意動画へ戻る想定です。</p><p><a class="button secondary small" href="#open-learning">任意の情報提供動画を見る</a></p></div>`;
     return participantPage("result", `
       <div class="page-head"><div><span class="eyebrow">本人用デモ｜結果</span><h1 class="page-title">修了結果・最終レポート</h1><p class="lead">佐藤みらいさんの架空データをもとに表示しています。</p></div><div class="page-head-actions"><span class="status-chip ${statusClass(status)}">${escapeHtml(status)}</span></div></div>
       ${resultNote}
       <div class="two-column top-gap">
         <section class="panel"><h2>修了条件</h2>${completionList(progress)}</section>
-        <section class="panel"><h2>本人への最終フィードバック</h2><dl class="result-list"><dt>記録日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>面談申込み</dt><dd>${state.decision === "formal" ? "デモ上で会社へ送信した想定" : "正式申込みなし"}</dd></dl></section>
+        <section class="panel"><h2>本人への最終フィードバック</h2><dl class="result-list"><dt>記録日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>面談申込み</dt><dd>${state.decision === "formal" ? "デモ上で会社へ送信した想定" : "正式申込みなし"}</dd></dl></section>
       </div>
       <div class="panel top-gap"><h2>修了証明書</h2>${progress.complete ? '<p>研修有効期限は修了日から暫定1年6か月です。期限経過後も、過去に修了した事実は確認できます。</p><div class="form-actions"><a class="button primary" href="#certificate">修了証明書を表示</a><a class="button secondary" href="#verify">確認ページを見る</a></div>' : '<p class="muted">すべての修了条件を満たした場合だけ発行します。面談を実施できたか、実際に復職したかは発行条件に含みません。</p>'}</div>`, "result");
   }
@@ -502,8 +483,8 @@
   function satoNotificationMarkup() {
     const memo = state.decisionReason ? `<br><span class="muted small">連絡メモ：${escapeHtml(state.decisionReason)}</span>` : "";
     if (state.decision === "formal") return `<li><time>2026/7/22 10:30</time><strong>佐藤みらいさん</strong><br>${Logic.completion(state).complete ? "修了・産業医面談申込み" : "未修了での産業医面談の申し込み"}${memo}</li>`;
-    if (state.decision === "postpone") return `<li><time>2026/7/22 10:30</time><strong>佐藤みらいさん</strong><br>産業医面談を延期${memo}</li>`;
-    if (state.decision === "cancel") return `<li><time>2026/7/22 10:30</time><strong>佐藤みらいさん</strong><br>復職準備コースの利用を中止${memo}</li>`;
+    if (state.decision === "postpone") return `<li><time>2026/7/22 10:30</time><strong>佐藤みらいさん</strong><br>産業医面談を延期｜${escapeHtml(Logic.participantStatus(state))}${memo}</li>`;
+    if (state.decision === "cancel") return `<li><time>2026/7/22 10:30</time><strong>佐藤みらいさん</strong><br>復職準備コースの利用を中止｜${escapeHtml(Logic.participantStatus(state))}${memo}</li>`;
     return '<li><time>デモ状態に連動</time><strong>佐藤みらいさん</strong><br>面談申込み通知はまだありません</li>';
   }
 
@@ -536,7 +517,7 @@
     return `<section class="page enterprise">
       <div class="page-head"><div><span class="eyebrow">企業担当者用デモ｜共有要約</span><h1 class="page-title">佐藤みらいさん</h1><p class="lead">本人が同意した範囲だけを表示します。病名は会社が保有する診断書で確認する想定のため、この画面には表示しません。</p></div><div class="page-head-actions"><a class="button secondary" href="#company">一覧へ戻る</a></div></div>
       <div class="two-column">
-        <section class="panel"><span class="status-chip active">必ず共有</span><h2 class="top-gap">実施状況の要約</h2><dl class="result-list"><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤訓練</dt><dd>${escapeHtml(summary.commute)}</dd><dt>状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項</dt><dd>${state.interviewPrep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
+        <section class="panel"><span class="status-chip active">必ず共有</span><h2 class="top-gap">実施状況の要約</h2><dl class="result-list"><dt>実施日数</dt><dd>${summary.recordDays}日／平日10日</dd><dt>生活リズム</dt><dd>${escapeHtml(summary.routine)}</dd><dt>通勤練習</dt><dd>${escapeHtml(summary.commute)}</dd><dt>状況</dt><dd>${escapeHtml(summary.status)}</dd><dt>配慮事項</dt><dd>${state.interviewPrep.accommodations ? "記載あり" : "記載なし"}</dd></dl></section>
         <section class="panel"><span class="status-chip">本人が個別に選択</span><h2 class="top-gap">共有された詳細</h2><dl class="result-list"><dt>配慮事項</dt><dd>${sharedValue(state.sharing.accommodations, state.interviewPrep.accommodations)}</dd><dt>面談準備</dt><dd>${sharedValue(state.sharing.interviewDetails, [state.interviewPrep.conditionSummary, state.interviewPrep.commuteSummary, state.interviewPrep.questions].filter(Boolean).join("／"))}</dd><dt>自由記述</dt><dd>${sharedValue(state.sharing.freeText, state.interviewPrep.freeText)}</dd><dt>服薬情報</dt><dd>${sharedValue(state.sharing.medication, state.interviewPrep.medication)}</dd></dl></section>
       </div>
       <section class="panel top-gap"><div class="two-column"><div><h2>産業医面談の申込み</h2><p>${state.decision === "formal" ? `<span class="status-chip ${progress.complete ? "complete" : "warning"}">${progress.complete ? "修了・正式申込み済み" : "未修了での産業医面談の申し込み"}</span></p><p>デモ上で会社へ送信した想定です。会社から産業医へ最終依頼します。</p>` : `<span class="status-chip ${statusClass(summary.status)}">${escapeHtml(summary.status)}</span></p><p>${state.decision === "postpone" ? "延期の連絡をデモ上で受け付けました。" : state.decision === "cancel" ? "利用中止の連絡をデモ上で受け付けました。" : "正式申込みの通知はまだありません。"}</p>`}${state.decisionReason ? `<p class="muted small">連絡メモ：${escapeHtml(state.decisionReason)}</p>` : ""}</div><div><h2>修了証明書</h2>${progress.complete ? '<p>証明書番号 RA-20260722-0001</p><div class="form-actions"><a class="button primary" href="#verify">証明書を確認</a></div>' : '<p class="muted">未発行です。面談申込みだけでは発行されません。</p>'}</div></div></section>
@@ -545,10 +526,10 @@
   }
 
   function certificateMarkup() {
-    return `<article class="certificate" aria-label="復職 AI Ready（アイレディ） 復職準備コース修了証明書">
-      <p class="certificate-kicker">CERTIFICATE OF COMPLETION</p><h2>復職 AI Ready（アイレディ）<br>復職準備コース修了証明書</h2><p class="certificate-name">佐藤みらい 様</p><p class="certificate-body">上記の者が、復職 AI Ready（アイレディ） 復職準備コースの所定の取組みを完了し、産業医面談の正式申込みを登録したことを証明します。</p>
-      <dl class="certificate-meta"><dt>修了日</dt><dd>2026年7月22日</dd><dt>研修有効期限</dt><dd>2028年1月21日</dd><dt>証明書番号</dt><dd>RA-20260722-0001</dd><dt>発行者</dt><dd>復職 AI Ready（アイレディ）運営事務局</dd></dl>
-      <p class="certificate-issuer">復職 AI Ready（アイレディ）運営事務局</p><a class="qr-demo" href="#verify" data-action="verify-certificate-link" data-number="RA-20260722-0001" aria-label="この証明書を確認ページで開く（確認用コードのデモ）"><span>DEMO</span></a><p class="certificate-disclaimer">本証明書はプログラム修了の事実を示すものであり、復職可能性、医学的回復、就業上の安全性を証明するものではありません。TuringCerts連携予定。</p>
+    return `<article class="certificate" aria-label="復職AI Ready（アイレディ） 復職準備コース修了証明書">
+      <p class="certificate-kicker">CERTIFICATE OF COMPLETION</p><h2>復職AI Ready（アイレディ）<br>復職準備コース修了証明書</h2><p class="certificate-name">佐藤みらい 様</p><p class="certificate-body">上記の者が、復職AI Ready（アイレディ） 復職準備コースの所定の取組みを完了し、産業医面談の正式申込みを登録したことを証明します。</p>
+      <dl class="certificate-meta"><dt>修了日</dt><dd>2026年7月22日</dd><dt>研修有効期限</dt><dd>2028年1月21日</dd><dt>証明書番号</dt><dd>RA-20260722-0001</dd><dt>発行者</dt><dd>復職AI Ready（アイレディ）運営事務局</dd></dl>
+      <p class="certificate-issuer">復職AI Ready（アイレディ）運営事務局</p><a class="qr-demo" href="#verify" data-action="verify-certificate-link" data-number="RA-20260722-0001" aria-label="この証明書を確認ページで開く（確認用コードのデモ）"><span>DEMO</span></a><p class="certificate-disclaimer">本証明書はプログラム修了の事実を示すものであり、復職可能性、医学的回復、就業上の安全性を証明するものではありません。TuringCerts連携予定。</p>
     </article>`;
   }
 
@@ -563,7 +544,7 @@
     if (result.status === "format-error") return '<div class="warning-note"><strong>番号の形式を確認してください。</strong><p>例：RA-20260722-0001</p></div>';
     if (result.status === "not-found") return `<div class="warning-note"><strong>該当する証明書が見つかりません。</strong><p>${escapeHtml(result.number)} はデモ用確認データに登録されていません。</p></div>`;
     const valid = result.status === "valid";
-    return `<article class="verification-card"><div><span class="status-chip ${valid ? "valid" : "expired"}">${valid ? "有効期間内" : "研修有効期限 経過"}</span><h2>${valid ? "修了証明書を確認しました" : "過去の修了事実を確認しました"}</h2>${valid ? '<p>現在、研修の有効期間内です。</p>' : '<div class="warning-note"><strong>有効期限は過ぎています。</strong><p>ただし、この方が過去にプログラムを修了した事実は引き続き確認できます。</p></div>'}<dl><dt>証明書番号</dt><dd>${escapeHtml(result.number)}</dd><dt>氏名</dt><dd>${escapeHtml(result.holder)}</dd><dt>証明書名</dt><dd>${escapeHtml(result.title)}</dd><dt>修了日</dt><dd>${escapeHtml(result.completedAt)}</dd><dt>研修有効期限</dt><dd>${escapeHtml(result.validUntil)}</dd><dt>発行者</dt><dd>復職 AI Ready（アイレディ）運営事務局</dd></dl><p class="muted small">この確認はプログラム修了の事実を示し、復職可否や医学的回復を示すものではありません。</p></div><div class="qr-demo" aria-label="確認済みコードのデモ"><span>${valid ? "VALID" : "PAST"}</span></div></article>`;
+    return `<article class="verification-card"><div><span class="status-chip ${valid ? "valid" : "expired"}">${valid ? "有効期間内" : "研修有効期限 経過"}</span><h2>${valid ? "修了証明書を確認しました" : "過去の修了事実を確認しました"}</h2>${valid ? '<p>現在、研修の有効期間内です。</p>' : '<div class="warning-note"><strong>有効期限は過ぎています。</strong><p>ただし、この方が過去にプログラムを修了した事実は引き続き確認できます。</p></div>'}<dl><dt>証明書番号</dt><dd>${escapeHtml(result.number)}</dd><dt>氏名</dt><dd>${escapeHtml(result.holder)}</dd><dt>証明書名</dt><dd>${escapeHtml(result.title)}</dd><dt>修了日</dt><dd>${escapeHtml(result.completedAt)}</dd><dt>研修有効期限</dt><dd>${escapeHtml(result.validUntil)}</dd><dt>発行者</dt><dd>復職AI Ready（アイレディ）運営事務局</dd></dl><p class="muted small">この確認はプログラム修了の事実を示し、復職可否や医学的回復を示すものではありません。</p></div><div class="qr-demo" aria-label="確認済みコードのデモ"><span>${valid ? "VALID" : "PAST"}</span></div></article>`;
   }
 
   function renderVerify() {
@@ -576,7 +557,7 @@
 
   function renderOpenLearning() {
     const publicLessons = [
-      { id: 1, title: "復職 AI Ready（アイレディ）の目的と安全な使い方", available: true },
+      { id: 1, title: "復職AI Ready（アイレディ）の目的と安全な使い方", available: true },
       { id: 2, title: "生活リズムと睡眠の基本", available: false },
       { id: 5, title: "困ったときの相談とコミュニケーション", available: false },
       { id: 7, title: "面談前に整理しておくこと", available: true },
@@ -614,7 +595,7 @@
     if (!state.consented && protectedRoutes.has(route)) route = "consent";
     if (state.decision === "cancel" && closedCourseRoutes.has(route)) route = "result";
     main.innerHTML = renderRoute(route);
-    document.title = `${ROUTE_TITLES[route]}｜復職 AI Ready（アイレディ） 操作デモ`;
+    document.title = `${ROUTE_TITLES[route]}｜復職AI Ready（アイレディ） 操作デモ`;
     routeAnnouncement.textContent = `${ROUTE_TITLES[route]}を表示しました`;
     updateDemoStateLabel();
     mobileMenu.hidden = true;
@@ -666,19 +647,160 @@
     toast("任意のおすすめ事項を保存しました。修了判定には影響しません");
   }
 
+  function youtubeEmbedUrl(videoId) {
+    const params = new URLSearchParams({
+      enablejsapi: "1",
+      playsinline: "1",
+      rel: "0",
+    });
+    if (/^https?:$/.test(window.location.protocol)) params.set("origin", window.location.origin);
+    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`;
+  }
+
+  function loadYouTubeIframeApi() {
+    if (window.YT && typeof window.YT.Player === "function") return Promise.resolve(window.YT);
+    if (youtubeApiPromise) return youtubeApiPromise;
+
+    youtubeApiPromise = new Promise((resolve, reject) => {
+      const previousReady = window.onYouTubeIframeAPIReady;
+      let settled = false;
+      let timeoutId = null;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeoutId);
+        if (window.YT && typeof window.YT.Player === "function") resolve(window.YT);
+        else reject(new Error("YouTube IFrame API is unavailable"));
+      };
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof previousReady === "function") {
+          try { previousReady(); } catch (error) { /* another callback must not block this player */ }
+        }
+        finish();
+      };
+
+      let script = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        script.async = true;
+        script.dataset.youtubeIframeApi = "true";
+        document.head.appendChild(script);
+      }
+      script.addEventListener("error", () => reject(new Error("YouTube IFrame API failed to load")), { once: true });
+      timeoutId = window.setTimeout(finish, 15000);
+    }).catch((error) => {
+      youtubeApiPromise = null;
+      throw error;
+    });
+    return youtubeApiPromise;
+  }
+
+  function destroyLessonPlayer() {
+    if (lessonPlayer && typeof lessonPlayer.destroy === "function") {
+      try { lessonPlayer.destroy(); } catch (error) { /* the iframe may already be gone */ }
+    }
+    lessonPlayer = null;
+  }
+
+  function unlockLessonQuiz() {
+    if (!activeLesson || activeLesson.kind !== "lesson" || activeLesson.ended) return;
+    activeLesson.ended = true;
+    const form = document.getElementById("lessonQuizForm");
+    const fieldsets = form ? form.querySelectorAll("fieldset") : [];
+    if (form) form.hidden = false;
+    fieldsets.forEach((fieldset) => { fieldset.disabled = false; });
+    const message = document.getElementById("lessonProgressMessage");
+    if (message) message.textContent = "動画を最後まで再生しました。続けて2問に回答してください。";
+  }
+
+  function initializeLessonPlayer(video, session) {
+    loadYouTubeIframeApi().then((YT) => {
+      const iframe = document.getElementById("lessonVideoPlayer");
+      if (!iframe || activeLesson !== session || !lessonDialog.open) return;
+      lessonPlayer = new YT.Player(iframe, {
+        events: {
+          onStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) unlockLessonQuiz();
+          },
+          onError() {
+            const message = document.getElementById("lessonProgressMessage");
+            if (message) message.textContent = "埋め込み動画を読み込めませんでした。外部リンクで内容を確認できますが、視聴完了はこの画面で最後まで再生した場合に登録できます。";
+          },
+        },
+      });
+    }).catch(() => {
+      if (activeLesson !== session) return;
+      const message = document.getElementById("lessonProgressMessage");
+      if (message) message.textContent = "再生終了を確認する機能を読み込めませんでした。通信環境を確認して、この画面を開き直してください。";
+    });
+  }
+
   function showLesson(id, track) {
-    const lesson = LESSONS[id];
-    if (!lesson) return;
-    activeLesson = { kind: "lesson", id, track };
-    lessonContent.innerHTML = `<span class="eyebrow">デモ版ミニ教材｜${escapeHtml(lesson.duration)}</span><h2 id="lessonTitle">${escapeHtml(lesson.title)}</h2><div class="video-placeholder" aria-label="動画内容のデモ"><span aria-hidden="true">▶</span><strong>動画内容を要点表示しています</strong><small>本公開時は動画プレーヤーを配置する想定です</small></div><div class="lesson-pages">${lesson.pages.map(([title, body], index) => `<section class="lesson-page"><strong>${index + 1}. ${escapeHtml(title)}</strong><span>${escapeHtml(body)}</span></section>`).join("")}</div>`;
-    completeLessonButton.textContent = track ? "最後まで確認し、視聴完了にする" : "内容を確認して閉じる";
+    const video = Logic.VIDEOS.find((item) => item.id === id && item.available);
+    if (!video || !video.videoId || !Array.isArray(video.questions) || video.questions.length !== 2) return;
+    destroyLessonPlayer();
+    activeLesson = { kind: "lesson", id, track, ended: false, quizPassed: false };
+    const session = activeLesson;
+    const questions = video.questions.map((question, questionIndex) => `
+      <fieldset class="quiz-question" disabled>
+        <legend><span>問${questionIndex + 1}</span>${escapeHtml(question.prompt)}</legend>
+        <div class="quiz-options">${question.options.map((optionText, optionIndex) => `
+          <label><input type="radio" name="lesson-q-${questionIndex}" value="${optionIndex}" required><span>${escapeHtml(optionText)}</span></label>
+        `).join("")}</div>
+      </fieldset>
+    `).join("");
+    const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(video.videoId)}`;
+    lessonContent.innerHTML = `
+      <span class="eyebrow">必須学習動画｜${escapeHtml(video.duration)}</span>
+      <h2 id="lessonTitle">第${video.id}回　${escapeHtml(video.title)}</h2>
+      <div class="lesson-video-shell">
+        <iframe id="lessonVideoPlayer" src="${youtubeEmbedUrl(video.videoId)}" title="第${video.id}回 ${escapeHtml(video.title)}の動画" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <p class="lesson-video-fallback"><a href="${watchUrl}" target="_blank" rel="noopener noreferrer">埋め込みで再生できない場合はYouTubeで開く</a><span>外部での再生終了はこの画面では検知できません。</span></p>
+      <p class="lesson-progress" id="lessonProgressMessage" role="status" aria-live="polite">動画を最後まで再生すると、非常に簡単な確認問題2問が表示されます。</p>
+      <form class="lesson-quiz" id="lessonQuizForm" aria-labelledby="lessonQuizHeading" hidden>
+        <h3 id="lessonQuizHeading" tabindex="-1">動画の確認問題</h3>
+        <p>2問とも正解すると、視聴完了を登録できます。</p>
+        ${questions}
+        <button class="button secondary" type="submit">回答を確認</button>
+        <p class="quiz-feedback" id="lessonQuizFeedback" role="status" aria-live="polite"></p>
+      </form>`;
+    completeLessonButton.textContent = "視聴完了にする";
+    completeLessonButton.disabled = true;
     lessonDialog.showModal();
+    initializeLessonPlayer(video, session);
+  }
+
+  function checkLessonQuiz(form) {
+    if (!activeLesson || activeLesson.kind !== "lesson" || !activeLesson.ended) return;
+    const video = Logic.VIDEOS.find((item) => item.id === activeLesson.id);
+    if (!video) return;
+    const formData = new FormData(form);
+    const answers = video.questions.map((question, index) => formData.get(`lesson-q-${index}`));
+    const feedback = document.getElementById("lessonQuizFeedback");
+    if (answers.some((answer) => answer === null)) {
+      if (feedback) feedback.textContent = "2問とも選んでください。";
+      return;
+    }
+    const allCorrect = answers.every((answer, index) => Number(answer) === video.questions[index].answer);
+    if (!allCorrect) {
+      activeLesson.quizPassed = false;
+      completeLessonButton.disabled = true;
+      if (feedback) feedback.textContent = "正解ではありません。動画の内容を思い出して、もう一度回答してください。";
+      return;
+    }
+    activeLesson.quizPassed = true;
+    completeLessonButton.disabled = false;
+    if (feedback) feedback.textContent = "2問とも正解です。「視聴完了にする」を押してください。";
   }
 
   function showInvite() {
+    destroyLessonPlayer();
     activeLesson = { kind: "invite" };
-    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職 AI Ready（アイレディ） 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職 AI Ready（アイレディ）」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、通勤訓練1回以上、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。通勤訓練では、総務・上司と約束した日時に職場で15分程度話し、帰りに図書館やカフェなどで読書・自主学習をします。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤訓練、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
+    lessonContent.innerHTML = `<span class="eyebrow">企業から本人への案内例</span><h2 id="lessonTitle">復職AI Ready（アイレディ） 開始のご案内</h2><div class="important-note"><strong>佐藤みらいさんへ（架空データ）</strong><p>復職可能の診断書の提出後、産業医面談に向けた準備として、14日間の「復職AI Ready（アイレディ）」をご案内します。</p></div><div class="lesson-pages top-gap"><section class="lesson-page"><strong>取り組む内容</strong><span>平日の朝・夕の記録、通勤練習1回以上、自己学習動画7本、必須ゲーム3種、最終振り返り、面談準備を行います。通勤練習では、会社の上司・人事など約束した相手と職場で会って挨拶し、可能であれば短い体調・疲労確認を行います。会社が用意できる場合は自習場所で、休憩を含め約2時間読書することを推奨します。場所を用意できない場合は、図書館・カフェ等での約2時間を代替にできます。自習は推奨事項であり、修了条件そのものではありません。</span></section><section class="lesson-page"><strong>本人の意思を尊重します</strong><span>利用はいつでも中断・中止できます。復職可否をアプリが判定するものではありません。</span></section><section class="lesson-page"><strong>会社への共有</strong><span>実施日数、生活リズム要約、通勤練習、修了・面談申込状況を共有します。詳しい記述は本人が個別に選びます。</span></section><section class="lesson-page"><strong>緊急対応ではありません</strong><span>入力はリアルタイムで確認されません。体調急変時は主治医、医療機関、事前の連絡先へ直接連絡してください。</span></section></div><p class="muted small">実際の送信先・URLはデモ版では表示しません。外部送信も行いません。</p>`;
     completeLessonButton.textContent = "案内内容を確認して閉じる";
+    completeLessonButton.disabled = false;
     lessonDialog.showModal();
   }
 
@@ -688,6 +810,14 @@
       lessonDialog.close();
       activeLesson = null;
       toast("開始案内の内容を確認しました（外部送信なし）");
+      return;
+    }
+    if (!activeLesson.ended) {
+      toast("動画を最後まで再生してください");
+      return;
+    }
+    if (!activeLesson.quizPassed) {
+      toast("確認問題2問に正解してください");
       return;
     }
     if (activeLesson.track) {
@@ -837,6 +967,10 @@
   document.addEventListener("submit", (event) => {
     event.preventDefault();
     const form = event.target;
+    if (form.id === "lessonQuizForm") {
+      checkLessonQuiz(form);
+      return;
+    }
     if (form.id === "consentForm") {
       const checks = Array.from(form.querySelectorAll('input[type="checkbox"]'));
       if (!checks.every((input) => input.checked)) {
@@ -891,6 +1025,15 @@
   });
 
   document.addEventListener("change", (event) => {
+    if (event.target.matches('#lessonQuizForm input[type="radio"]')) {
+      if (activeLesson && activeLesson.kind === "lesson" && activeLesson.quizPassed) {
+        activeLesson.quizPassed = false;
+        completeLessonButton.disabled = true;
+        const feedback = document.getElementById("lessonQuizFeedback");
+        if (feedback) feedback.textContent = "回答が変更されました。もう一度「回答を確認」を押してください。";
+      }
+      return;
+    }
     if (event.target.matches('#consentForm input[type="checkbox"]')) {
       const form = event.target.form;
       const allChecked = Array.from(form.querySelectorAll('input[type="checkbox"]')).every((input) => input.checked);
@@ -916,6 +1059,13 @@
       mobileMenu.hidden = true;
       menuButton.setAttribute("aria-expanded", "false");
     }
+  });
+
+  lessonDialog.addEventListener("close", () => {
+    destroyLessonPlayer();
+    activeLesson = null;
+    completeLessonButton.disabled = true;
+    lessonContent.replaceChildren();
   });
 
   window.addEventListener("message", (event) => {

@@ -6,6 +6,7 @@
   "use strict";
 
   const STORAGE_KEY = "returnToWorkAiReadyDemoV1";
+  const VIDEO_REVISION = "2026-08-02-r2";
 
   const DAYS = [
     { id: 1, date: "2026-07-09", label: "7/9", weekday: "木", weekend: false },
@@ -24,14 +25,85 @@
     { id: 14, date: "2026-07-22", label: "7/22", weekday: "水", weekend: false },
   ];
 
+  // 修正版を再公開したときは、各項目の videoId だけを新しいIDへ差し替えます。
   const VIDEOS = [
-    { id: 1, title: "復職 AI Ready（アイレディ）の目的と注意点", available: true },
-    { id: 2, title: "生活リズムと睡眠", available: false },
-    { id: 3, title: "通勤練習と疲労の確認", available: false },
-    { id: 4, title: "仕事量・休憩・余力の考え方", available: false },
-    { id: 5, title: "相談と職場でのコミュニケーション", available: false },
-    { id: 6, title: "配慮事項・家庭・ほかの通院の整理", available: false },
-    { id: 7, title: "産業医面談の準備と最終意思確認", available: true },
+    {
+      id: 1,
+      title: "復職AI Ready（アイレディ）の目的と注意点",
+      duration: "約10分",
+      available: true,
+      videoId: "ZNTHr5XbSJw",
+      questions: [
+        { prompt: "このプログラムだけで復職できるかを自動判定しますか？", options: ["自動判定する", "自動判定しない"], answer: 1 },
+        { prompt: "体調の急変や危険を感じたときは、どうしますか？", options: ["アプリへの入力だけで待つ", "医療機関や119・110などへ直接連絡する"], answer: 1 },
+      ],
+    },
+    {
+      id: 2,
+      title: "生活リズムと睡眠",
+      duration: "約8分",
+      available: true,
+      videoId: "05FqQrphGiY",
+      questions: [
+        { prompt: "生活リズムを確認するときに記録するものはどちらですか？", options: ["起床・就寝や日中の状態", "好きな音楽だけ"], answer: 0 },
+        { prompt: "薬の量や時間は自分だけで変更してよいですか？", options: ["よい", "主治医や薬剤師へ相談する"], answer: 1 },
+      ],
+    },
+    {
+      id: 3,
+      title: "通勤練習と疲労の確認",
+      duration: "約11分",
+      available: true,
+      videoId: "IoxsMlaQQUU",
+      questions: [
+        { prompt: "通勤練習では、職場で誰と会いますか？", options: ["事前に約束した上司や担当者", "約束していない人を探す"], answer: 0 },
+        { prompt: "会社が自習場所を用意できない場合は、どうしますか？", options: ["練習を必ず中止する", "図書館・カフェ等で休憩を含め約2時間自習する"], answer: 1 },
+      ],
+    },
+    {
+      id: 4,
+      title: "仕事量・休憩・余力の考え方",
+      duration: "約8分",
+      available: true,
+      videoId: "GsDePiAMfM4",
+      questions: [
+        { prompt: "一日の予定には何を含めますか？", options: ["仕事だけ", "仕事・休憩・余力"], answer: 1 },
+        { prompt: "疲労が強いときは、どうしますか？", options: ["無理を続ける", "休憩や仕事量を相談・調整する"], answer: 1 },
+      ],
+    },
+    {
+      id: 5,
+      title: "相談と職場でのコミュニケーション",
+      duration: "約9分",
+      available: true,
+      videoId: "9DtcNjO_sDU",
+      questions: [
+        { prompt: "相談するときに整理する組合せはどちらですか？", options: ["事実・影響・お願い", "我慢だけ"], answer: 0 },
+        { prompt: "産業医は主に何を示しますか？", options: ["医学的・産業保健上の意見", "会社の最終決定そのもの"], answer: 0 },
+      ],
+    },
+    {
+      id: 6,
+      title: "配慮事項・家庭・ほかの通院の整理",
+      duration: "約10分",
+      available: true,
+      videoId: "UN9tsXwuEUY",
+      questions: [
+        { prompt: "復職前に生活上の課題をすべて解決する必要がありますか？", options: ["すべて必要", "優先順位をつけて整理する"], answer: 1 },
+        { prompt: "会社へ共有する健康情報は、どうしますか？", options: ["必要な範囲を本人と確認する", "すべて自動で共有する"], answer: 0 },
+      ],
+    },
+    {
+      id: 7,
+      title: "産業医面談の準備と最終意思確認",
+      duration: "約13分",
+      available: true,
+      videoId: "YFInyIbO7bY",
+      questions: [
+        { prompt: "最終意思確認で選べるものはどれですか？", options: ["正式申込み・延期・中止", "正式申込みだけ"], answer: 0 },
+        { prompt: "準備課題を終え、正式申込みを見送った場合の区分はどちらですか？", options: ["準備課題未完了", "準備課題完了・正式申込み見送り"], answer: 1 },
+      ],
+    },
   ];
 
   const GAMES = [
@@ -69,14 +141,14 @@
       holder: "佐藤みらい",
       completedAt: "2026年7月22日",
       validUntil: "2028年1月21日",
-      title: "復職 AI Ready（アイレディ） 復職準備コース修了証明書",
+      title: "復職AI Ready（アイレディ） 復職準備コース修了証明書",
     },
     "RA-20240115-0007": {
       status: "expired",
       holder: "架空 太郎",
       completedAt: "2024年1月15日",
       validUntil: "2025年7月14日",
-      title: "復職 AI Ready（アイレディ） 復職準備コース修了証明書",
+      title: "復職AI Ready（アイレディ） 復職準備コース修了証明書",
     },
   };
 
@@ -127,6 +199,7 @@
     });
     return {
       version: 1,
+      videoRevision: VIDEO_REVISION,
       profile: "start",
       consented: false,
       currentDay: 1,
@@ -178,16 +251,16 @@
       medication: "朝食後に服用（架空データ）",
       condition: index < 3 ? "3" : "4",
       mood: "3",
-      plan: commuteTraining ? "午前中に通勤訓練を行い、帰りに図書館で読書" : index % 2 === 0 ? "図書館で1時間読書" : "生活リズムの確認",
+      plan: commuteTraining ? "午前中に通勤練習を行い、職場または図書館で約2時間自習" : index % 2 === 0 ? "図書館で1時間読書" : "生活リズムの確認",
       commutePlan: commuteTraining ? "あり" : "なし",
       concern: "",
     };
     day.evening = {
-      accomplished: commuteTraining ? "職場で総務・上司と15分程度話し、帰りに図書館で読書してから帰宅できた" : index > 3 ? "午前中に外出し、予定どおり帰宅できた" : "起床時間をそろえられた",
+      accomplished: commuteTraining ? "職場で約束した担当者に挨拶し、短い体調・疲労確認の後、休憩を含め約2時間読書してから帰宅できた" : index > 3 ? "午前中に外出し、予定どおり帰宅できた" : "起床時間をそろえられた",
       fatigue: index > 5 ? "3" : "4",
       moodChange: "少し落ち着いた",
       commuteResult: commuteTraining ? "実施した" : "実施していない",
-      outing: commuteTraining ? "午前中に職場へ行き、総務・上司と約15分話した後、図書館で読書" : index > 3 ? "午前中に外出" : "近所を散歩",
+      outing: commuteTraining ? "午前中に職場へ行き、約束した担当者に挨拶して短い体調・疲労確認を行った後、用意された自習場所で休憩を含め約2時間読書" : index > 3 ? "午前中に外出" : "近所を散歩",
       learning: index % 2 === 0 ? "動画" : "ゲーム",
       challenge: index === 2 ? "午後に少し疲れた" : "",
       tomorrow: "無理をせず同じ時間に起きる",
@@ -228,7 +301,7 @@
     state.finalReflectionSaved = true;
     state.interviewPrep = {
       conditionSummary: "午前中の活動は安定しています。午後は休憩を入れると予定を続けられます。",
-      commuteSummary: "午前中に通勤訓練を1回実施し、総務・上司と約15分話した後、図書館で読書しました。",
+      commuteSummary: "午前中に通勤練習を1回実施し、約束した担当者への挨拶と短い体調・疲労確認の後、用意された自習場所で休憩を含め約2時間読書しました。",
       accommodations: "復職後2週間は残業を避け、昼休みに静かな場所で休憩したいです。",
       questions: "復職初週の業務量と、困ったときの相談先を確認したいです。",
       medication: "朝食後に服用（架空データ）",
@@ -249,7 +322,11 @@
   function normalizeState(raw) {
     const base = createInitialState();
     if (!raw || typeof raw !== "object") return base;
+    const sameVideoRevision = raw.videoRevision === VIDEO_REVISION;
+    const defaultVideos = base.videos;
+    const defaultPublicVideos = base.publicVideos;
     const merged = Object.assign(base, raw);
+    merged.videoRevision = VIDEO_REVISION;
     merged.days = Object.assign(base.days, raw.days || {});
     DAYS.forEach((day) => {
       merged.days[day.id] = Object.assign(emptyDay(), merged.days[day.id] || {});
@@ -257,8 +334,9 @@
       merged.days[day.id].evening = Object.assign(emptyDay().evening, merged.days[day.id].evening || {});
       if (!Array.isArray(merged.days[day.id].recommendations)) merged.days[day.id].recommendations = [];
     });
-    merged.videos = Object.assign(base.videos, raw.videos || {});
-    merged.publicVideos = Object.assign(base.publicVideos, raw.publicVideos || {});
+    // 動画版が変わった場合だけ視聴済みをリセットし、ほかの記録は保持する。
+    merged.videos = sameVideoRevision ? Object.assign(defaultVideos, raw.videos || {}) : defaultVideos;
+    merged.publicVideos = sameVideoRevision ? Object.assign(defaultPublicVideos, raw.publicVideos || {}) : defaultPublicVideos;
     merged.games = Object.assign(base.games, raw.games || {});
     merged.finalReflection = Object.assign(base.finalReflection, raw.finalReflection || {});
     merged.interviewPrep = Object.assign(base.interviewPrep, raw.interviewPrep || {});
@@ -273,7 +351,7 @@
     const gamesDone = GAMES.filter((game) => state.games[game.id]).length;
     const items = [
       { id: "records", label: "平日8日以上の朝・夕記録", done: completedDays >= 8, value: `${completedDays}/8日` },
-      { id: "commute", label: "通勤訓練を1回以上実施", done: commuteDays >= 1, value: `${commuteDays}/1回以上` },
+      { id: "commute", label: "通勤練習を1回以上実施", done: commuteDays >= 1, value: `${commuteDays}/1回以上` },
       { id: "videos", label: "自己学習動画7本", done: videosDone === VIDEOS.length, value: `${videosDone}/7本` },
       { id: "games", label: "必須ゲーム3種", done: gamesDone === GAMES.length, value: `${gamesDone}/3種` },
       { id: "reflection", label: "最終振り返り", done: Boolean(state.finalReflectionSaved), value: state.finalReflectionSaved ? "保存済み" : "未完了" },
@@ -296,8 +374,11 @@
     const progress = completion(state);
     if (state.decision === "formal" && progress.complete) return "修了・正式申込み済み";
     if (state.decision === "formal") return "未修了での産業医面談の申し込み";
-    if (state.decision === "postpone") return "面談延期";
-    if (state.decision === "cancel") return "利用中止";
+    if (state.decision === "postpone" || state.decision === "cancel") {
+      return progress.readyBeforeDecision
+        ? "準備課題完了・正式申込み見送り（未修了）"
+        : "準備課題未完了（未修了）";
+    }
     if (state.consented) return "実施中";
     return "開始前";
   }
@@ -325,7 +406,7 @@
     return {
       recordDays: completion(state).completedDays,
       routine: avgWake === null ? "記録がまだありません" : `起床は${wakeText}。平日の朝・夕記録から自動作成した要約です。`,
-      commute: commuteCount ? `通勤訓練の実施記録：${commuteCount}回` : "通勤訓練の記録はまだありません",
+      commute: commuteCount ? `通勤練習の実施記録：${commuteCount}回` : "通勤練習の記録はまだありません",
       status: participantStatus(state),
     };
   }
@@ -342,6 +423,7 @@
 
   return {
     STORAGE_KEY,
+    VIDEO_REVISION,
     DAYS,
     VIDEOS,
     GAMES,
