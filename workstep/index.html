@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK STEP（ワークステップ）デモ｜山岸産業医事務所</title>
+<meta name="description" content="軽度の知的障害や発達特性のある方の就労準備と成長記録を支えるゲーム型アプリ WORK STEP のデモサイトです。">
+<style>
+  :root{
+    --main:#1e6fb8; --main-dark:#144e82; --accent:#f5a623; --ok:#3cb371; --ng:#e05555;
+    --bg:#f4f8fb; --card:#ffffff; --text:#2b3a48; --sub:#6b7d8c; --line:#dbe6ef;
+    --game:#7c4dbc; --real:#2e8b57;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 16px;}
+  header{background:linear-gradient(135deg,var(--main-dark),var(--main));color:#fff;padding:34px 0 28px;}
+  .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:2px 14px;font-size:.78rem;margin-bottom:10px;}
+  h1{font-size:1.7rem;letter-spacing:.04em;}
+  h1 small{font-size:.95rem;font-weight:normal;opacity:.9;display:block;margin-top:4px;}
+  .lead{margin-top:12px;font-size:.95rem;opacity:.95;}
+  .demo-note{background:#fff6e5;border:1px solid #f0d9a8;color:#7a5b16;font-size:.82rem;border-radius:8px;padding:8px 14px;margin:18px auto 0;max-width:960px;}
+  section{margin:34px 0;}
+  h2{font-size:1.25rem;color:var(--main-dark);border-left:6px solid var(--main);padding-left:12px;margin-bottom:16px;}
+  h3{font-size:1.02rem;color:var(--main-dark);margin-bottom:8px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 2px 6px rgba(30,60,90,.06);}
+  .grid{display:grid;gap:14px;}
+  @media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr;}.grid.c4{grid-template-columns:repeat(4,1fr);}}
+  /* ---- flow ---- */
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;}
+  .flow .fstep{flex:1 1 140px;background:var(--card);border:2px solid var(--line);border-radius:10px;padding:12px;text-align:center;position:relative;}
+  .flow .fstep.active-place{border-color:var(--accent);}
+  .flow .fstep .ph{font-size:1.6rem;}
+  .flow .fstep b{display:block;font-size:.9rem;margin-top:4px;}
+  .flow .fstep span{font-size:.76rem;color:var(--sub);display:block;margin-top:4px;}
+  .arrow{align-self:center;color:var(--main);font-weight:bold;}
+  .cam{display:inline-block;background:#eef5fb;border:1px dashed var(--main);color:var(--main-dark);border-radius:6px;font-size:.72rem;padding:1px 8px;margin-top:6px;}
+  /* ---- stage tabs ---- */
+  .stages{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
+  .stage-btn{border:2px solid var(--line);background:#fff;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:.15s;}
+  .stage-btn .no{display:inline-block;width:22px;height:22px;line-height:22px;border-radius:50%;background:var(--line);color:#fff;font-size:.78rem;font-weight:bold;}
+  .stage-btn b{display:block;font-size:.78rem;margin-top:4px;}
+  .stage-btn small{font-size:.66rem;color:var(--sub);}
+  .stage-btn.game{border-color:#d9c8f0;} .stage-btn.game .no{background:var(--game);}
+  .stage-btn.real{border-color:#bfe3cf;} .stage-btn.real .no{background:var(--real);}
+  .stage-btn.on{outline:3px solid var(--accent);}
+  .stage-btn.cleared{background:#f0fff5;}
+  .stage-view{border:2px solid var(--line);border-radius:12px;background:#fff;min-height:360px;padding:16px;}
+  /* ---- anime demo (STEP1) ---- */
+  .scene{position:relative;height:250px;border-radius:10px;overflow:hidden;background:linear-gradient(#dff0ff 60%,#f5e9d5 60%);}
+  .scene.realbg{background:linear-gradient(#5a6a75 60%,#8a8f94 60%);}
+  .scene .floor-label{position:absolute;right:8px;top:6px;font-size:.7rem;color:#789;background:rgba(255,255,255,.7);border-radius:6px;padding:0 8px;}
+  .chara{position:absolute;bottom:78px;left:20px;width:60px;height:80px;transition:left 1.2s ease;}
+  .chara .head{width:34px;height:34px;background:#ffd9b0;border-radius:50%;margin:0 auto;position:relative;}
+  .chara .head:after{content:"";position:absolute;top:12px;left:7px;width:5px;height:5px;background:#333;border-radius:50%;box-shadow:14px 0 0 #333;}
+  .chara .body{width:44px;height:40px;background:var(--game);border-radius:10px 10px 4px 4px;margin:2px auto 0;}
+  .chara.real-style .body{background:#3a76a8;}
+  .item{position:absolute;width:34px;height:26px;background:var(--accent);border:2px solid #c07f00;border-radius:4px;bottom:86px;transition:all 1s ease;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#5c3d00;}
+  .shelf{position:absolute;bottom:78px;width:70px;height:10px;background:#a97f4f;border-radius:2px;}
+  .boxdest{position:absolute;right:30px;bottom:70px;width:84px;height:56px;border:3px solid #8a6b3e;border-top:none;background:#e9d9bd;border-radius:0 0 8px 8px;display:flex;align-items:flex-end;justify-content:center;font-size:.7rem;color:#7a5b2e;}
+  .speech{position:absolute;top:14px;left:16px;background:#fff;border:2px solid var(--main);color:var(--main-dark);border-radius:12px;padding:6px 12px;font-size:.82rem;max-width:70%;}
+  /* recognition overlay */
+  .recog{position:absolute;border:2px solid #35e08a;border-radius:4px;font-size:.62rem;color:#0a7a44;background:rgba(53,224,138,.12);padding:0 4px;display:none;}
+  .recog.show{display:block;}
+  /* ---- play game (STEP2/4) ---- */
+  .taskline{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+  .tchip{border:1.5px solid var(--line);border-radius:16px;padding:2px 12px;font-size:.78rem;color:var(--sub);background:#fff;}
+  .tchip.doing{border-color:var(--accent);color:#8a6100;background:#fff8ea;font-weight:bold;}
+  .tchip.done{border-color:var(--ok);color:var(--ok);background:#f0fff5;}
+  .clickable{cursor:pointer;box-shadow:0 0 0 3px rgba(245,166,35,0);}
+  .clickable.hint{animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,166,35,.75);}70%{box-shadow:0 0 0 12px rgba(245,166,35,0);}100%{box-shadow:0 0 0 0 rgba(245,166,35,0);}}
+  .gbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.85rem;}
+  .btn{display:inline-block;background:var(--main);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:.9rem;cursor:pointer;}
+  .btn.sub{background:#fff;color:var(--main);border:1.5px solid var(--main);}
+  .btn:disabled{opacity:.45;cursor:default;}
+  .result-tag{display:inline-block;border-radius:8px;padding:2px 12px;font-size:.85rem;font-weight:bold;}
+  .result-tag.ok{background:#e6f9ee;color:var(--ok);}
+  .result-tag.ng{background:#fdeaea;color:var(--ng);}
+  /* ---- video mock (STEP3) ---- */
+  .video-mock{position:relative;height:250px;border-radius:10px;background:#20262b;color:#cfd8df;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+  .video-mock .playbtn{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;}
+  .video-mock .vbar{position:absolute;bottom:12px;left:4%;width:92%;height:6px;background:#455059;border-radius:3px;overflow:hidden;}
+  .video-mock .vbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s linear;}
+  .vnote{font-size:.75rem;color:#9fb0bd;}
+  /* ---- gauge / dashboard ---- */
+  .gauge{height:22px;background:#e7eef4;border-radius:11px;overflow:hidden;position:relative;}
+  .gauge i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--main),var(--ok));transition:width .8s ease;}
+  .gauge .th{position:absolute;left:80%;top:-4px;bottom:-4px;width:3px;background:var(--accent);}
+  .gauge-lbl{display:flex;justify-content:space-between;font-size:.75rem;color:var(--sub);margin-top:3px;}
+  .metric{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;}
+  .metric b{font-size:.8rem;color:var(--sub);display:block;}
+  .metric .val{font-size:1.35rem;font-weight:bold;color:var(--main-dark);}
+  .metric .bar{height:8px;background:#e7eef4;border-radius:4px;margin-top:6px;overflow:hidden;}
+  .metric .bar i{display:block;height:100%;background:var(--main);}
+  .metric.warn .bar i{background:var(--ng);}
+  .timeline{display:flex;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line);}
+  .timeline div{height:100%;}
+  .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:.72rem;color:var(--sub);margin-top:6px;}
+  .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle;}
+  table{width:100%;border-collapse:collapse;font-size:.82rem;}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
+  th{background:#eef5fb;color:var(--main-dark);white-space:nowrap;}
+  .small{font-size:.78rem;color:var(--sub);}
+  ul.plain{padding-left:1.2em;}
+  footer{background:var(--main-dark);color:#dce9f5;text-align:center;padding:22px 10px;font-size:.8rem;margin-top:40px;}
+  footer a{color:#fff;}
+  /* ---- password gate ---- */
+  #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;}
+  .gate-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(30,60,90,.1);padding:34px 28px;max-width:380px;width:100%;text-align:center;}
+  .gate-wrap .lock{font-size:2.2rem;margin-bottom:8px;}
+  .gate-wrap h2{color:var(--main-dark);font-size:1.15rem;margin-bottom:10px;}
+  .gate-wrap p{font-size:.85rem;color:var(--sub);margin-bottom:14px;}
+  .gate-wrap input{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:1rem;margin-bottom:6px;}
+  .gate-err{color:var(--ng);font-size:.8rem;min-height:1.2em;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- ===== password gate ===== -->
+<div id="gate">
+  <div class="gate-wrap">
+    <div class="lock">🔒</div>
+    <h2>関係者限定ページ</h2>
+    <p>このページは事業構想の検討用デモです。<br>閲覧用パスワードを入力してください。</p>
+    <input type="password" id="pw" placeholder="パスワード" onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="gate-err" id="pwErr"></div>
+    <button class="btn" style="width:100%;margin-top:6px;" onclick="checkPw()">開く</button>
+  </div>
+</div>
+
+<div id="appMain" class="hidden">
+
+<header>
+  <div class="wrap">
+    <span class="badge">SBI-U ベンチャーチャレンジ 2026｜ビジネスプラン ①（デモ）</span>
+    <h1>WORK STEP（ワークステップ）<small>軽度の知的障害や発達特性のある方の就労準備と成長記録を支えるゲーム型アプリ</small></h1>
+    <p class="lead">実際の作業を事前に撮影すると、「アニメ風ゲーム見本 → ゲーム体験 → 実写動画 → 実写ゲーム体験」の4段階教材を自動作成。動画認識技術で練習と本番の様子を見守り、達成度8割で現地デビューを判定します。</p>
+  </div>
+</header>
+<div class="demo-note wrap">※ 本ページは構想を体験していただくためのデモです。登場する人物・数値・映像表現はすべて架空（合成データ）です。実際のサービスでは、ご本人・ご家族・施設の同意のもとで撮影・記録を行います。</div>
+
+<div class="wrap">
+
+<!-- ================= 全体フロー ================= -->
+<section>
+  <h2>全体の流れ（現地デビューまで）</h2>
+  <div class="card">
+    <div class="flow">
+      <div class="fstep"><div class="ph">🎬</div><b>① 実作業を撮影</b><span>就労支援事業場（現地）で、実際の作業を事前に撮影・分解</span><span class="cam">📷 安全カメラ設置</span></div>
+      <div class="arrow">▶</div>
+      <div class="fstep"><div class="ph">⚙️</div><b>② 4段階教材を自動作成</b><span>AIが撮影動画から「ゲーム見本→ゲーム体験→実写視聴→実写ゲーム」を生成</span></div>
+      <div class="arrow">▶</div>
+      <div class="fstep active-place"><div class="ph">🏠</div><b>③ グループホームで練習</b><span>STEP1〜4を繰り返し練習。動画認識で集中・離席などを見守り</span><span class="cam">📷 安全カメラ設置</span></div>
+      <div class="arrow">▶</div>
+      <div class="fstep"><div class="ph">🏭</div><b>④ 現地で本番作業</b><span>達成度<b style="color:var(--accent);">8割</b>で現地デビュー。現地でも同じ指標で定着を支援</span><span class="cam">📷 安全カメラ設置</span></div>
+    </div>
+    <p class="small" style="margin-top:10px;">就労支援施設の職員の方に内容を事前確認いただいたうえで、グループホームでは「実写ゲーム体験（STEP4）」まで実施します。判定は追い出すためではなく、<b>安心して現地に出るための「準備OKサイン」</b>として使います。</p>
+  </div>
+</section>
+
+<!-- ================= 4段階デモ ================= -->
+<section>
+  <h2>4段階トレーニングを体験する（デモ課題：部品の箱づめ）</h2>
+  <div class="stages">
+    <div class="stage-btn game on" id="tab1" onclick="showStage(1)"><span class="no">1</span><b>ゲーム（見本）</b><small>アニメ風2Dお手本</small></div>
+    <div class="stage-btn game" id="tab2" onclick="showStage(2)"><span class="no">2</span><b>ゲーム（体験）</b><small>自分で操作</small></div>
+    <div class="stage-btn real" id="tab3" onclick="showStage(3)"><span class="no">3</span><b>実写（動画視聴）</b><small>本物の作業を見る</small></div>
+    <div class="stage-btn real" id="tab4" onclick="showStage(4)"><span class="no">4</span><b>実写（ゲーム体験）</b><small>実写でリハーサル</small></div>
+  </div>
+
+  <!-- STEP1 -->
+  <div class="stage-view" id="stage1">
+    <h3>STEP 1｜ゲーム（アニメ風2D見本）</h3>
+    <p class="small">まずはキャラクターがお手本を見せます。「見て安心してから始める」ための段階です。</p>
+    <div class="scene" id="s1scene">
+      <span class="floor-label">アニメ風 2D（自動生成）</span>
+      <div class="speech" id="s1speech">ぼくがお手本を見せるね！</div>
+      <div class="shelf" style="left:16px;"></div>
+      <div class="item" id="s1item" style="left:30px;">部品</div>
+      <div class="chara" id="s1chara"><div class="head"></div><div class="body"></div></div>
+      <div class="boxdest">出荷箱</div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn" id="s1btn" onclick="playStep1()">▶ お手本を再生</button>
+      <span class="small" id="s1status" style="margin-left:10px;"></span>
+    </div>
+  </div>
+
+  <!-- STEP2 -->
+  <div class="stage-view" id="stage2" style="display:none;">
+    <h3>STEP 2｜ゲーム（体験）</h3>
+    <p class="small">今度は自分の番。光っているところを順番にタップして、作業の流れを覚えます。</p>
+    <div class="gbar"><span>作業手順</span><span>スコア：<b id="s2score">0</b> / 3</span></div>
+    <div class="taskline">
+      <span class="tchip" id="s2t1">① 部品を取る</span>
+      <span class="tchip" id="s2t2">② キズがないか見る</span>
+      <span class="tchip" id="s2t3">③ 箱に入れる</span>
+    </div>
+    <div class="scene">
+      <span class="floor-label">ゲーム体験モード</span>
+      <div class="shelf" style="left:16px;"></div>
+      <div class="item clickable" id="s2item" style="left:30px;" onclick="s2click(1)">部品</div>
+      <div class="chara" style="left:120px;"><div class="head"></div><div class="body"></div></div>
+      <div class="item clickable" id="s2check" style="left:150px;bottom:170px;display:none;width:64px;" onclick="s2click(2)">🔍 検品</div>
+      <div class="boxdest clickable" id="s2box" onclick="s2click(3)">出荷箱</div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn sub" onclick="s2reset()">↺ もう一度</button>
+      <span id="s2result" style="margin-left:10px;"></span>
+    </div>
+  </div>
+
+  <!-- STEP3 -->
+  <div class="stage-view" id="stage3" style="display:none;">
+    <h3>STEP 3｜実写（動画視聴）</h3>
+    <p class="small">実際の職場で撮影した本物の作業動画を見ます（デモでは映像の代わりにイメージ表示）。ゲームで覚えた流れと同じ順番で、字幕・矢印ガイド付きで再生されます。</p>
+    <div class="video-mock" id="s3video">
+      <div class="playbtn" id="s3play" onclick="playStep3()">▶</div>
+      <div id="s3cap">実写動画（現地で事前撮影した作業のお手本）</div>
+      <div class="vnote" id="s3note">音声ガイドとテロップは、動画からAIが自動生成します</div>
+      <div class="vbar"><i id="s3bar"></i></div>
+    </div>
+    <div style="margin-top:12px;" class="small" id="s3status"></div>
+  </div>
+
+  <!-- STEP4 -->
+  <div class="stage-view" id="stage4" style="display:none;">
+    <h3>STEP 4｜実写（ゲーム体験）＝現地リハーサル</h3>
+    <p class="small">実写映像の上で、実際と同じ手順を操作するリハーサルです。動画認識AI（メタテク社技術の活用を想定）が、集中・離席・会話・スマートフォンなどの状態をやさしく見守ります。</p>
+    <div class="gbar"><span>実写リハーサル</span><span>スコア：<b id="s4score">0</b> / 3</span></div>
+    <div class="taskline">
+      <span class="tchip" id="s4t1">① 部品を取る</span>
+      <span class="tchip" id="s4t2">② キズがないか見る</span>
+      <span class="tchip" id="s4t3">③ 箱に入れる</span>
+    </div>
+    <div class="scene realbg">
+      <span class="floor-label">実写合成モード（イメージ）</span>
+      <div class="recog" id="s4recog1" style="top:20px;left:16px;">✔ 集中して作業中</div>
+      <div class="recog" id="s4recog2" style="top:20px;right:16px;">📷 見守りカメラ ON</div>
+      <div class="shelf" style="left:16px;background:#666;"></div>
+      <div class="item clickable" id="s4item" style="left:30px;" onclick="s4click(1)">部品</div>
+      <div class="chara real-style" style="left:120px;"><div class="head"></div><div class="body"></div></div>
+      <div class="item clickable" id="s4check" style="left:150px;bottom:170px;display:none;width:64px;" onclick="s4click(2)">🔍 検品</div>
+      <div class="boxdest clickable" id="s4box" onclick="s4click(3)">出荷箱</div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn sub" onclick="s4reset()">↺ もう一度</button>
+      <span id="s4result" style="margin-left:10px;"></span>
+    </div>
+  </div>
+
+  <!-- 達成度 -->
+  <div class="card" style="margin-top:16px;">
+    <h3>達成度（現地デビュー判定）</h3>
+    <div class="gauge"><i id="mainGauge"></i><span class="th" title="合格ライン80%"></span></div>
+    <div class="gauge-lbl"><span>0%</span><span style="color:var(--accent);font-weight:bold;">合格ライン 80%</span><span>100%</span></div>
+    <p style="margin-top:10px;" id="gaugeMsg" class="small">4つのSTEPをクリアすると達成度が上がります。<b>8割（80%）</b>に到達すると「現地デビュー準備OK」と判定されます。</p>
+    <p id="debutMsg" style="display:none;margin-top:8px;"><span class="result-tag ok">🎉 現地デビュー準備OK！</span>　<span class="small">支援員・ご家族・受け入れ企業に通知され、現地での本番作業スタートを調整します。</span></p>
+  </div>
+</section>
+
+<!-- ================= 見守りダッシュボード ================= -->
+<section>
+  <h2>見守りダッシュボード（支援員・事業場向けイメージ）</h2>
+  <p class="small" style="margin-bottom:10px;">メタテク社の動画認識技術の活用を想定。カメラ映像から「集中できている時間」「離席」「他の人との会話」「スマートフォンを見ている時間」などを自動で推定し、<b>叱るためではなく、疲れやすさ・得意な時間帯を知って配慮につなげるため</b>に使います。（数値は架空のサンプルです）</p>
+  <div class="grid c4">
+    <div class="metric"><b>集中して作業できた時間</b><span class="val">42<small>分</small> / 60分</span><div class="bar"><i style="width:70%;"></i></div></div>
+    <div class="metric"><b>離席</b><span class="val">3<small>回・計8分</small></span><div class="bar"><i style="width:13%;"></i></div></div>
+    <div class="metric"><b>他の人との会話</b><span class="val">6<small>分</small></span><div class="bar"><i style="width:10%;"></i></div></div>
+    <div class="metric warn"><b>スマートフォン</b><span class="val">4<small>分</small></span><div class="bar"><i style="width:7%;"></i></div></div>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <h3>1時間のようす（タイムライン）</h3>
+    <div class="timeline">
+      <div style="width:22%;background:#4b8fd0;" title="集中"></div>
+      <div style="width:4%;background:#e0b355;" title="離席"></div>
+      <div style="width:26%;background:#4b8fd0;"></div>
+      <div style="width:5%;background:#9fd0a8;" title="会話"></div>
+      <div style="width:15%;background:#4b8fd0;"></div>
+      <div style="width:4%;background:#d98a8a;" title="スマホ"></div>
+      <div style="width:7%;background:#e0b355;"></div>
+      <div style="width:17%;background:#4b8fd0;"></div>
+    </div>
+    <div class="lg">
+      <span><i style="background:#4b8fd0;"></i>集中して作業</span>
+      <span><i style="background:#e0b355;"></i>離席</span>
+      <span><i style="background:#9fd0a8;"></i>会話</span>
+      <span><i style="background:#d98a8a;"></i>スマートフォン</span>
+    </div>
+    <p class="small" style="margin-top:8px;">AIコメント例：「後半に離席が増えています。<b>50分作業＋10分休憩</b>のリズムにすると安定するかもしれません。」</p>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <h3>成長記録（保護者・支援員と共有）</h3>
+    <table>
+      <tr><th>日付</th><th>場所</th><th>STEP</th><th>達成度</th><th>メモ（AI要約）</th></tr>
+      <tr><td>7/20</td><td>グループホーム</td><td>STEP2 ゲーム体験</td><td>55%</td><td>手順②の検品を飛ばしやすい。見本を再視聴。</td></tr>
+      <tr><td>7/24</td><td>グループホーム</td><td>STEP3 実写視聴</td><td>—</td><td>集中して最後まで視聴。質問1件。</td></tr>
+      <tr><td>7/28</td><td>グループホーム</td><td>STEP4 実写ゲーム</td><td>72%</td><td>検品も安定。離席後の再開がスムーズに。</td></tr>
+      <tr><td>8/1</td><td>グループホーム</td><td>STEP4 実写ゲーム</td><td><b style="color:var(--ok);">83%</b></td><td><b>合格ライン到達。現地デビュー調整へ。</b></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= 技術・体制 ================= -->
+<section>
+  <h2>しくみと体制</h2>
+  <div class="grid c2">
+    <div class="card">
+      <h3>教材の自動生成パイプライン</h3>
+      <ul class="plain small">
+        <li>現地で実作業を撮影 → AIが手順を自動分解（部品を取る/検品/箱づめ など）</li>
+        <li>手順データから <b>①アニメ風2D見本 → ②ゲーム体験 → ③実写視聴 → ④実写ゲーム体験</b> の4段階教材を自動作成</li>
+        <li>作業が変わっても、撮影し直すだけで教材を更新可能</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>動画認識（メタテク社技術の活用を想定）</h3>
+      <ul class="plain small">
+        <li>集中して作業できている時間／離席の回数・時間</li>
+        <li>他の人との会話時間、スマートフォンを見ている時間</li>
+        <li>就労支援事業場（現地）とグループホーム（練習場所）の両方に安全カメラを設置し、同じ指標で練習→本番を連続評価</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>関係者の役割</h3>
+      <ul class="plain small">
+        <li><b>就労支援施設</b>：教材内容の事前確認、本番受け入れ</li>
+        <li><b>グループホーム</b>：STEP1〜4の練習と見守り</li>
+        <li><b>ご本人・ご家族</b>：成長記録の共有、同意</li>
+        <li><b>産業医・支援専門職</b>：負荷や配慮事項の助言</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>安心への配慮</h3>
+      <ul class="plain small">
+        <li>撮影・記録は<b>ご本人・ご家族・施設の書面同意</b>のもとで実施</li>
+        <li>映像・記録は要配慮個人情報として最小限の関係者のみ閲覧</li>
+        <li>評価は選別ではなく<b>「安心して働き始めるための準備確認」</b>に限定</li>
+        <li>8割に届かない場合も、練習メニューを調整して再チャレンジ</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>WORK STEP（ワークステップ）デモ｜山岸産業医事務所（合同会社ヤマユウ）</p>
+  <p>SBI-U ベンチャーチャレンジ 2026 ビジネスプラン① ／ 本デモの数値・映像表現はすべて架空です</p>
+</footer>
+
+</div><!-- /appMain -->
+
+<script>
+/* ---------- password gate ---------- */
+var PASSWORD="sbiu2026"; // デモ用（公開時は必ずサーバ側認証に置換）
+function checkPw(){
+  var v=document.getElementById('pw').value;
+  if(v===PASSWORD){
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('appMain').classList.remove('hidden');
+    window.scrollTo({top:0});
+  }else{
+    document.getElementById('pwErr').textContent='パスワードが違います';
+  }
+}
+var cleared={1:false,2:false,3:false,4:false};
+function showStage(n){
+  for(var i=1;i<=4;i++){
+    document.getElementById('stage'+i).style.display=(i===n)?'block':'none';
+    document.getElementById('tab'+i).classList.toggle('on',i===n);
+  }
+}
+function markCleared(n){
+  if(cleared[n])return;
+  cleared[n]=true;
+  document.getElementById('tab'+n).classList.add('cleared');
+  var c=0;for(var k in cleared){if(cleared[k])c++;}
+  var pct=Math.min(100,Math.round(c*25));
+  document.getElementById('mainGauge').style.width=pct+'%';
+  var msg=document.getElementById('gaugeMsg');
+  msg.innerHTML='現在の達成度：<b>'+pct+'%</b>（クリア '+c+' / 4 STEP）';
+  if(pct>=80){document.getElementById('debutMsg').style.display='block';}
+}
+/* ---- STEP1 ---- */
+var s1playing=false;
+function playStep1(){
+  if(s1playing)return; s1playing=true;
+  var ch=document.getElementById('s1chara'), it=document.getElementById('s1item'),
+      sp=document.getElementById('s1speech'), st=document.getElementById('s1status'),
+      btn=document.getElementById('s1btn');
+  btn.disabled=true;
+  sp.textContent='① たなから部品を取るよ';
+  ch.style.left='20px'; it.style.left='30px'; it.style.bottom='86px';
+  setTimeout(function(){ it.style.left='34px'; it.style.bottom='120px'; sp.textContent='② キズがないか、よく見るよ'; },1200);
+  setTimeout(function(){ ch.style.left='330px'; it.style.left='344px'; },2600);
+  setTimeout(function(){ sp.textContent='③ やさしく箱に入れるよ'; it.style.left='calc(100% - 100px)'; it.style.bottom='80px'; },4000);
+  setTimeout(function(){ sp.textContent='これで1つ完成！同じようにやってみよう'; st.innerHTML='<span class="result-tag ok">見本の視聴 完了</span>';
+    btn.disabled=false; btn.textContent='▶ もう一度見る'; s1playing=false; markCleared(1);
+    ch.style.left='20px'; it.style.left='30px'; it.style.bottom='86px';
+  },5600);
+}
+/* ---- STEP2 ---- */
+var s2step=1;
+function s2hint(){
+  ['s2item','s2check','s2box'].forEach(function(id,idx){
+    var el=document.getElementById(id);
+    el.classList.toggle('hint',(idx+1)===s2step);
+  });
+}
+function s2click(n){
+  if(n!==s2step){
+    document.getElementById('s2result').innerHTML='<span class="result-tag ng">じゅんばんが違うよ。光っているところをタップ！</span>';
+    return;
+  }
+  document.getElementById('s2result').innerHTML='';
+  document.getElementById('s2t'+n).classList.remove('doing');
+  document.getElementById('s2t'+n).classList.add('done');
+  if(n===1){document.getElementById('s2item').style.display='none';document.getElementById('s2check').style.display='flex';}
+  if(n===2){document.getElementById('s2check').style.display='none';}
+  document.getElementById('s2score').textContent=n;
+  s2step=n+1;
+  if(n===3){
+    document.getElementById('s2result').innerHTML='<span class="result-tag ok">🎉 クリア！つぎは本物の映像を見てみよう（STEP3へ）</span>';
+    markCleared(2);
+  } else {
+    document.getElementById('s2t'+(n+1)).classList.add('doing');
+  }
+  s2hint();
+}
+function s2reset(){
+  s2step=1;document.getElementById('s2score').textContent='0';
+  document.getElementById('s2result').innerHTML='';
+  for(var i=1;i<=3;i++){var t=document.getElementById('s2t'+i);t.classList.remove('done','doing');}
+  document.getElementById('s2t1').classList.add('doing');
+  document.getElementById('s2item').style.display='flex';
+  document.getElementById('s2check').style.display='none';
+  s2hint();
+}
+/* ---- STEP3 ---- */
+var s3playing=false;
+function playStep3(){
+  if(s3playing)return; s3playing=true;
+  var bar=document.getElementById('s3bar'), cap=document.getElementById('s3cap'), st=document.getElementById('s3status');
+  var caps=['実写：たなから部品を取ります','実写：キズがないか確認します','実写：出荷箱にやさしく入れます','おつかれさま！映像はここまで'];
+  var p=0;
+  document.getElementById('s3play').style.display='none';
+  var iv=setInterval(function(){
+    p+=25; bar.style.width=p+'%';
+    cap.textContent=caps[Math.min(3,p/25-1)];
+    if(p>=100){clearInterval(iv);
+      st.innerHTML='<span class="result-tag ok">実写動画の視聴 完了</span> 同じ流れをSTEP4でリハーサルしましょう';
+      document.getElementById('s3play').style.display='flex'; s3playing=false; markCleared(3);
+    }
+  },1100);
+}
+/* ---- STEP4 ---- */
+var s4step=1;
+function s4hint(){
+  ['s4item','s4check','s4box'].forEach(function(id,idx){
+    var el=document.getElementById(id);
+    el.classList.toggle('hint',(idx+1)===s4step);
+  });
+}
+function s4click(n){
+  if(n!==s4step){
+    document.getElementById('s4result').innerHTML='<span class="result-tag ng">手順が違います。実際の職場と同じ順番で！</span>';
+    document.getElementById('s4recog1').textContent='⚠ 手順のとまどいを検知';
+    document.getElementById('s4recog1').classList.add('show');
+    return;
+  }
+  document.getElementById('s4result').innerHTML='';
+  document.getElementById('s4recog1').textContent='✔ 集中して作業中';
+  document.getElementById('s4recog1').classList.add('show');
+  document.getElementById('s4recog2').classList.add('show');
+  document.getElementById('s4t'+n).classList.remove('doing');
+  document.getElementById('s4t'+n).classList.add('done');
+  if(n===1){document.getElementById('s4item').style.display='none';document.getElementById('s4check').style.display='flex';}
+  if(n===2){document.getElementById('s4check').style.display='none';}
+  document.getElementById('s4score').textContent=n;
+  s4step=n+1;
+  if(n===3){
+    document.getElementById('s4result').innerHTML='<span class="result-tag ok">🎉 実写リハーサル クリア！</span>';
+    markCleared(4);
+  } else {
+    document.getElementById('s4t'+(n+1)).classList.add('doing');
+  }
+  s4hint();
+}
+function s4reset(){
+  s4step=1;document.getElementById('s4score').textContent='0';
+  document.getElementById('s4result').innerHTML='';
+  for(var i=1;i<=3;i++){var t=document.getElementById('s4t'+i);t.classList.remove('done','doing');}
+  document.getElementById('s4t1').classList.add('doing');
+  document.getElementById('s4item').style.display='flex';
+  document.getElementById('s4check').style.display='none';
+  s4hint();
+}
+/* init */
+s2reset(); s4reset(); showStage(1);
+</script>
+</body>
+</html>
