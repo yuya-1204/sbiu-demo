@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="動画・作業ゲーム・日記・読書・通勤練習・レポートを組み合わせた復職準備支援デモ、復職AI Ready 2026年8月8日版。">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#123a4a">
+  <title>復職AI Ready｜2026年8月8日版デモ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="access-locked">
+  <section class="access-gate" id="accessGate" aria-labelledby="accessTitle">
+    <div class="gate-visual" aria-hidden="true"><img src="assets/scene-a.webp" alt=""></div>
+    <div class="access-card">
+      <p class="kicker">AI READY · RESEARCH DEMO</p>
+      <h1 id="accessTitle">復職AI Ready<br><span>2026年8月8日版</span></h1>
+      <p>ご案内した閲覧コードを入力してください。画面内の記録はすべて架空のデモデータです。</p>
+      <form id="accessForm" class="access-form">
+        <label for="accessPassword">閲覧コード</label>
+        <div class="access-input-row"><input id="accessPassword" type="password" autocomplete="off" required><button class="button primary" type="submit">デモを開く</button></div>
+        <p class="access-error" id="accessError" role="alert" aria-live="polite"></p>
+      </form>
+      <p class="micro">この閲覧コードはデモ用の簡易制限です。個人情報を入力しないでください。</p>
+      <a href="https://yamayu-sangyoui-oyama.localinfo.jp/">山岸産業医事務所へ戻る</a>
+    </div>
+  </section>
+
+  <a class="skip-link" href="#mainContent">本文へ移動</a>
+  <div class="demo-ribbon">研究用デモ · 2026年8月8日版 · 入力内容はこのブラウザ内だけに保存</div>
+  <header class="site-header">
+    <a class="brand" href="#home"><span class="brand-mark">AR</span><span><strong>復職AI Ready</strong><small>ハイブリッド復職準備プログラム</small></span></a>
+    <nav class="desktop-nav" aria-label="主要メニュー">
+      <a href="#today">きょう</a><a href="#learning">動画</a><a href="#games">ゲーム</a><a href="#diary">日記</a><a href="#books">読書</a><a href="#commute">通勤</a><a href="#report">レポート</a>
+    </nav>
+    <button id="menuButton" class="icon-button" type="button" aria-controls="mobileMenu" aria-expanded="false" aria-label="メニューを開く">☰</button>
+  </header>
+  <nav id="mobileMenu" class="mobile-menu" aria-label="スマートフォン用メニュー" hidden>
+    <a href="#home">ホーム</a><a href="#today">きょう</a><a href="#learning">動画</a><a href="#games">ゲーム</a><a href="#diary">日記</a><a href="#books">読書</a><a href="#commute">通勤</a><a href="#report">レポート</a><a href="#progress">進み具合</a><a href="#about">このデモについて</a>
+  </nav>
+
+  <section class="demo-controls" aria-label="デモ状態切替">
+    <span><b>プレゼン用表示</b><span id="demoStateLabel">最初から</span></span>
+    <div><button data-profile="start">初期</button><button data-profile="mid">5日目</button><button data-profile="near">修了前</button><button data-profile="complete">修了例</button></div>
+  </section>
+
+  <main id="mainContent" tabindex="-1"></main>
+
+  <footer class="site-footer">
+    <div><strong>復職AI Ready</strong><p>準備を「できた／できない」で裁くのではなく、活動と疲労の関係を一緒に見つけるためのデモです。</p></div>
+    <nav><a href="#about">安全性とクレジット</a><button id="lockDemoButton" type="button">デモをロック</button></nav>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-layer" id="modalLayer" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" id="modalClose" aria-label="閉じる">×</button><div id="modalBody"></div></div></div>
+  <audio id="voicePlayer" preload="none"></audio>
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (() => {
+    const hash = "c22ac7d85d08783f89a48f11d51df747ec913faa7d6a69882ae28314d0002a79";
+    const gate = document.getElementById("accessGate"), form = document.getElementById("accessForm"), input = document.getElementById("accessPassword"), error = document.getElementById("accessError");
+    const unlock = () => { document.body.classList.remove("access-locked"); gate.hidden = true; sessionStorage.setItem("ai-ready-20260808-access", "ok"); };
+    if (sessionStorage.getItem("ai-ready-20260808-access") === "ok") unlock();
+    form.addEventListener("submit", async event => { event.preventDefault(); const bytes = new TextEncoder().encode(input.value); const digest = await crypto.subtle.digest("SHA-256", bytes); const value = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2,"0")).join(""); if (value === hash) unlock(); else { error.textContent = "閲覧コードが違います。ご案内のコードをご確認ください。"; input.select(); } });
+    document.getElementById("lockDemoButton").addEventListener("click", () => { sessionStorage.removeItem("ai-ready-20260808-access"); location.reload(); });
+  })();
+  </script>
+</body>
+</html>

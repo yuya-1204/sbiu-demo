@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "audioFormat": {
+    "sampleRate": 48000,
+    "channels": 1,
+    "encoding": "PCM 16-bit WAV"
+  },
+  "voices": {
+    "dr-yamaneko": {
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "voice": "ずんだもん（ノーマル）",
+      "credit": "VOICEVOX:ずんだもん",
+      "speedScale": 1.02,
+      "intonationScale": 1.05
+    },
+    "yuki": {
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "voice": "四国めたん（ノーマル）",
+      "credit": "VOICEVOX:四国めたん",
+      "speedScale": 1.0,
+      "intonationScale": 1.05
+    }
+  },
+  "characterNotice": "VOICEVOXおよび音声ライブラリのキャラクターと、本デモのDr.やまねこ・ゆきちゃんは別のキャラクターです。",
+  "lines": [
+    {
+      "id": "welcome-dr",
+      "file": "welcome-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "初回案内",
+      "text": "復職AI Readyへようこそ。今日の体調に合わせて、できる範囲から始めましょう。"
+    },
+    {
+      "id": "welcome-yuki",
+      "file": "welcome-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "中断可能性の案内",
+      "text": "途中で休んだり、今日はやめたりしても大丈夫です。自分のペースで進めてください。"
+    },
+    {
+      "id": "learn-dr",
+      "file": "learn-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "動画学習案内",
+      "text": "動画では、疾病理解やセルフケア、復職準備の基礎を学びます。気になる項目から選べます。"
+    },
+    {
+      "id": "reader-yuki",
+      "file": "reader-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "読書画面案内",
+      "text": "文字の大きさや行間を変えられます。読みづらくなったら、しおりを挟んで休みましょう。"
+    },
+    {
+      "id": "commute-dr",
+      "file": "commute-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "通勤練習案内",
+      "text": "通勤練習は、到着できたかだけでなく、帰宅後と翌日の疲れも振り返ります。"
+    },
+    {
+      "id": "diary-yuki",
+      "file": "diary-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "日記案内",
+      "text": "日記は採点ではありません。睡眠や活動と、翌日の調子の関係を確かめるための記録です。"
+    },
+    {
+      "id": "report-dr",
+      "file": "report-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "再発防止レポート案内",
+      "text": "レポートでは、負担が増えやすい状況、早期サイン、役立った対処を、自分の言葉で整理します。"
+    },
+    {
+      "id": "rest-yuki",
+      "file": "rest-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "休憩案内",
+      "text": "集中が切れたと感じたら、いったん止めても大丈夫です。続きはあとから再開できます。"
+    },
+    {
+      "id": "game-start-dr",
+      "file": "game-start-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "二重課題開始案内",
+      "text": "ミッションを始めます。主作業を進めながら、途中で入る短い合図にも対応してください。"
+    },
+    {
+      "id": "game-interrupt-yuki",
+      "file": "game-interrupt-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "割り込み課題案内",
+      "text": "追加の依頼です。いまの作業を確認してから、順番を決めてください。"
+    },
+    {
+      "id": "game-correct-dr",
+      "file": "game-correct-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "見直し行動の案内",
+      "text": "見直して修正できました。速さだけでなく、確認して立て直すことも大切です。"
+    },
+    {
+      "id": "game-finish-yuki",
+      "file": "game-finish-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "ミッション終了案内",
+      "text": "ミッションはここまでです。結果と疲れ方を確認して、次に合う難しさを選びましょう。"
+    },
+    {
+      "id": "invoice-dr",
+      "file": "invoice-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "伝票ゲーム開始案内",
+      "text": "伝票の番号、日付、金額を照合します。例外条件は画面と音声の両方で確認できます。"
+    },
+    {
+      "id": "invoice-yuki",
+      "file": "invoice-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "伝票ゲーム途中案内",
+      "text": "途中で条件が変わることがあります。迷ったときは、いったん止めて見直せます。"
+    },
+    {
+      "id": "library-dr",
+      "file": "library-dr.wav",
+      "speaker": 3,
+      "character": "Dr.やまねこ",
+      "credit": "VOICEVOX:ずんだもん",
+      "purpose": "図書館ゲーム開始案内",
+      "text": "図書館ミッションでは、本の分類を進めながら、館内放送の追加情報も確認します。"
+    },
+    {
+      "id": "library-yuki",
+      "file": "library-yuki.wav",
+      "speaker": 2,
+      "character": "ゆきちゃん",
+      "credit": "VOICEVOX:四国めたん",
+      "purpose": "字幕代替案内",
+      "text": "音声を使わないときは、同じ内容を字幕で確認できます。どちらでも進められます。"
+    }
+  ]
+}
