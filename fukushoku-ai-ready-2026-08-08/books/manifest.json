@@ -1,0 +1,403 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "mikan",
+    "title": "蜜柑",
+    "titleReading": "みかん",
+    "author": "芥川龍之介",
+    "authorCardForm": "芥川 竜之介",
+    "language": "ja",
+    "orthography": "新字新仮名",
+    "cardUrl": "https://www.aozora.gr.jp/cards/000879/card43017.html",
+    "sourceLabel": "青空文庫",
+    "baseText": "底本：『蜘蛛の糸・杜子春』／新潮文庫、新潮社",
+    "inputBy": "蒋龍",
+    "proofBy": "noriko saito",
+    "lastUpdated": "2005-01-07",
+    "notice": "若い貧困層の少女に対する、現代では侮蔑的と受け取られ得る描写があります。時代背景に伴う表現として原文のまま掲載しています。",
+    "file": "books/mikan.json",
+    "source": {
+      "provider": "青空文庫",
+      "cardUrl": "https://www.aozora.gr.jp/cards/000879/card43017.html",
+      "xhtmlUrl": "https://www.aozora.gr.jp/cards/000879/files/43017_17431.html",
+      "textZipUrl": "https://www.aozora.gr.jp/cards/000879/files/43017_ruby_17394.zip",
+      "termsUrl": "https://www.aozora.gr.jp/guide/kijyunn.html",
+      "copyrightStatus": "青空文庫の「著作権の切れている作品」として公開",
+      "reuseSummary": "青空文庫の取り扱い規準により、有償・無償を問わず複製・再配布・共有および形式変換が可能。",
+      "metadataLicense": "CC BY 4.0",
+      "originalCharacterSet": "JIS X 0208",
+      "originalEncoding": "ShiftJIS",
+      "sourceEdition": {
+        "book": "蜘蛛の糸・杜子春",
+        "publisher": "新潮文庫、新潮社",
+        "firstPublication": "1968（昭和43）年11月15日",
+        "inputEdition": "1989（平成元）年5月30日46刷",
+        "proofEdition": "2004（平成16）年6月5日67刷",
+        "parentBook": null,
+        "parentPublisher": null,
+        "parentFirstPublication": null
+      },
+      "inputBy": "蒋龍",
+      "proofreadBy": "noriko saito",
+      "fileLastUpdated": "2005-01-07",
+      "provenanceNotice": "青空文庫作成ファイルを基にしています。入力・校正・制作に携わったボランティアの情報を作品情報に保持しています。"
+    },
+    "notices": {
+      "officialAozoraNotice": null,
+      "aiReadyEditorialNotices": [
+        "若い貧困層の少女に対する、現代では侮蔑的と受け取られ得る描写があります。時代背景に伴う表現として原文のまま掲載しています。"
+      ]
+    },
+    "conversion": {
+      "retrievedOn": "2026-08-08",
+      "convertedOn": "2026-08-08",
+      "sourceFileName": "mikan.html",
+      "decodedWith": "Python cp932 codec（Shift_JIS互換）",
+      "outputEncoding": "UTF-8 (BOMなし)",
+      "extractedRegion": "青空文庫XHTMLのdiv.main_text内部",
+      "preservedMarkup": [
+        "ruby",
+        "rb",
+        "rt",
+        "rp",
+        "br",
+        "青空文庫本文内のその他の安全なXHTML"
+      ],
+      "transformations": [
+        "Shift_JISからUTF-8へ変換",
+        "改行コードをLFへ統一",
+        "本文領域をbodyHtmlとして抽出",
+        "rtおよびrpを除いた検索・表示補助用plainTextを機械生成",
+        "本文の字句変更・現代表記化・要約は行っていない"
+      ],
+      "endorsementDisclaimer": "本データおよび復職AI Readyは、青空文庫の関与・公認を受けたものではありません。"
+    },
+    "stats": {
+      "plainTextCharacters": 3172,
+      "rubyCount": 117,
+      "lineBreakCount": 14,
+      "imageCount": 0
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "tebukuro",
+    "title": "手袋を買いに",
+    "titleReading": "てぶくろをかいに",
+    "author": "新美南吉",
+    "authorCardForm": "新美 南吉",
+    "language": "ja",
+    "orthography": "新字新仮名",
+    "cardUrl": "https://www.aozora.gr.jp/cards/000121/card637.html",
+    "sourceLabel": "青空文庫",
+    "baseText": "底本：『新美南吉童話集』／岩波文庫、岩波書店",
+    "inputBy": "大野晋",
+    "proofBy": "伊藤祥",
+    "lastUpdated": "2011-04-27",
+    "notice": "大きな注意事項はありません。人間への恐怖や、狐が人に追われた回想が含まれます。\n童話作品です。成人向けプログラムでは、本人が選べる読書課題として扱います。",
+    "file": "books/tebukuro.json",
+    "source": {
+      "provider": "青空文庫",
+      "cardUrl": "https://www.aozora.gr.jp/cards/000121/card637.html",
+      "xhtmlUrl": "https://www.aozora.gr.jp/cards/000121/files/637_13341.html",
+      "textZipUrl": "https://www.aozora.gr.jp/cards/000121/files/637_ruby_4095.zip",
+      "termsUrl": "https://www.aozora.gr.jp/guide/kijyunn.html",
+      "copyrightStatus": "青空文庫の「著作権の切れている作品」として公開",
+      "reuseSummary": "青空文庫の取り扱い規準により、有償・無償を問わず複製・再配布・共有および形式変換が可能。",
+      "metadataLicense": "CC BY 4.0",
+      "originalCharacterSet": "JIS X 0208",
+      "originalEncoding": "ShiftJIS",
+      "sourceEdition": {
+        "book": "新美南吉童話集",
+        "publisher": "岩波文庫、岩波書店",
+        "firstPublication": "1996（平成8）年7月16日",
+        "inputEdition": "1997（平成9）年7月15日第2刷",
+        "proofEdition": null,
+        "parentBook": null,
+        "parentPublisher": null,
+        "parentFirstPublication": null
+      },
+      "inputBy": "大野晋",
+      "proofreadBy": "伊藤祥",
+      "fileLastUpdated": "2011-04-27",
+      "provenanceNotice": "青空文庫作成ファイルを基にしています。入力・校正・制作に携わったボランティアの情報を作品情報に保持しています。"
+    },
+    "notices": {
+      "officialAozoraNotice": null,
+      "aiReadyEditorialNotices": [
+        "大きな注意事項はありません。人間への恐怖や、狐が人に追われた回想が含まれます。",
+        "童話作品です。成人向けプログラムでは、本人が選べる読書課題として扱います。"
+      ]
+    },
+    "conversion": {
+      "retrievedOn": "2026-08-08",
+      "convertedOn": "2026-08-08",
+      "sourceFileName": "tebukuro.html",
+      "decodedWith": "Python cp932 codec（Shift_JIS互換）",
+      "outputEncoding": "UTF-8 (BOMなし)",
+      "extractedRegion": "青空文庫XHTMLのdiv.main_text内部",
+      "preservedMarkup": [
+        "ruby",
+        "rb",
+        "rt",
+        "rp",
+        "br",
+        "青空文庫本文内のその他の安全なXHTML"
+      ],
+      "transformations": [
+        "Shift_JISからUTF-8へ変換",
+        "改行コードをLFへ統一",
+        "本文領域をbodyHtmlとして抽出",
+        "rtおよびrpを除いた検索・表示補助用plainTextを機械生成",
+        "本文の字句変更・現代表記化・要約は行っていない"
+      ],
+      "endorsementDisclaimer": "本データおよび復職AI Readyは、青空文庫の関与・公認を受けたものではありません。"
+    },
+    "stats": {
+      "plainTextCharacters": 3626,
+      "rubyCount": 64,
+      "lineBreakCount": 59,
+      "imageCount": 0
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "kagakusha",
+    "title": "科学者とあたま",
+    "titleReading": "かがくしゃとあたま",
+    "author": "寺田寅彦",
+    "authorCardForm": "寺田 寅彦",
+    "language": "ja",
+    "orthography": "新字新仮名",
+    "cardUrl": "https://www.aozora.gr.jp/cards/000042/card2359.html",
+    "sourceLabel": "青空文庫",
+    "baseText": "底本：『寺田寅彦随筆集　第四巻』／岩波文庫、岩波書店",
+    "inputBy": "（株）モモ",
+    "proofBy": "かとうかおり",
+    "lastUpdated": "2003-11-07",
+    "notice": "「頭がよい／悪い」「田舎者」「朴念仁」など、能力評価のように響く古い表現があります。筆者独自の比喩であり、利用者を評価するものではありません。",
+    "file": "books/kagakusha.json",
+    "source": {
+      "provider": "青空文庫",
+      "cardUrl": "https://www.aozora.gr.jp/cards/000042/card2359.html",
+      "xhtmlUrl": "https://www.aozora.gr.jp/cards/000042/files/2359_13797.html",
+      "textZipUrl": "https://www.aozora.gr.jp/cards/000042/files/2359_ruby_4688.zip",
+      "termsUrl": "https://www.aozora.gr.jp/guide/kijyunn.html",
+      "copyrightStatus": "青空文庫の「著作権の切れている作品」として公開",
+      "reuseSummary": "青空文庫の取り扱い規準により、有償・無償を問わず複製・再配布・共有および形式変換が可能。",
+      "metadataLicense": "CC BY 4.0",
+      "originalCharacterSet": "JIS X 0208",
+      "originalEncoding": "ShiftJIS",
+      "sourceEdition": {
+        "book": "寺田寅彦随筆集　第四巻",
+        "publisher": "岩波文庫、岩波書店",
+        "firstPublication": "1948（昭和23）年5月15日、1963（昭和38）年5月16日第20刷改版",
+        "inputEdition": "1995（平成7）年7月15日第63刷",
+        "proofEdition": "1997（平成9）年6月13日第65刷",
+        "parentBook": null,
+        "parentPublisher": null,
+        "parentFirstPublication": null
+      },
+      "inputBy": "（株）モモ",
+      "proofreadBy": "かとうかおり",
+      "fileLastUpdated": "2003-11-07",
+      "provenanceNotice": "青空文庫作成ファイルを基にしています。入力・校正・制作に携わったボランティアの情報を作品情報に保持しています。"
+    },
+    "notices": {
+      "officialAozoraNotice": null,
+      "aiReadyEditorialNotices": [
+        "「頭がよい／悪い」「田舎者」「朴念仁」など、能力評価のように響く古い表現があります。筆者独自の比喩であり、利用者を評価するものではありません。"
+      ]
+    },
+    "conversion": {
+      "retrievedOn": "2026-08-08",
+      "convertedOn": "2026-08-08",
+      "sourceFileName": "kagakusha.html",
+      "decodedWith": "Python cp932 codec（Shift_JIS互換）",
+      "outputEncoding": "UTF-8 (BOMなし)",
+      "extractedRegion": "青空文庫XHTMLのdiv.main_text内部",
+      "preservedMarkup": [
+        "ruby",
+        "rb",
+        "rt",
+        "rp",
+        "br",
+        "青空文庫本文内のその他の安全なXHTML"
+      ],
+      "transformations": [
+        "Shift_JISからUTF-8へ変換",
+        "改行コードをLFへ統一",
+        "本文領域をbodyHtmlとして抽出",
+        "rtおよびrpを除いた検索・表示補助用plainTextを機械生成",
+        "本文の字句変更・現代表記化・要約は行っていない"
+      ],
+      "endorsementDisclaimer": "本データおよび復職AI Readyは、青空文庫の関与・公認を受けたものではありません。"
+    },
+    "stats": {
+      "plainTextCharacters": 3875,
+      "rubyCount": 16,
+      "lineBreakCount": 28,
+      "imageCount": 0
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "melos",
+    "title": "走れメロス",
+    "titleReading": "はしれメロス",
+    "author": "太宰治",
+    "authorCardForm": "太宰 治",
+    "language": "ja",
+    "orthography": "新字新仮名",
+    "cardUrl": "https://www.aozora.gr.jp/cards/000035/card1567.html",
+    "sourceLabel": "青空文庫",
+    "baseText": "底本：『太宰治全集3』／ちくま文庫、筑摩書房",
+    "inputBy": "金川一之",
+    "proofBy": "高橋美奈子",
+    "lastUpdated": "2011-01-17",
+    "notice": "殺害、処刑、人質、磔、絞殺の脅迫、流血、極度の疲労、裸体の描写が含まれます。",
+    "file": "books/melos.json",
+    "source": {
+      "provider": "青空文庫",
+      "cardUrl": "https://www.aozora.gr.jp/cards/000035/card1567.html",
+      "xhtmlUrl": "https://www.aozora.gr.jp/cards/000035/files/1567_14913.html",
+      "textZipUrl": "https://www.aozora.gr.jp/cards/000035/files/1567_ruby_4948.zip",
+      "termsUrl": "https://www.aozora.gr.jp/guide/kijyunn.html",
+      "copyrightStatus": "青空文庫の「著作権の切れている作品」として公開",
+      "reuseSummary": "青空文庫の取り扱い規準により、有償・無償を問わず複製・再配布・共有および形式変換が可能。",
+      "metadataLicense": "CC BY 4.0",
+      "originalCharacterSet": "JIS X 0208",
+      "originalEncoding": "ShiftJIS",
+      "sourceEdition": {
+        "book": "太宰治全集3",
+        "publisher": "ちくま文庫、筑摩書房",
+        "firstPublication": "1988（昭和63）年10月25日",
+        "inputEdition": null,
+        "proofEdition": "1998（平成10）年6月15日第2刷",
+        "parentBook": "筑摩全集類聚版太宰治全集",
+        "parentPublisher": "筑摩書房",
+        "parentFirstPublication": "1975（昭和50）年6月～1976（昭和51）年6月"
+      },
+      "inputBy": "金川一之",
+      "proofreadBy": "高橋美奈子",
+      "fileLastUpdated": "2011-01-17",
+      "provenanceNotice": "青空文庫作成ファイルを基にしています。入力・校正・制作に携わったボランティアの情報を作品情報に保持しています。"
+    },
+    "notices": {
+      "officialAozoraNotice": null,
+      "aiReadyEditorialNotices": [
+        "殺害、処刑、人質、磔、絞殺の脅迫、流血、極度の疲労、裸体の描写が含まれます。"
+      ]
+    },
+    "conversion": {
+      "retrievedOn": "2026-08-08",
+      "convertedOn": "2026-08-08",
+      "sourceFileName": "melos.html",
+      "decodedWith": "Python cp932 codec（Shift_JIS互換）",
+      "outputEncoding": "UTF-8 (BOMなし)",
+      "extractedRegion": "青空文庫XHTMLのdiv.main_text内部",
+      "preservedMarkup": [
+        "ruby",
+        "rb",
+        "rt",
+        "rp",
+        "br",
+        "青空文庫本文内のその他の安全なXHTML"
+      ],
+      "transformations": [
+        "Shift_JISからUTF-8へ変換",
+        "改行コードをLFへ統一",
+        "本文領域をbodyHtmlとして抽出",
+        "rtおよびrpを除いた検索・表示補助用plainTextを機械生成",
+        "本文の字句変更・現代表記化・要約は行っていない"
+      ],
+      "endorsementDisclaimer": "本データおよび復職AI Readyは、青空文庫の関与・公認を受けたものではありません。"
+    },
+    "stats": {
+      "plainTextCharacters": 9987,
+      "rubyCount": 88,
+      "lineBreakCount": 78,
+      "imageCount": 0
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "kojinshugi",
+    "title": "私の個人主義",
+    "titleReading": "わたしのこじんしゅぎ",
+    "author": "夏目漱石",
+    "authorCardForm": "夏目 漱石",
+    "language": "ja",
+    "orthography": "新字新仮名",
+    "cardUrl": "https://www.aozora.gr.jp/cards/000148/card772.html",
+    "sourceLabel": "青空文庫",
+    "baseText": "底本：『ちくま日本文学全集　夏目漱石』／筑摩書房",
+    "inputBy": "真先芳秋",
+    "proofBy": "かとうかおり",
+    "lastUpdated": "2008-10-05",
+    "notice": "この作品には、今日からみれば、不適切と受け取られる可能性のある表現がみられます。その旨をここに記載した上で、そのままの形で作品を公開します。（青空文庫）",
+    "file": "books/kojinshugi.json",
+    "source": {
+      "provider": "青空文庫",
+      "cardUrl": "https://www.aozora.gr.jp/cards/000148/card772.html",
+      "xhtmlUrl": "https://www.aozora.gr.jp/cards/000148/files/772_33100.html",
+      "textZipUrl": "https://www.aozora.gr.jp/cards/000148/files/772_ruby_33099.zip",
+      "termsUrl": "https://www.aozora.gr.jp/guide/kijyunn.html",
+      "copyrightStatus": "青空文庫の「著作権の切れている作品」として公開",
+      "reuseSummary": "青空文庫の取り扱い規準により、有償・無償を問わず複製・再配布・共有および形式変換が可能。",
+      "metadataLicense": "CC BY 4.0",
+      "originalCharacterSet": "JIS X 0208",
+      "originalEncoding": "ShiftJIS",
+      "sourceEdition": {
+        "book": "ちくま日本文学全集　夏目漱石",
+        "publisher": "筑摩書房",
+        "firstPublication": "1992（平成4）年1月20日",
+        "inputEdition": "1992（平成4）年1月20日第1刷",
+        "proofEdition": "1998（平成10）年3月15日第2刷",
+        "parentBook": "夏目漱石全集10",
+        "parentPublisher": "ちくま文庫、筑摩書房",
+        "parentFirstPublication": "1988（昭和63）年7月26日"
+      },
+      "inputBy": "真先芳秋",
+      "proofreadBy": "かとうかおり",
+      "fileLastUpdated": "2008-10-05",
+      "provenanceNotice": "青空文庫作成ファイルを基にしています。入力・校正・制作に携わったボランティアの情報を作品情報に保持しています。"
+    },
+    "notices": {
+      "officialAozoraNotice": "この作品には、今日からみれば、不適切と受け取られる可能性のある表現がみられます。その旨をここに記載した上で、そのままの形で作品を公開します。（青空文庫）",
+      "aiReadyEditorialNotices": [
+        "青空文庫の公式注意表示を読書開始前にも提示し、別作品へ変更できるようにしてください。"
+      ]
+    },
+    "conversion": {
+      "retrievedOn": "2026-08-08",
+      "convertedOn": "2026-08-08",
+      "sourceFileName": "kojinshugi.html",
+      "decodedWith": "Python cp932 codec（Shift_JIS互換）",
+      "outputEncoding": "UTF-8 (BOMなし)",
+      "extractedRegion": "青空文庫XHTMLのdiv.main_text内部",
+      "preservedMarkup": [
+        "ruby",
+        "rb",
+        "rt",
+        "rp",
+        "br",
+        "青空文庫本文内のその他の安全なXHTML"
+      ],
+      "transformations": [
+        "Shift_JISからUTF-8へ変換",
+        "改行コードをLFへ統一",
+        "本文領域をbodyHtmlとして抽出",
+        "rtおよびrpを除いた検索・表示補助用plainTextを機械生成",
+        "本文の字句変更・現代表記化・要約は行っていない"
+      ],
+      "endorsementDisclaimer": "本データおよび復職AI Readyは、青空文庫の関与・公認を受けたものではありません。"
+    },
+    "stats": {
+      "plainTextCharacters": 23577,
+      "rubyCount": 483,
+      "lineBreakCount": 65,
+      "imageCount": 0
+    }
+  }
+]
